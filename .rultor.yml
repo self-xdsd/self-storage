@@ -1,0 +1,18 @@
+docker:
+  image: g4s8/rultor-jdk11:alpine3.10
+architect:
+  - amihaiemil
+decrypt:
+  settings.xml: "repo/rcfg/settings.xml.asc"
+  pubring.gpg: "repo/rcfg/pubring.gpg.asc"
+  secring.gpg: "repo/rcfg/secring.gpg.asc"
+merge:
+  script: |-
+    mvn clean install -Pcheckstyle,itcases
+deploy:
+  script: |-
+    mvn clean deploy -PsignArtifactsGpg,deployToGithubPackages --settings /home/r/settings.xml
+release:
+  script: |-
+    echo 'Nothing to release yet'
+    exit -1
