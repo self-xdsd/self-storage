@@ -4,7 +4,7 @@
         <server>
             <id>github</id>
             <username>amihaiemil</username>
-            <password>${github.packages.token}</password>
+            <password>${env.GITHUB_TOKEN}</password>
         </server>
     </servers>
 </settings>
