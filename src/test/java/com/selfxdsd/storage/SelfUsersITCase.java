@@ -24,9 +24,16 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.User;
 import com.selfxdsd.api.Users;
+import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.StoredUser;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
 
 /**
  * Integration tests for {@link SelfUsers}.
@@ -80,6 +87,53 @@ public final class SelfUsersITCase {
         final Users users = new SelfJooq(new H2Database()).users();
         for(final User user : users) {
             MatcherAssert.assertThat(user, Matchers.notNullValue());
+        }
+    }
+
+
+    /**
+     * Sign up a user by inserting them into database.
+     */
+    @Test
+    public void signUpUserByInsert() {
+        final H2Database database = new H2Database();
+        final Users users = new SelfJooq(database).users();
+        users.signUp(new StoredUser(
+                "foo", "foo@mail.com", "github", "123",
+                Mockito.mock(Storage.class)
+        ));
+
+        try(Database testDb = database.connect()) {
+            final Result<Record> result = testDb.jooq().select()
+                    .from(SLF_USERS_XDSD)
+                    .where(SLF_USERS_XDSD.USERNAME.eq("foo")
+                            .and(SLF_USERS_XDSD.PROVIDER.eq("github")))
+                    .fetch();
+            MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
+        }
+    }
+
+    /**
+     * Sign up a user by updating them into database (they updated their email).
+     */
+    @Test
+    public void signUpUserByUpdateEmail() {
+        final H2Database database = new H2Database();
+        final Users users = new SelfJooq(database).users();
+        users.signUp(new StoredUser(
+                "mihai", "mihaiNew@example.com",
+                "github", "123",
+                Mockito.mock(Storage.class)
+        ));
+
+        try(Database testDb = database.connect()) {
+            final Result<Record> result = testDb.jooq().select()
+                    .from(SLF_USERS_XDSD)
+                    .where(SLF_USERS_XDSD.USERNAME.eq("mihai")
+                            .and(SLF_USERS_XDSD.EMAIL
+                                    .eq("mihaiNew@example.com")))
+                    .fetch();
+            MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
         }
     }
 
