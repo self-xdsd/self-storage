@@ -51,4 +51,19 @@ public final class SelfJooqTestCase {
         );
     }
 
+    /**
+     * SelfJooq can return the Projects.
+     */
+    @Test
+    public void returnsProjects() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.projects(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfProjects.class)
+            )
+        );
+    }
+
 }
