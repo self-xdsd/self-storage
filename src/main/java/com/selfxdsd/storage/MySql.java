@@ -31,11 +31,27 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
+ * MySql Database.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
- * @since
+ * @since 0.0.1
  */
 public final class MySql implements Database {
+
+    /**
+     * DB Url.
+     */
+    private final String dbUrl;
+
+    /**
+     * DB User.
+     */
+    private final String username;
+
+    /**
+     * DB Password.
+     */
+    private final String password;
 
     /**
      * JDBC Connection.
@@ -44,16 +60,34 @@ public final class MySql implements Database {
 
     /**
      * Constructor to obtain an unconnected instance.
+     * @param dbUrl DB Url.
+     * @param username DB User.
+     * @param password DB Password.
      */
-    public MySql() {
-        this(null);
+    public MySql(
+        final String dbUrl,
+        final String username,
+        final String password
+    ) {
+        this(dbUrl, username, password, null);
     }
 
     /**
      * Constructor to obtain a connected instance.
      * @param connection JDBC Connection.
+     * @param dbUrl DB Url.
+     * @param username DB User.
+     * @param password DB Password.
      */
-    private MySql(final Connection connection) {
+    private MySql(
+        final String dbUrl,
+        final String username,
+        final String password,
+        final Connection connection
+    ) {
+        this.dbUrl = dbUrl;
+        this.username = username;
+        this.password = password;
         this.connection = connection;
     }
 
@@ -61,10 +95,13 @@ public final class MySql implements Database {
     public MySql connect() {
         try {
             return new MySql(
+                this.dbUrl,
+                this.username,
+                this.password,
                 DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/self_xdsd?serverTimezone=CET",
-                    "user",
-                    "blabla"
+                    this.dbUrl,
+                    this.username,
+                    this.password
                 )
             );
         } catch (final SQLException exception) {

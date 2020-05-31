@@ -39,7 +39,13 @@ public final class SelfJooq implements Storage {
      * Constructor. Working with MySql by default.
      */
     public SelfJooq() {
-        this(new MySql());
+        this(
+            new MySql(
+                "DB URL",
+                "user",
+                "pwd"
+            )
+        );
     }
 
     /**
@@ -52,7 +58,9 @@ public final class SelfJooq implements Storage {
 
     @Override
     public Users users() {
-        return new SelfUsers(this.database);
+        return new SelfUsers(
+            this, this.database
+        );
     }
 
     @Override

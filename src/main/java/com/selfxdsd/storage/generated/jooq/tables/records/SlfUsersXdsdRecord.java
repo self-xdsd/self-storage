@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = -1554047001;
+    private static final long serialVersionUID = 1248415846;
 
     /**
      * Setter for <code>self_xdsd.slf_users_xdsd.username</code>.
@@ -64,16 +64,16 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
     }
 
     /**
-     * Setter for <code>self_xdsd.slf_users_xdsd.avatar</code>.
+     * Setter for <code>self_xdsd.slf_users_xdsd.access_token</code>.
      */
-    public void setAvatar(String value) {
+    public void setAccessToken(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>self_xdsd.slf_users_xdsd.avatar</code>.
+     * Getter for <code>self_xdsd.slf_users_xdsd.access_token</code>.
      */
-    public String getAvatar() {
+    public String getAccessToken() {
         return (String) get(3);
     }
 
@@ -117,7 +117,7 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public Field<String> field4() {
-        return SlfUsersXdsd.SLF_USERS_XDSD.AVATAR;
+        return SlfUsersXdsd.SLF_USERS_XDSD.ACCESS_TOKEN;
     }
 
     @Override
@@ -137,7 +137,7 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public String component4() {
-        return getAvatar();
+        return getAccessToken();
     }
 
     @Override
@@ -157,7 +157,7 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public String value4() {
-        return getAvatar();
+        return getAccessToken();
     }
 
     @Override
@@ -180,7 +180,7 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public SlfUsersXdsdRecord value4(String value) {
-        setAvatar(value);
+        setAccessToken(value);
         return this;
     }
 
@@ -207,12 +207,12 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
     /**
      * Create a detached, initialised SlfUsersXdsdRecord
      */
-    public SlfUsersXdsdRecord(String username, String provider, String email, String avatar) {
+    public SlfUsersXdsdRecord(String username, String provider, String email, String accessToken) {
         super(SlfUsersXdsd.SLF_USERS_XDSD);
 
         set(0, username);
         set(1, provider);
         set(2, email);
-        set(3, avatar);
+        set(3, accessToken);
     }
 }
