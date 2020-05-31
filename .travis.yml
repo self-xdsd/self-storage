@@ -5,5 +5,4 @@ jdk:
   - openjdk11
 script:
   - set -e
-  - cp .travis.settings.xml $HOME/.m2/settings.xml
-  - mvn clean install -Pcheckstyle,itcases # -PtestCoverage jacoco:report coveralls:report
+  - mvn clean install -Pcheckstyle,itcases --settings .travis.settings.xml # -PtestCoverage jacoco:report coveralls:report
