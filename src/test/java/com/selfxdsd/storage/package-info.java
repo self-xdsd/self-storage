@@ -20,74 +20,19 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.selfxdsd.storage;
-
-import com.selfxdsd.api.*;
-import com.selfxdsd.api.storage.Storage;
-
 /**
- * Self Storage implemented with jOOQ.
+ * This package contains mostly integration tests that run against an H2
+ * Database created and populated using sql-maven-plugin (see profile
+ * 'itcases' in pom.xml).
+ *
+ * When using the 'itcases' profile: first, the H2 DB will be generated
+ * (and populated with test data) on disk under the target folder and then
+ * the Integration Tests will be run.
+ *
+ * You can run these tests manually only after you have run the 'itcases'
+ * profile at least once, so you have the DB generated under target.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage {
-
-    /**
-     * The Database we're working with.
-     */
-    private Database database;
-
-    /**
-     * Constructor. Working with MySql by default.
-     */
-    public SelfJooq() {
-        this(
-            new MySql(
-                "DB URL",
-                "user",
-                "pwd"
-            )
-        );
-    }
-
-    /**
-     * Ctor.
-     * @param database Database.
-     */
-    public SelfJooq(final Database database) {
-        this.database = database;
-    }
-
-    @Override
-    public Users users() {
-        return new SelfUsers(
-            this, this.database
-        );
-    }
-
-    @Override
-    public ProjectManagers projectManagers() {
-        return null;
-    }
-
-    @Override
-    public Projects projects() {
-        return null;
-    }
-
-    @Override
-    public Contracts contracts() {
-        return null;
-    }
-
-    @Override
-    public Contributors contributors() {
-        return null;
-    }
-
-    @Override
-    public Tasks tasks() {
-        return null;
-    }
-}
+package com.selfxdsd.storage;

@@ -159,9 +159,6 @@
         <module name="IllegalCatch"/>
         <module name="IllegalThrows"/>
         <module name="PackageDeclaration"/>
-        <module name="ReturnCount">
-            <property name="max" value="1"/>
-        </module>
         <module name="IllegalType"/>
         <module name="ParameterAssignment"/>
         <module name="ExplicitInitialization"/>
