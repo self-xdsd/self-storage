@@ -78,9 +78,9 @@
                             <!-- JDBC connection parameters -->
                             <jdbc>
                                 <driver>com.mysql.cj.jdbc.Driver</driver>
-                                <url>jdbc:mysql://localhost:3306/self_xdsd?serverTimezone=CET</url>
-                                <user>root</user>
-                                <password>sqlemil141503</password>
+                                <url>${db.url}</url>
+                                <user>${db.user}</user>
+                                <password>${db.password}</password>
                             </jdbc>
                             <!-- Generator parameters -->
                             <generator>
