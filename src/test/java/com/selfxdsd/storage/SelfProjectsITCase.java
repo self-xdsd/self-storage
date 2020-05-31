@@ -62,4 +62,19 @@ public final class SelfProjectsITCase {
             Matchers.equalTo(Provider.Names.GITHUB)
         );
     }
+
+    /**
+     * Returns null the project is not found.
+     */
+    @Test
+    public void returnsNullIfProjectMissing() {
+        final Projects projects = new SelfJooq(new H2Database()).projects();
+        final Project found = projects.getProjectById(
+            "amihaiemil/missing", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            found,
+            Matchers.nullValue()
+        );
+    }
 }
