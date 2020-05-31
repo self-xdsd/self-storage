@@ -222,6 +222,11 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/generated/**/*</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.eluder.coveralls</groupId>
