@@ -72,4 +72,15 @@ public final class SelfUsersITCase {
         );
     }
 
+    /**
+     * SelfUsers can be iterated.
+     */
+    @Test
+    public void iteratesUsers() {
+        final Users users = new SelfJooq(new H2Database()).users();
+        for(final User user : users) {
+            MatcherAssert.assertThat(user, Matchers.notNullValue());
+        }
+    }
+
 }

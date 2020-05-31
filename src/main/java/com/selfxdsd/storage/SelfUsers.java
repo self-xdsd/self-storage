@@ -29,7 +29,9 @@ import com.selfxdsd.core.StoredUser;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
 
@@ -98,6 +100,25 @@ public final class SelfUsers implements Users {
 
     @Override
     public Iterator<User> iterator() {
-        return null;
+        final List<User> users = new ArrayList<>();
+        try (final Database db = this.database.connect()) {
+            final Result<Record> result = db.jooq()
+                .select()
+                .from(SLF_USERS_XDSD)
+                .limit(100)
+                .fetch();
+            for(final Record res : result) {
+                users.add(
+                    new StoredUser(
+                        res.getValue(SLF_USERS_XDSD.USERNAME),
+                        res.getValue(SLF_USERS_XDSD.EMAIL),
+                        res.getValue(SLF_USERS_XDSD.PROVIDER),
+                        res.getValue(SLF_USERS_XDSD.ACCESS_TOKEN),
+                        this.storage
+                    )
+                );
+            }
+        }
+        return users.iterator();
     }
 }
