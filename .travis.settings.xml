@@ -1,0 +1,10 @@
+<!-- Maven Settings for Travis -->
+<settings>
+    <servers>
+        <server>
+            <id>github</id>
+            <username>amihaiemil</username>
+            <password>${github.packages.token}</password>
+        </server>
+    </servers>
+</settings>
