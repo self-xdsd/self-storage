@@ -24,6 +24,8 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.User;
 import com.selfxdsd.api.Users;
+import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.StoredUser;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -40,15 +42,25 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
 public final class SelfUsers implements Users {
 
     /**
+     * Parent Storage.
+     */
+    private final Storage storage;
+
+    /**
      * Database.
      */
     private final Database database;
 
     /**
      * Ctor.
+     * @param storage Parent Storage.
      * @param database Database.
      */
-    public SelfUsers(final Database database) {
+    public SelfUsers(
+        final Storage storage,
+        final Database database
+    ) {
+        this.storage = storage;
         this.database = database;
     }
 
@@ -70,19 +82,16 @@ public final class SelfUsers implements Users {
                 )
                 .fetch();
             if(!result.isEmpty()) {
-                Record r = result.get(0);
-
-                String usr = r.getValue(SLF_USERS_XDSD.USERNAME);
-                String prv = r.getValue(SLF_USERS_XDSD.PROVIDER);
-                String email = r.getValue(SLF_USERS_XDSD.EMAIL);
-                String avatar = r.getValue(SLF_USERS_XDSD.AVATAR);
-
-                System.out.println("----------------");
-                System.out.println("Username: " + usr);
-                System.out.println("Provider: " + prv);
-                System.out.println("E-Mail: " + email);
-                System.out.println("Avatar: " + avatar);
-                System.out.println("----------------");            }
+                final Record rec = result.get(0);
+                final User found = new StoredUser(
+                    rec.getValue(SLF_USERS_XDSD.USERNAME),
+                    rec.getValue(SLF_USERS_XDSD.EMAIL),
+                    rec.getValue(SLF_USERS_XDSD.PROVIDER),
+                    rec.getValue(SLF_USERS_XDSD.ACCESS_TOKEN),
+                    this.storage
+                );
+                return found;
+            }
         }
         return null;
     }

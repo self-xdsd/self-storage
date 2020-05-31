@@ -22,72 +22,33 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * Self Storage implemented with jOOQ.
+ * Unit tests for {@link SelfJooq}.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage {
+public final class SelfJooqTestCase {
 
     /**
-     * The Database we're working with.
+     * SelfJooq can return the Users.
      */
-    private Database database;
-
-    /**
-     * Constructor. Working with MySql by default.
-     */
-    public SelfJooq() {
-        this(
-            new MySql(
-                "DB URL",
-                "user",
-                "pwd"
+    @Test
+    public void returnsUsers() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.users(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfUsers.class)
             )
         );
     }
 
-    /**
-     * Ctor.
-     * @param database Database.
-     */
-    public SelfJooq(final Database database) {
-        this.database = database;
-    }
-
-    @Override
-    public Users users() {
-        return new SelfUsers(
-            this, this.database
-        );
-    }
-
-    @Override
-    public ProjectManagers projectManagers() {
-        return null;
-    }
-
-    @Override
-    public Projects projects() {
-        return null;
-    }
-
-    @Override
-    public Contracts contracts() {
-        return null;
-    }
-
-    @Override
-    public Contributors contributors() {
-        return null;
-    }
-
-    @Override
-    public Tasks tasks() {
-        return null;
-    }
 }

@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
 
-    private static final long serialVersionUID = 390091843;
+    private static final long serialVersionUID = 824477473;
 
     /**
      * The reference instance of <code>self_xdsd.slf_users_xdsd</code>
@@ -62,9 +62,9 @@ public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
     public final TableField<SlfUsersXdsdRecord, String> EMAIL = createField(DSL.name("email"), org.jooq.impl.SQLDataType.VARCHAR(150), this, "");
 
     /**
-     * The column <code>self_xdsd.slf_users_xdsd.avatar</code>.
+     * The column <code>self_xdsd.slf_users_xdsd.access_token</code>.
      */
-    public final TableField<SlfUsersXdsdRecord, String> AVATAR = createField(DSL.name("avatar"), org.jooq.impl.SQLDataType.VARCHAR(256), this, "");
+    public final TableField<SlfUsersXdsdRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_users_xdsd</code> table reference

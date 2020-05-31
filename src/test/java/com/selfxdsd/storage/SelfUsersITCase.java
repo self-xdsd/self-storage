@@ -22,72 +22,54 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.*;
-import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.api.User;
+import com.selfxdsd.api.Users;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Self Storage implemented with jOOQ.
+ * Integration tests for {@link SelfUsers}.
+ * Read the package-info.java if you want to run these tests manually.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage {
+public final class SelfUsersITCase {
 
     /**
-     * The Database we're working with.
+     * SelfUsers can find and return a Users from the
+     * Database.
      */
-    private Database database;
-
-    /**
-     * Constructor. Working with MySql by default.
-     */
-    public SelfJooq() {
-        this(
-            new MySql(
-                "DB URL",
-                "user",
-                "pwd"
-            )
+    @Test
+    public void returnsUser() {
+        final Users users = new SelfJooq(new H2Database()).users();
+        final User found = users.user("vlad", "github");
+        MatcherAssert.assertThat(
+            found.username(),
+            Matchers.equalTo("vlad")
+        );
+        MatcherAssert.assertThat(
+            found.provider().name(),
+            Matchers.equalTo("github")
+        );
+        MatcherAssert.assertThat(
+            found.email(),
+            Matchers.equalTo("vlad@example.com")
         );
     }
 
     /**
-     * Ctor.
-     * @param database Database.
+     * SelfUsers returns null if the User is not found.
      */
-    public SelfJooq(final Database database) {
-        this.database = database;
-    }
-
-    @Override
-    public Users users() {
-        return new SelfUsers(
-            this, this.database
+    @Test
+    public void returnsNullIfUserMissing() {
+        final Users users = new SelfJooq(new H2Database()).users();
+        final User found = users.user("missing", "github");
+        MatcherAssert.assertThat(
+            found,
+            Matchers.nullValue()
         );
     }
 
-    @Override
-    public ProjectManagers projectManagers() {
-        return null;
-    }
-
-    @Override
-    public Projects projects() {
-        return null;
-    }
-
-    @Override
-    public Contracts contracts() {
-        return null;
-    }
-
-    @Override
-    public Contributors contributors() {
-        return null;
-    }
-
-    @Override
-    public Tasks tasks() {
-        return null;
-    }
 }

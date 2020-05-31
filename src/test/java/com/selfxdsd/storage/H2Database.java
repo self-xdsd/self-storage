@@ -31,13 +31,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * MySql Database.
+ * H2 Database, on disk, for integration tests.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class MySql implements Database {
-
+public final class H2Database implements Database {
     /**
      * DB Url.
      */
@@ -60,16 +59,14 @@ public final class MySql implements Database {
 
     /**
      * Constructor to obtain an unconnected instance.
-     * @param dbUrl DB Url.
-     * @param username DB User.
-     * @param password DB Password.
      */
-    public MySql(
-        final String dbUrl,
-        final String username,
-        final String password
-    ) {
-        this(dbUrl, username, password, null);
+    public H2Database() {
+        this(
+            "jdbc:h2:file:target/db/testdb",
+            "sa",
+            "",
+            null
+        );
     }
 
     /**
@@ -79,7 +76,7 @@ public final class MySql implements Database {
      * @param username DB User.
      * @param password DB Password.
      */
-    private MySql(
+    private H2Database(
         final String dbUrl,
         final String username,
         final String password,
@@ -92,9 +89,9 @@ public final class MySql implements Database {
     }
 
     @Override
-    public MySql connect() {
+    public H2Database connect() {
         try {
-            return new MySql(
+            return new H2Database(
                 this.dbUrl,
                 this.username,
                 this.password,
