@@ -37,12 +37,12 @@
         <dependency>
             <groupId>com.selfxdsd</groupId>
             <artifactId>self-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.selfxdsd</groupId>
             <artifactId>self-core-impl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -279,4 +279,11 @@
             </distributionManagement>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>Self Core on Github Packages</name>
+            <url>https://maven.pkg.github.com/self-xdsd/self-core</url>
+        </repository>
+    </repositories>
 </project>
