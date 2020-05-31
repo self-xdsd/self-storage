@@ -8,7 +8,7 @@ decrypt:
   secring.gpg: "repo/rcfg/secring.gpg.asc"
 merge:
   script: |-
-    mvn clean install -Pcheckstyle,itcases
+    mvn clean install -Pcheckstyle,itcases --settings /home/r/settings.xml
 deploy:
   script: |-
     mvn clean deploy -PsignArtifactsGpg,deployToGithubPackages --settings /home/r/settings.xml
