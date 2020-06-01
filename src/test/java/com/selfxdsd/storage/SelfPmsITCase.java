@@ -22,70 +22,52 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.*;
-import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.api.ProjectManager;
+import com.selfxdsd.api.ProjectManagers;
+import com.selfxdsd.api.Provider;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Self Storage implemented with jOOQ.
+ * Integration tests for {@link SelfPms}.
+ * Read the package-info.java if you want to run these tests manually.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage {
+public final class SelfPmsITCase {
 
     /**
-     * The Database we're working with.
+     * SelfPms.getById returns a found PM.
      */
-    private Database database;
-
-    /**
-     * Constructor. Working with MySql by default.
-     */
-    public SelfJooq() {
-        this(
-            new MySql(
-                "DB URL",
-                "user",
-                "pwd"
-            )
+    @Test
+    public void returnsFoundPm() {
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+        final ProjectManager found = pms.getById(1);
+        MatcherAssert.assertThat(found.id(), Matchers.equalTo(1));
+        MatcherAssert.assertThat(
+            found.provider(),
+            Matchers.equalTo(Provider.Names.GITHUB)
+        );
+        MatcherAssert.assertThat(
+            found.accessToken(),
+            Matchers.equalTo("pm1ghtoken123")
         );
     }
 
     /**
-     * Ctor.
-     * @param database Database.
+     * SelfPms.getById returns null if the PM is missing.
      */
-    public SelfJooq(final Database database) {
-        this.database = database;
+    @Test
+    public void returnsNullOnMissingPm() {
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+        final ProjectManager found = pms.getById(321);
+        MatcherAssert.assertThat(found, Matchers.nullValue());
     }
 
-    @Override
-    public Users users() {
-        return new SelfUsers(this, this.database);
-    }
-
-    @Override
-    public ProjectManagers projectManagers() {
-        return new SelfPms(this, this.database);
-    }
-
-    @Override
-    public Projects projects() {
-        return new SelfProjects(this, this.database);
-    }
-
-    @Override
-    public Contracts contracts() {
-        return null;
-    }
-
-    @Override
-    public Contributors contributors() {
-        return null;
-    }
-
-    @Override
-    public Tasks tasks() {
-        return null;
-    }
 }
