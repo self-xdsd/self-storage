@@ -38,8 +38,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #19:30min Continue implementing and writing integration tests
- *  for SelfPms's methods.
  */
 public final class SelfPms implements ProjectManagers {
     /**
@@ -74,14 +72,7 @@ public final class SelfPms implements ProjectManagers {
                 .where(SLF_PMS_XDSD.ID.eq(projectManagerId))
                 .fetch();
             if(result.size() > 0) {
-                final Record rec = result.get(0);
-                final ProjectManager found = new StoredProjectManager(
-                    rec.getValue(SLF_PMS_XDSD.ID),
-                    rec.getValue(SLF_PMS_XDSD.PROVIDER),
-                    rec.get(SLF_PMS_XDSD.ACCESS_TOKEN),
-                    this.storage
-                );
-                return found;
+                return mapToProjectManager(result.get(0));
             }
         }
         return null;
@@ -89,19 +80,66 @@ public final class SelfPms implements ProjectManagers {
 
     @Override
     public ProjectManager pick(final String provider) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        try (final Database connected = this.database.connect()) {
+            final Result<Record> result = connected.jooq()
+                .select()
+                .from(SLF_PMS_XDSD)
+                .where(SLF_PMS_XDSD.PROVIDER.eq(provider))
+                .limit(1)
+                .fetch();
+            if(result.size() > 0) {
+                return this.mapToProjectManager(result.get(0));
+            }
+        }
+        return null;
     }
 
     @Override
     public ProjectManager register(
         final String provider,
-        final String accessToken
-    ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final String accessToken) {
+        try (final Database connected = this.database.connect()) {
+            final int pmId = connected.jooq()
+                .insertInto(SLF_PMS_XDSD,
+                    SLF_PMS_XDSD.PROVIDER,
+                    SLF_PMS_XDSD.ACCESS_TOKEN)
+                .values(provider, accessToken)
+                .execute();
+            if(pmId > 0){
+                return new StoredProjectManager(pmId,
+                    provider,
+                    accessToken,
+                    storage);
+            }
+        }
+        throw new IllegalStateException("Something went wrong while"
+            + " inserting into database.");
     }
 
     @Override
     public Iterator<ProjectManager> iterator() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        try (final Database connected = this.database.connect()) {
+            return connected.jooq()
+                .select()
+                .from(SLF_PMS_XDSD)
+                .fetch()
+                .stream()
+                .map(this::mapToProjectManager)
+                .iterator();
+        }
+    }
+
+    /**
+     * Maps a {@link Record} to a PM.
+     * @param record Record.
+     * @return ProjectManager.
+     */
+    private ProjectManager mapToProjectManager(final Record record){
+        return new StoredProjectManager(
+            record.getValue(SLF_PMS_XDSD.ID),
+            record.getValue(SLF_PMS_XDSD.PROVIDER),
+            record.get(SLF_PMS_XDSD.ACCESS_TOKEN),
+            this.storage
+        );
     }
 }

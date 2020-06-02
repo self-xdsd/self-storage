@@ -32,6 +32,7 @@ import org.junit.Test;
 /**
  * Integration tests for {@link SelfPms}.
  * Read the package-info.java if you want to run these tests manually.
+ *
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
@@ -70,4 +71,63 @@ public final class SelfPmsITCase {
         MatcherAssert.assertThat(found, Matchers.nullValue());
     }
 
+    /**
+     * Picks a PM by provider name.
+     */
+    @Test
+    public void pickPm() {
+        final Database database = new H2Database();
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+
+        final ProjectManager projectManager = pms.pick(Provider.Names.GITHUB);
+
+        MatcherAssert.assertThat(projectManager, Matchers.notNullValue());
+    }
+
+    /**
+     * Return null if there is no PM associated with provider name.
+     */
+    @Test
+    public void pickPmNotFound() {
+        final Database database = new H2Database();
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+
+        final ProjectManager projectManager = pms.pick("some_provider");
+
+        MatcherAssert.assertThat(projectManager, Matchers.nullValue());
+
+    }
+
+    /**
+     * Register a PM into database.
+     */
+    @Test
+    public void registerPm(){
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+        final ProjectManager registered = pms
+            .register(Provider.Names.GITLAB, "123gitlab");
+        MatcherAssert.assertThat(registered.id(),
+            Matchers.greaterThan(0));
+        MatcherAssert.assertThat(registered.accessToken(),
+            Matchers.equalTo("123gitlab"));
+        MatcherAssert.assertThat(registered.provider(),
+            Matchers.equalTo(Provider.Names.GITLAB));
+    }
+
+    /**
+     * Iterates over PMSs.
+     */
+    @Test
+    public void iteratePms(){
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+        MatcherAssert.assertThat(pms, Matchers.iterableWithSize(2));
+    }
 }
