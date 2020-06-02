@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
 
-    private static final long serialVersionUID = 824477473;
+    private static final long serialVersionUID = -657551660;
 
     /**
      * The reference instance of <code>self_xdsd.slf_users_xdsd</code>
@@ -60,11 +60,6 @@ public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
      * The column <code>self_xdsd.slf_users_xdsd.email</code>.
      */
     public final TableField<SlfUsersXdsdRecord, String> EMAIL = createField(DSL.name("email"), org.jooq.impl.SQLDataType.VARCHAR(150), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_users_xdsd.access_token</code>.
-     */
-    public final TableField<SlfUsersXdsdRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_users_xdsd</code> table reference
@@ -141,11 +136,11 @@ public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<String, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row3<String, String, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }
