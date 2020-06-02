@@ -35,6 +35,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD
 
 /**
  * Project managers in Self.
+ * @todo #20:30min Implement a paging mechanism in `ProjectManager#iterator()`.
+ *  Right now we just fetching first 100 records.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
@@ -72,7 +74,7 @@ public final class SelfPms implements ProjectManagers {
                 .where(SLF_PMS_XDSD.ID.eq(projectManagerId))
                 .fetch();
             if(result.size() > 0) {
-                return mapToProjectManager(result.get(0));
+                return buildProjectManager(result.get(0));
             }
         }
         return null;
@@ -88,7 +90,7 @@ public final class SelfPms implements ProjectManagers {
                 .limit(1)
                 .fetch();
             if(result.size() > 0) {
-                return this.mapToProjectManager(result.get(0));
+                return this.buildProjectManager(result.get(0));
             }
         }
         return null;
@@ -113,7 +115,7 @@ public final class SelfPms implements ProjectManagers {
             }
         }
         throw new IllegalStateException("Something went wrong while"
-            + " inserting into database.");
+            + " inserting a PM into database.");
     }
 
     @Override
@@ -122,19 +124,20 @@ public final class SelfPms implements ProjectManagers {
             return connected.jooq()
                 .select()
                 .from(SLF_PMS_XDSD)
+                .limit(100)
                 .fetch()
                 .stream()
-                .map(this::mapToProjectManager)
+                .map(this::buildProjectManager)
                 .iterator();
         }
     }
 
     /**
-     * Maps a {@link Record} to a PM.
+     * Builds a PM from a {@link Record}.
      * @param record Record.
      * @return ProjectManager.
      */
-    private ProjectManager mapToProjectManager(final Record record){
+    private ProjectManager buildProjectManager(final Record record){
         return new StoredProjectManager(
             record.getValue(SLF_PMS_XDSD.ID),
             record.getValue(SLF_PMS_XDSD.PROVIDER),

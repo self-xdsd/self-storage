@@ -75,7 +75,7 @@ public final class SelfPmsITCase {
      * Picks a PM by provider name.
      */
     @Test
-    public void pickPm() {
+    public void picksPm() {
         final Database database = new H2Database();
         final ProjectManagers pms = new SelfJooq(
             new H2Database()
@@ -90,7 +90,7 @@ public final class SelfPmsITCase {
      * Return null if there is no PM associated with provider name.
      */
     @Test
-    public void pickPmNotFound() {
+    public void pickReturnsNotFound() {
         final Database database = new H2Database();
         final ProjectManagers pms = new SelfJooq(
             new H2Database()
@@ -106,7 +106,7 @@ public final class SelfPmsITCase {
      * Register a PM into database.
      */
     @Test
-    public void registerPm(){
+    public void registersPm(){
         final ProjectManagers pms = new SelfJooq(
             new H2Database()
         ).projectManagers();
@@ -124,7 +124,7 @@ public final class SelfPmsITCase {
      * Iterates over PMSs.
      */
     @Test
-    public void iteratePms(){
+    public void iteratesPms(){
         final ProjectManagers pms = new SelfJooq(
             new H2Database()
         ).projectManagers();
