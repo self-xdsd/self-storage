@@ -42,10 +42,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #16:30min When User api has `accessToken`,
- *  update `signUp` to be able to insert the token into db, check if user
- *  has updated their `accessToken` and then update the db.
- *  Test the logic.
  */
 public final class SelfUsers implements Users {
 
@@ -66,38 +62,45 @@ public final class SelfUsers implements Users {
      * @param database Database.
      */
     public SelfUsers(
-            final Storage storage,
-            final Database database
+        final Storage storage,
+        final Database database
     ) {
         this.storage = storage;
         this.database = database;
     }
 
     @Override
-    public User signUp(final User user) {
+    public User signUp(
+        final String username,
+        final String email,
+        final String provider
+    ) {
         try (final Database db = this.database.connect()) {
-            DSLContext jooq = db.jooq();
-            User dbUser = userFromDb(jooq, user.username(),
-                    user.provider().name());
+            final DSLContext jooq = db.jooq();
+            User dbUser = userFromDb(
+                jooq, username, provider
+            );
             if (dbUser == null) {
-                jooq.insertInto(SLF_USERS_XDSD,
-                        SLF_USERS_XDSD.USERNAME,
-                        SLF_USERS_XDSD.PROVIDER,
-                        SLF_USERS_XDSD.EMAIL,
-                        SLF_USERS_XDSD.ACCESS_TOKEN)
-                        .values(user.username(),
-                                user.provider().name(),
-                                user.email(),
-                                "access_token")
-                        .execute();
-            } else if (!dbUser.email().equals(user.email())) {
+                jooq.insertInto(
+                    SLF_USERS_XDSD,
+                    SLF_USERS_XDSD.USERNAME,
+                    SLF_USERS_XDSD.PROVIDER,
+                    SLF_USERS_XDSD.EMAIL
+                ).values(
+                    username,
+                    provider,
+                    email
+                ).execute();
+            } else if (!dbUser.email().equals(email)) {
                 jooq.update(SLF_USERS_XDSD)
-                        .set(SLF_USERS_XDSD.EMAIL, user.email())
-                        .where(SLF_USERS_XDSD.USERNAME.eq(user.username()))
+                        .set(SLF_USERS_XDSD.EMAIL, email)
+                        .where(SLF_USERS_XDSD.USERNAME.eq(username))
                         .execute();
+            } else {
+                return dbUser;
             }
+            return this.userFromDb(jooq, username, provider);
         }
-        return user;
     }
 
     @Override
@@ -115,9 +118,11 @@ public final class SelfUsers implements Users {
      * @param provider Provider
      * @return User or null if not found.
      */
-    private User userFromDb(final DSLContext jooq,
-                            final String username,
-                            final String provider) {
+    private User userFromDb(
+        final DSLContext jooq,
+        final String username,
+        final String provider
+    ) {
         final Result<Record> result = jooq
                 .select()
                 .from(SLF_USERS_XDSD)
@@ -127,11 +132,10 @@ public final class SelfUsers implements Users {
         if (!result.isEmpty()) {
             final Record rec = result.get(0);
             final User found = new StoredUser(
-                    rec.getValue(SLF_USERS_XDSD.USERNAME),
-                    rec.getValue(SLF_USERS_XDSD.EMAIL),
-                    rec.getValue(SLF_USERS_XDSD.PROVIDER),
-                    rec.getValue(SLF_USERS_XDSD.ACCESS_TOKEN),
-                    this.storage
+                rec.getValue(SLF_USERS_XDSD.USERNAME),
+                rec.getValue(SLF_USERS_XDSD.EMAIL),
+                rec.getValue(SLF_USERS_XDSD.PROVIDER),
+                this.storage
             );
             return found;
         }
@@ -143,19 +147,18 @@ public final class SelfUsers implements Users {
         final List<User> users = new ArrayList<>();
         try (final Database db = this.database.connect()) {
             final Result<Record> result = db.jooq()
-                    .select()
-                    .from(SLF_USERS_XDSD)
-                    .limit(100)
-                    .fetch();
+                .select()
+                .from(SLF_USERS_XDSD)
+                .limit(100)
+                .fetch();
             for (final Record res : result) {
                 users.add(
-                        new StoredUser(
-                                res.getValue(SLF_USERS_XDSD.USERNAME),
-                                res.getValue(SLF_USERS_XDSD.EMAIL),
-                                res.getValue(SLF_USERS_XDSD.PROVIDER),
-                                res.getValue(SLF_USERS_XDSD.ACCESS_TOKEN),
-                                this.storage
-                        )
+                    new StoredUser(
+                        res.getValue(SLF_USERS_XDSD.USERNAME),
+                        res.getValue(SLF_USERS_XDSD.EMAIL),
+                        res.getValue(SLF_USERS_XDSD.PROVIDER),
+                        this.storage
+                    )
                 );
             }
         }

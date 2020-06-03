@@ -134,14 +134,11 @@ public final class SelfProjects implements Projects {
             rec.getValue(SLF_USERS_XDSD.USERNAME),
             rec.getValue(SLF_USERS_XDSD.EMAIL),
             rec.getValue(SLF_USERS_XDSD.PROVIDER),
-            rec.getValue(SLF_USERS_XDSD.ACCESS_TOKEN),
             this.storage
         );
-        final String fullName = rec.getValue(SLF_PROJECTS_XDSD.REPO_FULLNAME);
         final Project built = new StoredProject(
-            owner.provider().repo(
-                fullName.substring(fullName.indexOf("/") + 1)
-            ),
+            owner,
+            rec.getValue(SLF_PROJECTS_XDSD.REPO_FULLNAME),
             new StoredProjectManager(
                 rec.getValue(SLF_PMS_XDSD.ID),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
