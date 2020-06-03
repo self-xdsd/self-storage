@@ -66,4 +66,19 @@ public final class SelfJooqTestCase {
         );
     }
 
+    /**
+     * SelfJooq can return the Contributors.
+     */
+    @Test
+    public void returnsContributors() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.contributors(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfContributorsg.class)
+            )
+        );
+    }
+
 }

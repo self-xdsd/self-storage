@@ -81,7 +81,7 @@ public final class SelfJooq implements Storage {
 
     @Override
     public Contributors contributors() {
-        return null;
+        return new SelfContributors(this, this.database);
     }
 
     @Override
