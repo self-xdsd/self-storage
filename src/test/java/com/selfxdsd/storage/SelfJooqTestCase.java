@@ -76,7 +76,7 @@ public final class SelfJooqTestCase {
             storage.contributors(),
             Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.instanceOf(SelfContributorsg.class)
+                Matchers.instanceOf(SelfContributors.class)
             )
         );
     }
