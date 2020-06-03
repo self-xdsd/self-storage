@@ -42,10 +42,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #16:30min When User api has `accessToken`,
- *  update `signUp` to be able to insert the token into db, check if user
- *  has updated their `accessToken` and then update the db.
- *  Test the logic.
  */
 public final class SelfUsers implements Users {
 
