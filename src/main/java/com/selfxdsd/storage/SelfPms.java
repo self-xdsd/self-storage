@@ -30,8 +30,6 @@ import org.jooq.Record;
 import org.jooq.Result;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
@@ -41,9 +39,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #20:30min Refactor {@link PagedIterator} into its on file and test it.
- *  This way it could be used by other iterables that might need paging
- *  (i.e. {@link SelfUsers}).
  */
 public final class SelfPms implements ProjectManagers {
     /**
@@ -128,24 +123,20 @@ public final class SelfPms implements ProjectManagers {
         try (final Database connected = this.database.connect()) {
             maxRecords = connected.jooq().fetchCount(SLF_PMS_XDSD);
         }
-        return new PagedIterator<>(100, maxRecords) {
-            @Override
-            List<ProjectManager> fetchNextPage(final int offset,
-                                               final int pageSize) {
-                try (final Database connected =
-                         SelfPms.this.database.connect()) {
-                    return connected.jooq()
-                        .select()
-                        .from(SLF_PMS_XDSD)
-                        .limit(pageSize)
-                        .offset(offset)
-                        .fetch()
-                        .stream()
-                        .map(SelfPms.this::buildProjectManager)
-                        .collect(Collectors.toList());
-                }
+        return PagedIterator.create(100, maxRecords, (offset, size) -> {
+            try (final Database connected =
+                     SelfPms.this.database.connect()) {
+                return connected.jooq()
+                    .select()
+                    .from(SLF_PMS_XDSD)
+                    .limit(size)
+                    .offset(offset)
+                    .fetch()
+                    .stream()
+                    .map(SelfPms.this::buildProjectManager)
+                    .collect(Collectors.toList());
             }
-        };
+        });
     }
 
     /**
@@ -162,68 +153,4 @@ public final class SelfPms implements ProjectManagers {
         );
     }
 
-    /**
-     * A paged iterator based on offset page fetching.
-     * <br/>
-     * Upon calling next(), if the internal page index is at the end,
-     * a new page will be fetched from data source.
-     * with {@link PagedIterator#fetchNextPage(int, int)}.
-     * @param <E> The type of elements returned by this iterator.
-     */
-    private abstract static class PagedIterator<E> implements Iterator<E> {
-        /**
-         * Current iterating position. 0-index based.
-         */
-        private int currPosition;
-        /**
-         * Current page.
-         */
-        private List<E> page = List.of();
-        /**
-         * Page size.
-         */
-        private final int pageSize;
-        /**
-         * Total count of records.
-         */
-        private final int maxRecords;
-        /**
-         * Ctor.
-         * @param pageSize Page size.
-         * @param maxRecords Maximum records.
-         */
-        PagedIterator(final int pageSize, final int maxRecords) {
-            this.pageSize = pageSize;
-            this.maxRecords = maxRecords;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return currPosition < maxRecords;
-        }
-
-        @Override
-        public E next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more records");
-            }
-            final int index = currPosition % maxRecords;
-            if (index == 0) {
-                page = fetchNextPage(currPosition, pageSize);
-            }
-            if (page.isEmpty()) {
-                throw new NoSuchElementException("No more records");
-            }
-            currPosition++;
-            return page.get(index);
-        }
-
-        /**
-         * Fetches next page to be iterated.
-         * @param offset Offset
-         * @param pageSize Page size
-         * @return Paged List.
-         */
-        abstract List<E> fetchNextPage(final int offset, final int pageSize);
-    }
 }
