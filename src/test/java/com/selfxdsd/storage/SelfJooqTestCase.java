@@ -81,4 +81,18 @@ public final class SelfJooqTestCase {
         );
     }
 
+    /**
+     * SelfJooq can return the Tasks.
+     */
+    @Test
+    public void returnsTasks() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.tasks(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfTasks.class)
+            )
+        );
+    }
 }

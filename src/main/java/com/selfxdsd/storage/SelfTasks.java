@@ -22,70 +22,76 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.*;
+import com.selfxdsd.api.Issue;
+import com.selfxdsd.api.Task;
+import com.selfxdsd.api.Tasks;
 import com.selfxdsd.api.storage.Storage;
 
+import java.util.Iterator;
+
 /**
- * Self Storage implemented with jOOQ.
+ * All the tasks registered in Self.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage {
+public final class SelfTasks implements Tasks {
 
     /**
-     * The Database we're working with.
+     * Parent Storage.
      */
-    private Database database;
+    private final Storage storage;
 
     /**
-     * Constructor. Working with MySql by default.
+     * Database.
      */
-    public SelfJooq() {
-        this(
-            new MySql(
-                "DB URL",
-                "user",
-                "pwd"
-            )
-        );
-    }
+    private final Database database;
 
     /**
      * Ctor.
+     * @param storage Parent Storage.
      * @param database Database.
      */
-    public SelfJooq(final Database database) {
+    public SelfTasks(
+        final Storage storage,
+        final Database database
+    ) {
+        this.storage = storage;
         this.database = database;
     }
 
     @Override
-    public Users users() {
-        return new SelfUsers(this, this.database);
+    public Task getById(
+        final String issueId,
+        final String repoFullName,
+        final String provider
+    ) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
-    public ProjectManagers projectManagers() {
-        return new SelfPms(this, this.database);
+    public Task register(final Issue issue) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
-    public Projects projects() {
-        return new SelfProjects(this, this.database);
+    public Tasks ofProject(
+        final String repoFullName,
+        final String repoProvider
+    ) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
-    public Contracts contracts() {
-        return new SelfContracts(this, this.database);
+    public Tasks ofContributor(
+        final String username,
+        final String provider
+    ) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
-    public Contributors contributors() {
-        return new SelfContributors(this, this.database);
-    }
-
-    @Override
-    public Tasks tasks() {
-        return new SelfTasks(this, this.database);
+    public Iterator<Task> iterator() {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 }
