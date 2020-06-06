@@ -26,6 +26,7 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.StoredUser;
 import com.selfxdsd.core.managers.StoredProjectManager;
+import com.selfxdsd.core.projects.PmProjects;
 import com.selfxdsd.core.projects.StoredProject;
 import com.selfxdsd.core.projects.UserProjects;
 import org.jooq.Record;
@@ -82,7 +83,29 @@ public final class SelfProjects implements Projects {
 
     @Override
     public Projects assignedTo(final int projectManagerId) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Project> assigned = new ArrayList<>();
+        try (final Database connected = this.database.connect()) {
+            final Result<Record> result = connected.jooq()
+                .select()
+                .from(SLF_PROJECTS_XDSD)
+                .join(SLF_USERS_XDSD)
+                .on(
+                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
+                        SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
+                    )
+                ).join(SLF_PMS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                )
+                .where(
+                    SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
+                )
+                .fetch();
+            for(final Record rec : result) {
+                assigned.add(this.projectFromRecord(rec));
+            }
+        }
+        return new PmProjects(projectManagerId, assigned);
     }
 
     @Override

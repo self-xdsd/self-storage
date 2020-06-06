@@ -121,6 +121,39 @@ public final class SelfProjectsITCase {
     }
 
     /**
+     * SelProjects can return the Projects assigned to a certain PM.
+     */
+    @Test
+    public void returnsAssignedProjects() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        final Projects assigned = all.assignedTo(1);
+        MatcherAssert.assertThat(
+            assigned,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(4)
+            )
+        );
+        for(final Project project : assigned) {
+            final ProjectManager manager = project.projectManager();
+            MatcherAssert.assertThat(
+                manager.id(),
+                Matchers.equalTo(1)
+            );
+        }
+    }
+
+    /**
+     * SelfProjects can return empty Projects if the specified PM
+     * has no assigned projects.
+     */
+    @Test
+    public void returnsEmptyAssignedProjects() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        final Projects assigned = all.assignedTo(153);
+        MatcherAssert.assertThat(assigned, Matchers.emptyIterable());
+    }
+
+    /**
      * Mock a User for test.
      * @param username Username.
      * @param provider Provider.
