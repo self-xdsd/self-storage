@@ -154,6 +154,65 @@ public final class SelfProjectsITCase {
     }
 
     /**
+     * SelfProjects throws an IAE if we try to register a Repo
+     * with a missing PM.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void registerFailsWithNonExistingPm() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        final ProjectManager missing = Mockito.mock(ProjectManager.class);
+        Mockito.when(missing.id()).thenReturn(567);
+        all.register(Mockito.mock(Repo.class), missing);
+    }
+
+    /**
+     * SelfProjects can register a new project.
+     */
+    @Test
+    public void registersNewProject() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        MatcherAssert.assertThat(
+            all.getProjectById(
+                "amihaiemil/eo-jsonp-impl",
+                Provider.Names.GITHUB
+            ),
+            Matchers.nullValue()
+        );
+        final Repo repo = this.mockRepo(
+            "amihaiemil/eo-jsonp-impl",
+            "amihaiemil",
+            Provider.Names.GITHUB
+        );
+        final ProjectManager manager = Mockito.mock(ProjectManager.class);
+        Mockito.when(manager.id()).thenReturn(1);
+
+        final Project registered = all.register(repo, manager);
+
+        MatcherAssert.assertThat(
+            registered.projectManager(),
+            Matchers.is(manager)
+        );
+
+        MatcherAssert.assertThat(
+            all.getProjectById(
+                "amihaiemil/eo-jsonp-impl",
+                Provider.Names.GITHUB
+            ),
+            Matchers.notNullValue()
+        );
+    }
+
+    /**
+     * SelfProjects throws an IAE if we try to register a Repo
+     * with a null PM.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void registerFailsWithNullPm() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        all.register(Mockito.mock(Repo.class), null);
+    }
+
+    /**
      * Mock a User for test.
      * @param username Username.
      * @param provider Provider.
@@ -169,5 +228,25 @@ public final class SelfProjectsITCase {
         Mockito.when(user.provider()).thenReturn(prov);
 
         return user;
+    }
+
+    /**
+     * Mock a Repo for test.
+     * @param fullName Repo full name.
+     * @param username Owner's username.
+     * @param provider Provider.
+     * @return Repo.
+     */
+    private Repo mockRepo(
+        final String fullName,
+        final String username,
+        final String provider
+    ) {
+        final User owner = this.mockUser(username, provider);
+        final Repo repo = Mockito.mock(Repo.class);
+        Mockito.when(repo.owner()).thenReturn(owner);
+        Mockito.when(repo.provider()).thenReturn(provider);
+        Mockito.when(repo.fullName()).thenReturn(fullName);
+        return repo;
     }
 }

@@ -76,9 +76,39 @@ public final class SelfProjects implements Projects {
     @Override
     public Project register(
         final Repo repo,
-        final ProjectManager projectManager
+        final ProjectManager manager
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        if(manager == null
+            || this.storage.projectManagers().getById(manager.id()) == null) {
+            throw new IllegalArgumentException(
+                "PM is missing, cannot register project!"
+            );
+        }
+        try (final Database connected = this.database.connect()) {
+            connected.jooq().insertInto(
+                SLF_PROJECTS_XDSD,
+                SLF_PROJECTS_XDSD.REPO_FULLNAME,
+                SLF_PROJECTS_XDSD.PROVIDER,
+                SLF_PROJECTS_XDSD.USERNAME,
+                SLF_PROJECTS_XDSD.PMID
+            ).values(
+                repo.fullName(),
+                repo.provider(),
+                repo.owner().username(),
+                manager.id()
+            ).execute();
+        }
+        return new StoredProject(
+            new StoredUser(
+                repo.owner().username(),
+                repo.owner().email(),
+                repo.provider(),
+                this.storage
+            ),
+            repo.fullName(),
+            manager,
+            this.storage
+        );
     }
 
     @Override
