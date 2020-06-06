@@ -51,9 +51,11 @@ abstract class PagedIterator<E> implements Iterator<E> {
      * @param <E> The type of elements returned by this iterator.
      * @return PagedIterator.
      */
-    static <E> PagedIterator<E> create(final int pageSize,
-           final int maxRecords,
-           final BiFunction<Integer, Integer, List<E>> fetchNextPage) {
+    static <E> PagedIterator<E> create(
+        final int pageSize,
+        final int maxRecords,
+        final BiFunction<Integer, Integer, List<E>> fetchNextPage
+    ) {
         return new PagedIterator<E>(pageSize, maxRecords) {
             @Override
             List<E> fetchNextPage(final int offset, final int pageSize) {

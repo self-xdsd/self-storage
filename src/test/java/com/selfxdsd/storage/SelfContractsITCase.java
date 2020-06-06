@@ -22,70 +22,33 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.*;
-import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.api.Contracts;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Self Storage implemented with jOOQ.
+ * Integration tests for {@link SelfContracts}.
+ * Read the package-info.java if you want to run these tests manually.
+ *
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage {
+public final class SelfContractsITCase {
 
     /**
-     * The Database we're working with.
+     * SelfContracts is iterable.
      */
-    private Database database;
-
-    /**
-     * Constructor. Working with MySql by default.
-     */
-    public SelfJooq() {
-        this(
-            new MySql(
-                "DB URL",
-                "user",
-                "pwd"
+    @Test
+    public void canBeIterated() {
+        final Contracts all = new SelfJooq(new H2Database()).contracts();
+        MatcherAssert.assertThat(
+            all,
+            Matchers.iterableWithSize(
+                Matchers.greaterThan(0)
             )
         );
     }
 
-    /**
-     * Ctor.
-     * @param database Database.
-     */
-    public SelfJooq(final Database database) {
-        this.database = database;
-    }
-
-    @Override
-    public Users users() {
-        return new SelfUsers(this, this.database);
-    }
-
-    @Override
-    public ProjectManagers projectManagers() {
-        return new SelfPms(this, this.database);
-    }
-
-    @Override
-    public Projects projects() {
-        return new SelfProjects(this, this.database);
-    }
-
-    @Override
-    public Contracts contracts() {
-        return new SelfContracts(this, this.database);
-    }
-
-    @Override
-    public Contributors contributors() {
-        return new SelfContributors(this, this.database);
-    }
-
-    @Override
-    public Tasks tasks() {
-        return null;
-    }
 }
