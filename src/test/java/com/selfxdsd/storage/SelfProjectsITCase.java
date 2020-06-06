@@ -213,6 +213,26 @@ public final class SelfProjectsITCase {
     }
 
     /**
+     * SelfProjects can be iterated.
+     */
+    @Test
+    public void canBeIterated() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        MatcherAssert.assertThat(
+            all,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(4)
+            )
+        );
+        for(final Project project : all) {
+            MatcherAssert.assertThat(
+                project,
+                Matchers.notNullValue()
+            );
+        }
+    }
+
+    /**
      * Mock a User for test.
      * @param username Username.
      * @param provider Provider.

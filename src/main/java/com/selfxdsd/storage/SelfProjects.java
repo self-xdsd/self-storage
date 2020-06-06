@@ -35,7 +35,9 @@ import org.jooq.Result;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
@@ -45,8 +47,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #15:30min Continue implementing and writing integration tests
- *  for SelfProject's methods.
  */
 public final class SelfProjects implements Projects {
 
@@ -201,7 +201,38 @@ public final class SelfProjects implements Projects {
 
     @Override
     public Iterator<Project> iterator() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final int maxRecords;
+        try (final Database connected = this.database.connect()) {
+            maxRecords = connected.jooq().fetchCount(SLF_CONTRACTS_XDSD);
+        }
+        return PagedIterator.create(
+            100,
+            maxRecords,
+            (offset, size) -> {
+                //@checkstyle LineLength (50 lines)
+                try (final Database connected = SelfProjects.this.database.connect()) {
+                    return connected.jooq()
+                        .select()
+                        .from(SLF_PROJECTS_XDSD)
+                        .join(SLF_USERS_XDSD)
+                        .on(
+                            SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                                SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                            )
+                        )
+                        .join(SLF_PMS_XDSD)
+                        .on(
+                            SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                        )
+                        .limit(size)
+                        .offset(offset)
+                        .fetch()
+                        .stream()
+                        .map(SelfProjects.this::projectFromRecord)
+                        .collect(Collectors.toList());
+                }
+            }
+        );
     }
 
     /**
