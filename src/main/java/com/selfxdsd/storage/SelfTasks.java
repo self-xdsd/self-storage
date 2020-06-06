@@ -22,12 +22,21 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Issue;
-import com.selfxdsd.api.Task;
-import com.selfxdsd.api.Tasks;
+import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.StoredUser;
+import com.selfxdsd.core.managers.StoredProjectManager;
+import com.selfxdsd.core.projects.StoredProject;
+import com.selfxdsd.core.tasks.StoredTask;
+import org.jooq.Record;
+import org.jooq.Result;
 
 import java.util.Iterator;
+
+import static com.selfxdsd.storage.generated.jooq.Tables.*;
+import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
+import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
+import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
 
 /**
  * All the tasks registered in Self.
@@ -68,7 +77,41 @@ public final class SelfTasks implements Tasks {
         final String repoFullName,
         final String provider
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        try (final Database connected = this.database.connect()) {
+            final Result<Record> result = connected.jooq()
+                .select()
+                .from(SLF_TASKS_XDSD)
+                .join(SLF_PROJECTS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(
+                        SLF_TASKS_XDSD.REPO_FULLNAME
+                    ).and(
+                        SLF_PROJECTS_XDSD.PROVIDER.eq(
+                            SLF_TASKS_XDSD.PROVIDER
+                        )
+                    )
+                ).join(SLF_USERS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                        SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                    )
+                ).join(SLF_PMS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                )
+                .where(
+                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                        SLF_TASKS_XDSD.PROVIDER.eq(provider).and(
+                            SLF_TASKS_XDSD.ISSUEID.eq(issueId)
+                        )
+                    )
+                )
+                .fetch();
+            if(!result.isEmpty()) {
+                return this.taskFromRecord(result.get(0));
+            }
+        }
+        return null;
     }
 
     @Override
@@ -95,5 +138,39 @@ public final class SelfTasks implements Tasks {
     @Override
     public Iterator<Task> iterator() {
         throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    /**
+     * Build a Task from a JOOQ Record.
+     * @param rec Record representing the Task's data.
+     * @return Task.
+     */
+    private Task taskFromRecord(final Record rec) {
+        final Project project = new StoredProject(
+            new StoredUser(
+                rec.getValue(SLF_USERS_XDSD.USERNAME),
+                rec.getValue(SLF_USERS_XDSD.EMAIL),
+                rec.getValue(SLF_USERS_XDSD.PROVIDER),
+                this.storage
+            ),
+            rec.getValue(SLF_PROJECTS_XDSD.REPO_FULLNAME),
+            new StoredProjectManager(
+                rec.getValue(SLF_PMS_XDSD.ID),
+                rec.getValue(SLF_PMS_XDSD.PROVIDER),
+                rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
+                this.storage
+            ),
+            this.storage
+        );
+        return new StoredTask(
+            project,
+            rec.getValue(SLF_TASKS_XDSD.ISSUEID),
+            rec.getValue(SLF_TASKS_XDSD.ROLE),
+            rec.getValue(SLF_TASKS_XDSD.PROVIDER),
+            this.storage,
+            rec.getValue(SLF_TASKS_XDSD.USERNAME),
+            rec.getValue(SLF_TASKS_XDSD.ASSIGNED),
+            rec.getValue(SLF_TASKS_XDSD.DEADLINE)
+        );
     }
 }
