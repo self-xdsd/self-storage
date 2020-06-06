@@ -100,6 +100,11 @@ public final class SelfContracts implements Contracts {
     }
 
     @Override
+    public Contract findById(final Contract.Id id) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
     public Iterator<Contract> iterator() {
         final int maxRecords;
         try (final Database connected = this.database.connect()) {

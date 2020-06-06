@@ -10,6 +10,7 @@
     <name>Self XDSD Storage Module</name>
     <description>Storage Module for Self XDSD</description>
     <properties>
+        <self.core.version>0.0.3</self.core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
@@ -37,12 +38,12 @@
         <dependency>
             <groupId>com.selfxdsd</groupId>
             <artifactId>self-api</artifactId>
-            <version>0.0.2</version>
+            <version>${self.core.version}</version>
         </dependency>
         <dependency>
             <groupId>com.selfxdsd</groupId>
             <artifactId>self-core-impl</artifactId>
-            <version>0.0.2</version>
+            <version>${self.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
