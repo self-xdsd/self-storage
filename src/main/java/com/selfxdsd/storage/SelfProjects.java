@@ -27,10 +27,13 @@ import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.StoredUser;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.StoredProject;
+import com.selfxdsd.core.projects.UserProjects;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
@@ -84,7 +87,31 @@ public final class SelfProjects implements Projects {
 
     @Override
     public Projects ownedBy(final User user) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Project> owned = new ArrayList<>();
+        try (final Database connected = this.database.connect()) {
+            final Result<Record> result = connected.jooq()
+                .select()
+                .from(SLF_PROJECTS_XDSD)
+                .join(SLF_USERS_XDSD)
+                .on(
+                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
+                        SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
+                    )
+                ).join(SLF_PMS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                )
+                .where(
+                    SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
+                        SLF_PROJECTS_XDSD.PROVIDER.eq(user.provider().name())
+                    )
+                )
+                .fetch();
+            for(final Record rec : result) {
+                owned.add(this.projectFromRecord(rec));
+            }
+        }
+        return new UserProjects(user, owned);
     }
 
     @Override

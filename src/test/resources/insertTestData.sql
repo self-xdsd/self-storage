@@ -22,6 +22,18 @@ INSERT INTO self_xdsd.slf_projects_xdsd
 (repo_fullname, provider, username, pmid)
 VALUES ('amihaiemil/docker-java-api', 'github', 'amihaiemil', 1);
 
+INSERT INTO self_xdsd.slf_projects_xdsd
+(repo_fullname, provider, username, pmid)
+VALUES ('amihaiemil/amihaiemil.github.io', 'github', 'amihaiemil', 1);
+
+INSERT INTO self_xdsd.slf_projects_xdsd
+(repo_fullname, provider, username, pmid)
+VALUES ('vlad/test', 'github', 'vlad', 1);
+
+INSERT INTO self_xdsd.slf_projects_xdsd
+(repo_fullname, provider, username, pmid)
+VALUES ('mihai/test', 'gitlab', 'mihai', 1);
+
 -- INSERT CONTRIBUTORS
 
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('john', 'github');

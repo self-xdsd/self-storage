@@ -26,6 +26,7 @@ import com.selfxdsd.api.*;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Integration tests for {@link SelfProjects}.
@@ -76,5 +77,64 @@ public final class SelfProjectsITCase {
             found,
             Matchers.nullValue()
         );
+    }
+
+    /**
+     * SelfProjects can return the Projects owned by a certain User.
+     */
+    @Test
+    public void returnsOwnedByUser() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        final Projects amihaiemil = all.ownedBy(
+            this.mockUser("amihaiemil", Provider.Names.GITHUB)
+        );
+        MatcherAssert.assertThat(
+            amihaiemil,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(2)
+            )
+        );
+        for(final Project project : amihaiemil) {
+            final User owner = project.owner();
+            MatcherAssert.assertThat(
+                owner.username(),
+                Matchers.equalTo("amihaiemil")
+            );
+            MatcherAssert.assertThat(
+                owner.provider().name(),
+                Matchers.equalTo(Provider.Names.GITHUB)
+            );
+        }
+    }
+
+    /**
+     * SelfProjects can return empty Projects if the user doesn't own any
+     * projects.
+     */
+    @Test
+    public void returnsEmptyOwnedByUser() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        final Projects ofThomas = all.ownedBy(
+            this.mockUser("thomas", Provider.Names.GITLAB)
+        );
+        MatcherAssert.assertThat(ofThomas, Matchers.emptyIterable());
+    }
+
+    /**
+     * Mock a User for test.
+     * @param username Username.
+     * @param provider Provider.
+     * @return User.
+     */
+    private User mockUser(final String username, final String provider) {
+        final User user = Mockito.mock(User.class);
+        Mockito.when(user.username()).thenReturn(username);
+
+        final Provider prov = Mockito.mock(Provider.class);
+        Mockito.when(prov.name()).thenReturn(provider);
+
+        Mockito.when(user.provider()).thenReturn(prov);
+
+        return user;
     }
 }
