@@ -43,8 +43,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #37:30min Continue implementing and writing integration tests
- *  for the methods of SelfTasks.
+ * @todo #39:30min Continue implementing and writing integration tests
+ *  for the methods of SelfTasks. Method getById already implemented.
  */
 public final class SelfTasks implements Tasks {
 
