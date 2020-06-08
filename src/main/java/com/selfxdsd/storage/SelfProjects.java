@@ -76,7 +76,8 @@ public final class SelfProjects implements Projects {
     @Override
     public Project register(
         final Repo repo,
-        final ProjectManager manager
+        final ProjectManager manager,
+        final String webHookToken
     ) {
         if(manager == null
             || this.storage.projectManagers().getById(manager.id()) == null) {
@@ -90,11 +91,13 @@ public final class SelfProjects implements Projects {
                 SLF_PROJECTS_XDSD.REPO_FULLNAME,
                 SLF_PROJECTS_XDSD.PROVIDER,
                 SLF_PROJECTS_XDSD.USERNAME,
+                SLF_PROJECTS_XDSD.WEBHOOK_TOKEN,
                 SLF_PROJECTS_XDSD.PMID
             ).values(
                 repo.fullName(),
                 repo.provider(),
                 repo.owner().username(),
+                webHookToken,
                 manager.id()
             ).execute();
         }
@@ -106,6 +109,7 @@ public final class SelfProjects implements Projects {
                 this.storage
             ),
             repo.fullName(),
+            webHookToken,
             manager,
             this.storage
         );
@@ -250,8 +254,10 @@ public final class SelfProjects implements Projects {
         final Project built = new StoredProject(
             owner,
             rec.getValue(SLF_PROJECTS_XDSD.REPO_FULLNAME),
+            rec.getValue(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN),
             new StoredProjectManager(
                 rec.getValue(SLF_PMS_XDSD.ID),
+                rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
                 this.storage

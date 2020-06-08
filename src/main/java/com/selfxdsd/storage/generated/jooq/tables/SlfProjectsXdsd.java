@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
 
-    private static final long serialVersionUID = -50032105;
+    private static final long serialVersionUID = -102054943;
 
     /**
      * The reference instance of <code>self_xdsd.slf_projects_xdsd</code>
@@ -67,6 +67,11 @@ public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
      * The column <code>self_xdsd.slf_projects_xdsd.pmid</code>.
      */
     public final TableField<SlfProjectsXdsdRecord, Integer> PMID = createField(DSL.name("pmid"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_projects_xdsd.webhook_token</code>.
+     */
+    public final TableField<SlfProjectsXdsdRecord, String> WEBHOOK_TOKEN = createField(DSL.name("webhook_token"), org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_projects_xdsd</code> table reference
@@ -161,11 +166,11 @@ public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<String, String, String, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<String, String, String, Integer, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

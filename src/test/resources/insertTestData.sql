@@ -13,26 +13,26 @@ VALUES ('amihaiemil', 'github', 'amihaiemil@gmail.com.com', 'amihaigh123token');
 -- INSERT PROJECT MANAGERS
 
 INSERT INTO self_xdsd.slf_pms_xdsd
-(provider, access_token)
-VALUES ('github', 'pm1ghtoken123');
+(username, provider, access_token)
+VALUES ('zoeself', 'github', 'pm1ghtoken123');
 
 -- INSERT PROJECTS
 
 INSERT INTO self_xdsd.slf_projects_xdsd
-(repo_fullname, provider, username, pmid)
-VALUES ('amihaiemil/docker-java-api', 'github', 'amihaiemil', 1);
+(repo_fullname, provider, username, pmid, webhook_token)
+VALUES ('amihaiemil/docker-java-api', 'github', 'amihaiemil', 1, 'whtoken123');
 
 INSERT INTO self_xdsd.slf_projects_xdsd
-(repo_fullname, provider, username, pmid)
-VALUES ('amihaiemil/amihaiemil.github.io', 'github', 'amihaiemil', 1);
+(repo_fullname, provider, username, pmid, webhook_token)
+VALUES ('amihaiemil/amihaiemil.github.io', 'github', 'amihaiemil', 1, 'whtoken124');
 
 INSERT INTO self_xdsd.slf_projects_xdsd
-(repo_fullname, provider, username, pmid)
-VALUES ('vlad/test', 'github', 'vlad', 1);
+(repo_fullname, provider, username, pmid, webhook_token)
+VALUES ('vlad/test', 'github', 'vlad', 1, 'whtoken125');
 
 INSERT INTO self_xdsd.slf_projects_xdsd
-(repo_fullname, provider, username, pmid)
-VALUES ('mihai/test', 'gitlab', 'mihai', 1);
+(repo_fullname, provider, username, pmid, webhook_token)
+VALUES ('mihai/test', 'gitlab', 'mihai', 1, 'whtoken126');
 
 -- INSERT CONTRIBUTORS
 

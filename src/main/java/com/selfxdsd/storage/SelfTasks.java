@@ -25,12 +25,15 @@ package com.selfxdsd.storage;
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.StoredUser;
+import com.selfxdsd.core.contracts.StoredContract;
+import com.selfxdsd.core.contributors.StoredContributor;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.StoredProject;
 import com.selfxdsd.core.tasks.StoredTask;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.*;
@@ -78,6 +81,7 @@ public final class SelfTasks implements Tasks {
         final String provider
     ) {
         try (final Database connected = this.database.connect()) {
+            //@checkstyle LineLength (100 lines)
             final Result<Record> result = connected.jooq()
                 .select()
                 .from(SLF_TASKS_XDSD)
@@ -98,6 +102,20 @@ public final class SelfTasks implements Tasks {
                 ).join(SLF_PMS_XDSD)
                 .on(
                     SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                ).join(SLF_CONTRACTS_XDSD)
+                .on(
+                    SLF_TASKS_XDSD.ROLE.eq(SLF_CONTRACTS_XDSD.ROLE).and(
+                        SLF_TASKS_XDSD.REPO_FULLNAME.eq(SLF_CONTRACTS_XDSD.REPO_FULLNAME).and(
+                            SLF_TASKS_XDSD.PROVIDER.eq(SLF_CONTRACTS_XDSD.PROVIDER).and(
+                                SLF_TASKS_XDSD.USERNAME.eq(SLF_CONTRACTS_XDSD.USERNAME)
+                            )
+                        )
+                    )
+                ).join(SLF_CONTRIBUTORS_XDSD)
+                .on(
+                    SLF_CONTRACTS_XDSD.USERNAME.eq(SLF_CONTRIBUTORS_XDSD.USERNAME).and(
+                        SLF_CONTRACTS_XDSD.PROVIDER.eq(SLF_CONTRIBUTORS_XDSD.PROVIDER)
+                    )
                 )
                 .where(
                     SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
@@ -154,23 +172,45 @@ public final class SelfTasks implements Tasks {
                 this.storage
             ),
             rec.getValue(SLF_PROJECTS_XDSD.REPO_FULLNAME),
+            rec.getValue(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN),
             new StoredProjectManager(
                 rec.getValue(SLF_PMS_XDSD.ID),
+                rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
                 this.storage
             ),
             this.storage
         );
-        return new StoredTask(
-            project,
-            rec.getValue(SLF_TASKS_XDSD.ISSUEID),
-            rec.getValue(SLF_TASKS_XDSD.ROLE),
-            rec.getValue(SLF_TASKS_XDSD.PROVIDER),
-            this.storage,
-            rec.getValue(SLF_TASKS_XDSD.USERNAME),
-            rec.getValue(SLF_TASKS_XDSD.ASSIGNED),
-            rec.getValue(SLF_TASKS_XDSD.DEADLINE)
-        );
+        final Task task;
+        if(rec.getValue(SLF_TASKS_XDSD.USERNAME) == null) {
+            task = new StoredTask(
+                project,
+                rec.getValue(SLF_TASKS_XDSD.ISSUEID),
+                rec.getValue(SLF_TASKS_XDSD.ROLE),
+                this.storage
+            );
+        } else {
+            task = new StoredTask(
+                new StoredContract(
+                    project,
+                    new StoredContributor(
+                        rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
+                        rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
+                        this.storage
+                    ),
+                    BigDecimal.valueOf(
+                        rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
+                    ),
+                    rec.getValue(SLF_CONTRACTS_XDSD.ROLE),
+                    this.storage
+                ),
+                rec.getValue(SLF_TASKS_XDSD.ISSUEID),
+                this.storage,
+                rec.getValue(SLF_TASKS_XDSD.ASSIGNED),
+                rec.getValue(SLF_TASKS_XDSD.DEADLINE)
+            );
+        }
+        return task;
     }
 }

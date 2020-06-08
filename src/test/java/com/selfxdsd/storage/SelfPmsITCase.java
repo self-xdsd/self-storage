@@ -50,12 +50,8 @@ public final class SelfPmsITCase {
         final ProjectManager found = pms.getById(1);
         MatcherAssert.assertThat(found.id(), Matchers.equalTo(1));
         MatcherAssert.assertThat(
-            found.provider(),
+            found.provider().name(),
             Matchers.equalTo(Provider.Names.GITHUB)
-        );
-        MatcherAssert.assertThat(
-            found.accessToken(),
-            Matchers.equalTo("pm1ghtoken123")
         );
     }
 
@@ -111,12 +107,10 @@ public final class SelfPmsITCase {
             new H2Database()
         ).projectManagers();
         final ProjectManager registered = pms
-            .register(Provider.Names.GITLAB, "123gitlab");
+            .register("zoeself", Provider.Names.GITLAB, "123gitlab");
         MatcherAssert.assertThat(registered.id(),
             Matchers.greaterThan(0));
-        MatcherAssert.assertThat(registered.accessToken(),
-            Matchers.equalTo("123gitlab"));
-        MatcherAssert.assertThat(registered.provider(),
+        MatcherAssert.assertThat(registered.provider().name(),
             Matchers.equalTo(Provider.Names.GITLAB));
     }
 
@@ -128,6 +122,11 @@ public final class SelfPmsITCase {
         final ProjectManagers pms = new SelfJooq(
             new H2Database()
         ).projectManagers();
-        MatcherAssert.assertThat(pms, Matchers.iterableWithSize(2));
+        MatcherAssert.assertThat(
+            pms,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(1)
+            )
+        );
     }
 }

@@ -35,6 +35,7 @@ CREATE TABLE self_xdsd.slf_users_xdsd (
 -- -----------------------------------------------------
 CREATE TABLE self_xdsd.slf_pms_xdsd (
   id INT NOT NULL AUTO_INCREMENT,
+  username VARCHAR(100) NOT NULL,
   provider VARCHAR(50) NOT NULL,
   access_token VARCHAR(256) NOT NULL,
   PRIMARY KEY (id)
@@ -45,6 +46,7 @@ CREATE TABLE self_xdsd.slf_pms_xdsd (
 -- -----------------------------------------------------
 CREATE TABLE self_xdsd.slf_projects_xdsd (
   repo_fullname VARCHAR(256) NOT NULL,
+  webhook_token VARCHAR(256) NOT NULL,
   provider VARCHAR(50) NOT NULL,
   username VARCHAR(100) NOT NULL,
   pmid INT NOT NULL,

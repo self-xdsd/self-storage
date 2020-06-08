@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
 
-    private static final long serialVersionUID = 1355365871;
+    private static final long serialVersionUID = 1116017086;
 
     /**
      * The reference instance of <code>self_xdsd.slf_pms_xdsd</code>
@@ -61,6 +61,11 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
      * The column <code>self_xdsd.slf_pms_xdsd.access_token</code>.
      */
     public final TableField<SlfPmsXdsdRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_pms_xdsd.username</code>.
+     */
+    public final TableField<SlfPmsXdsdRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_pms_xdsd</code> table reference
@@ -142,11 +147,11 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Integer, String, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

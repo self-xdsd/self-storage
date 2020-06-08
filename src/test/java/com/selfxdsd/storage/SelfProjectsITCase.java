@@ -59,7 +59,7 @@ public final class SelfProjectsITCase {
             Matchers.equalTo(1)
         );
         MatcherAssert.assertThat(
-            found.projectManager().provider(),
+            found.projectManager().provider().name(),
             Matchers.equalTo(Provider.Names.GITHUB)
         );
     }
@@ -162,7 +162,7 @@ public final class SelfProjectsITCase {
         final Projects all = new SelfJooq(new H2Database()).projects();
         final ProjectManager missing = Mockito.mock(ProjectManager.class);
         Mockito.when(missing.id()).thenReturn(567);
-        all.register(Mockito.mock(Repo.class), missing);
+        all.register(Mockito.mock(Repo.class), missing, "wh123token");
     }
 
     /**
@@ -186,7 +186,7 @@ public final class SelfProjectsITCase {
         final ProjectManager manager = Mockito.mock(ProjectManager.class);
         Mockito.when(manager.id()).thenReturn(1);
 
-        final Project registered = all.register(repo, manager);
+        final Project registered = all.register(repo, manager, "wh123token");
 
         MatcherAssert.assertThat(
             registered.projectManager(),
@@ -209,7 +209,7 @@ public final class SelfProjectsITCase {
     @Test(expected = IllegalArgumentException.class)
     public void registerFailsWithNullPm() {
         final Projects all = new SelfJooq(new H2Database()).projects();
-        all.register(Mockito.mock(Repo.class), null);
+        all.register(Mockito.mock(Repo.class), null, "wh123token");
     }
 
     /**
