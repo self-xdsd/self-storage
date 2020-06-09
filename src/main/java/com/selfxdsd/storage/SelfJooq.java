@@ -31,7 +31,7 @@ import com.selfxdsd.api.storage.Storage;
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage {
+public final class SelfJooq implements Storage, AutoCloseable{
 
     /**
      * The Database we're working with.
@@ -56,7 +56,7 @@ public final class SelfJooq implements Storage {
      * @param database Database.
      */
     public SelfJooq(final Database database) {
-        this.database = database;
+        this.database = database.connect();
     }
 
     @Override
@@ -92,5 +92,10 @@ public final class SelfJooq implements Storage {
     @Override
     public Tasks tasks() {
         return new SelfTasks(this, this.database);
+    }
+
+    @Override
+    public void close() {
+        this.database.close();
     }
 }

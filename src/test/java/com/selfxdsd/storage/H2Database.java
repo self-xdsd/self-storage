@@ -90,23 +90,26 @@ public final class H2Database implements Database {
 
     @Override
     public H2Database connect() {
-        try {
-            return new H2Database(
-                this.dbUrl,
-                this.username,
-                this.password,
-                DriverManager.getConnection(
+        if(this.connection == null) {
+            try {
+                return new H2Database(
                     this.dbUrl,
                     this.username,
-                    this.password
-                )
-            );
-        } catch (final SQLException exception) {
-            throw new IllegalStateException(
-                "Could not connect to the DB",
-                exception
-            );
+                    this.password,
+                    DriverManager.getConnection(
+                        this.dbUrl,
+                        this.username,
+                        this.password
+                    )
+                );
+            } catch (final SQLException exception) {
+                throw new IllegalStateException(
+                    "Could not connect to the DB",
+                    exception
+                );
+            }
         }
+        return this;
     }
 
     @Override

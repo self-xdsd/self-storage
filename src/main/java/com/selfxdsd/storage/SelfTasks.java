@@ -86,19 +86,17 @@ public final class SelfTasks implements Tasks {
         final String repoFullName,
         final String provider
     ) {
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = this.selectTasks(connected)
-                .where(
-                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
-                        SLF_TASKS_XDSD.PROVIDER.eq(provider).and(
-                            SLF_TASKS_XDSD.ISSUEID.eq(issueId)
-                        )
+        final Result<Record> result = this.selectTasks(this.database)
+            .where(
+                SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                    SLF_TASKS_XDSD.PROVIDER.eq(provider).and(
+                        SLF_TASKS_XDSD.ISSUEID.eq(issueId)
                     )
                 )
-                .fetch();
-            if(!result.isEmpty()) {
-                return this.taskFromRecord(result.get(0));
-            }
+            )
+            .fetch();
+        if(!result.isEmpty()) {
+            return this.taskFromRecord(result.get(0));
         }
         return null;
     }
@@ -114,19 +112,17 @@ public final class SelfTasks implements Tasks {
         final String repoProvider
     ) {
         final List<Task> ofProject = new ArrayList<>();
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = this.selectTasks(connected)
-                .where(
-                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
-                        SLF_TASKS_XDSD.PROVIDER.eq(repoProvider)
-                    )
+        final Result<Record> result = this.selectTasks(this.database)
+            .where(
+                SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                    SLF_TASKS_XDSD.PROVIDER.eq(repoProvider)
                 )
-                .fetch();
-            for(final Record rec : result) {
-                ofProject.add(
-                    this.taskFromRecord(rec)
-                );
-            }
+            )
+            .fetch();
+        for(final Record rec : result) {
+            ofProject.add(
+                this.taskFromRecord(rec)
+            );
         }
         return new ProjectTasks(
             repoFullName,
@@ -142,19 +138,17 @@ public final class SelfTasks implements Tasks {
         final String provider
     ) {
         final List<Task> ofContributor = new ArrayList<>();
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = this.selectTasks(connected)
-                .where(
-                    SLF_TASKS_XDSD.USERNAME.eq(username).and(
-                        SLF_TASKS_XDSD.PROVIDER.eq(provider)
-                    )
+        final Result<Record> result = this.selectTasks(this.database)
+            .where(
+                SLF_TASKS_XDSD.USERNAME.eq(username).and(
+                    SLF_TASKS_XDSD.PROVIDER.eq(provider)
                 )
-                .fetch();
-            for(final Record rec : result) {
-                ofContributor.add(
-                    this.taskFromRecord(rec)
-                );
-            }
+            )
+            .fetch();
+        for(final Record rec : result) {
+            ofContributor.add(
+                this.taskFromRecord(rec)
+            );
         }
         return new ContributorTasks(
             username,

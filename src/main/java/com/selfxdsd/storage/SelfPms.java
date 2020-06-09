@@ -66,31 +66,27 @@ public final class SelfPms implements ProjectManagers {
 
     @Override
     public ProjectManager getById(final int projectManagerId) {
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_PMS_XDSD)
-                .where(SLF_PMS_XDSD.ID.eq(projectManagerId))
-                .fetch();
-            if(result.size() > 0) {
-                return buildProjectManager(result.get(0));
-            }
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_PMS_XDSD)
+            .where(SLF_PMS_XDSD.ID.eq(projectManagerId))
+            .fetch();
+        if(result.size() > 0) {
+            return buildProjectManager(result.get(0));
         }
         return null;
     }
 
     @Override
     public ProjectManager pick(final String provider) {
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_PMS_XDSD)
-                .where(SLF_PMS_XDSD.PROVIDER.eq(provider))
-                .limit(1)
-                .fetch();
-            if(result.size() > 0) {
-                return this.buildProjectManager(result.get(0));
-            }
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_PMS_XDSD)
+            .where(SLF_PMS_XDSD.PROVIDER.eq(provider))
+            .limit(1)
+            .fetch();
+        if(result.size() > 0) {
+            return this.buildProjectManager(result.get(0));
         }
         return null;
     }
@@ -99,22 +95,21 @@ public final class SelfPms implements ProjectManagers {
     public ProjectManager register(
         final String username,
         final String provider,
-        final String accessToken) {
-        try (final Database connected = this.database.connect()) {
-            final int pmId = connected.jooq()
-                .insertInto(SLF_PMS_XDSD,
-                    SLF_PMS_XDSD.USERNAME,
-                    SLF_PMS_XDSD.PROVIDER,
-                    SLF_PMS_XDSD.ACCESS_TOKEN)
-                .values(username, provider, accessToken)
-                .execute();
-            if(pmId > 0){
-                return new StoredProjectManager(pmId,
-                    username,
-                    provider,
-                    accessToken,
-                    storage);
-            }
+        final String accessToken
+    ) {
+        final int pmId = this.database.jooq()
+            .insertInto(SLF_PMS_XDSD,
+                SLF_PMS_XDSD.USERNAME,
+                SLF_PMS_XDSD.PROVIDER,
+                SLF_PMS_XDSD.ACCESS_TOKEN)
+            .values(username, provider, accessToken)
+            .execute();
+        if(pmId > 0){
+            return new StoredProjectManager(pmId,
+                username,
+                provider,
+                accessToken,
+                storage);
         }
         throw new IllegalStateException("Something went wrong while"
             + " inserting a PM into database.");
@@ -122,24 +117,20 @@ public final class SelfPms implements ProjectManagers {
 
     @Override
     public Iterator<ProjectManager> iterator() {
-        final int maxRecords;
-        try (final Database connected = this.database.connect()) {
-            maxRecords = connected.jooq().fetchCount(SLF_PMS_XDSD);
-        }
-        return PagedIterator.create(100, maxRecords, (offset, size) -> {
-            try (final Database connected =
-                     SelfPms.this.database.connect()) {
-                return connected.jooq()
-                    .select()
-                    .from(SLF_PMS_XDSD)
-                    .limit(size)
-                    .offset(offset)
-                    .fetch()
-                    .stream()
-                    .map(SelfPms.this::buildProjectManager)
-                    .collect(Collectors.toList());
-            }
-        });
+        final int maxRecords = this.database.jooq().fetchCount(SLF_PMS_XDSD);
+        return PagedIterator.create(
+            100,
+            maxRecords,
+            (offset, size) -> this.database.jooq()
+                .select()
+                .from(SLF_PMS_XDSD)
+                .limit(size)
+                .offset(offset)
+                .fetch()
+                .stream()
+                .map(SelfPms.this::buildProjectManager)
+                .collect(Collectors.toList())
+        );
     }
 
     /**

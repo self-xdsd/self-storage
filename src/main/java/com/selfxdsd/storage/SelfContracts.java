@@ -106,56 +106,52 @@ public final class SelfContracts implements Contracts {
 
     @Override
     public Iterator<Contract> iterator() {
-        final int maxRecords;
-        try (final Database connected = this.database.connect()) {
-            maxRecords = connected.jooq().fetchCount(SLF_CONTRACTS_XDSD);
-        }
+        final int maxRecords = this.database.jooq()
+            .fetchCount(SLF_CONTRACTS_XDSD);
         return PagedIterator.create(
             100,
             maxRecords,
             (offset, size) -> {
                 //@checkstyle LineLength (50 lines)
-                try (final Database connected = SelfContracts.this.database.connect()) {
-                    return connected.jooq()
-                        .select()
-                        .from(SLF_CONTRACTS_XDSD)
-                        .join(SLF_CONTRIBUTORS_XDSD)
-                        .on(
-                            SLF_CONTRACTS_XDSD.USERNAME.eq(
-                                SLF_CONTRIBUTORS_XDSD.USERNAME
-                            ).and(
-                                SLF_CONTRACTS_XDSD.PROVIDER.eq(
-                                    SLF_CONTRIBUTORS_XDSD.PROVIDER
-                                )
+                return this.database.jooq()
+                    .select()
+                    .from(SLF_CONTRACTS_XDSD)
+                    .join(SLF_CONTRIBUTORS_XDSD)
+                    .on(
+                        SLF_CONTRACTS_XDSD.USERNAME.eq(
+                            SLF_CONTRIBUTORS_XDSD.USERNAME
+                        ).and(
+                            SLF_CONTRACTS_XDSD.PROVIDER.eq(
+                                SLF_CONTRIBUTORS_XDSD.PROVIDER
                             )
                         )
-                        .join(SLF_PROJECTS_XDSD)
-                        .on(
-                            SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(
-                                SLF_PROJECTS_XDSD.REPO_FULLNAME
-                            ).and(
-                                SLF_CONTRACTS_XDSD.PROVIDER.eq(
-                                    SLF_PROJECTS_XDSD.PROVIDER
-                                )
+                    )
+                    .join(SLF_PROJECTS_XDSD)
+                    .on(
+                        SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(
+                            SLF_PROJECTS_XDSD.REPO_FULLNAME
+                        ).and(
+                            SLF_CONTRACTS_XDSD.PROVIDER.eq(
+                                SLF_PROJECTS_XDSD.PROVIDER
                             )
                         )
-                        .join(SLF_USERS_XDSD)
-                        .on(
-                            SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                                SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                            )
+                    )
+                    .join(SLF_USERS_XDSD)
+                    .on(
+                        SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                            SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
                         )
-                        .join(SLF_PMS_XDSD)
-                        .on(
-                            SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                        )
-                        .limit(size)
-                        .offset(offset)
-                        .fetch()
-                        .stream()
-                        .map(SelfContracts.this::buildContract)
-                        .collect(Collectors.toList());
-                }
+                    )
+                    .join(SLF_PMS_XDSD)
+                    .on(
+                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                    )
+                    .limit(size)
+                    .offset(offset)
+                    .fetch()
+                    .stream()
+                    .map(SelfContracts.this::buildContract)
+                    .collect(Collectors.toList());
             }
         );
     }

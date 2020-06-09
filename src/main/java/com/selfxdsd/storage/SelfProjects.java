@@ -85,22 +85,20 @@ public final class SelfProjects implements Projects {
                 "PM is missing, cannot register project!"
             );
         }
-        try (final Database connected = this.database.connect()) {
-            connected.jooq().insertInto(
-                SLF_PROJECTS_XDSD,
-                SLF_PROJECTS_XDSD.REPO_FULLNAME,
-                SLF_PROJECTS_XDSD.PROVIDER,
-                SLF_PROJECTS_XDSD.USERNAME,
-                SLF_PROJECTS_XDSD.WEBHOOK_TOKEN,
-                SLF_PROJECTS_XDSD.PMID
-            ).values(
-                repo.fullName(),
-                repo.provider(),
-                repo.owner().username(),
-                webHookToken,
-                manager.id()
-            ).execute();
-        }
+        this.database.jooq().insertInto(
+            SLF_PROJECTS_XDSD,
+            SLF_PROJECTS_XDSD.REPO_FULLNAME,
+            SLF_PROJECTS_XDSD.PROVIDER,
+            SLF_PROJECTS_XDSD.USERNAME,
+            SLF_PROJECTS_XDSD.WEBHOOK_TOKEN,
+            SLF_PROJECTS_XDSD.PMID
+        ).values(
+            repo.fullName(),
+            repo.provider(),
+            repo.owner().username(),
+            webHookToken,
+            manager.id()
+        ).execute();
         return new StoredProject(
             new StoredUser(
                 repo.owner().username(),
@@ -176,65 +174,59 @@ public final class SelfProjects implements Projects {
         final String repoFullName,
         final String repoProvider
     ) {
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_PROJECTS_XDSD)
-                .join(SLF_USERS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                        SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                    )
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_PROJECTS_XDSD)
+            .join(SLF_USERS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
                 )
-                .join(SLF_PMS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+            )
+            .join(SLF_PMS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+            )
+            .where(
+                SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(repoProvider)
                 )
-                .where(
-                    SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
-                        SLF_PROJECTS_XDSD.PROVIDER.eq(repoProvider)
-                    )
-                )
-                .fetch();
-            if(!result.isEmpty()) {
-                return this.projectFromRecord(result.get(0));
-            }
+            )
+            .fetch();
+        if(!result.isEmpty()) {
+            return this.projectFromRecord(result.get(0));
         }
         return null;
     }
 
     @Override
     public Iterator<Project> iterator() {
-        final int maxRecords;
-        try (final Database connected = this.database.connect()) {
-            maxRecords = connected.jooq().fetchCount(SLF_CONTRACTS_XDSD);
-        }
+        final int maxRecords = this.database.jooq()
+            .fetchCount(SLF_CONTRACTS_XDSD);
         return PagedIterator.create(
             100,
             maxRecords,
             (offset, size) -> {
                 //@checkstyle LineLength (50 lines)
-                try (final Database connected = SelfProjects.this.database.connect()) {
-                    return connected.jooq()
-                        .select()
-                        .from(SLF_PROJECTS_XDSD)
-                        .join(SLF_USERS_XDSD)
-                        .on(
-                            SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                                SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                            )
+                return this.database.jooq()
+                    .select()
+                    .from(SLF_PROJECTS_XDSD)
+                    .join(SLF_USERS_XDSD)
+                    .on(
+                        SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                            SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
                         )
-                        .join(SLF_PMS_XDSD)
-                        .on(
-                            SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                        )
-                        .limit(size)
-                        .offset(offset)
-                        .fetch()
-                        .stream()
-                        .map(SelfProjects.this::projectFromRecord)
-                        .collect(Collectors.toList());
-                }
+                    )
+                    .join(SLF_PMS_XDSD)
+                    .on(
+                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                    )
+                    .limit(size)
+                    .offset(offset)
+                    .fetch()
+                    .stream()
+                    .map(SelfProjects.this::projectFromRecord)
+                    .collect(Collectors.toList());
             }
         );
     }

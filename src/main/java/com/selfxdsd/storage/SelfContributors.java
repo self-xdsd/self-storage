@@ -71,16 +71,14 @@ public final class SelfContributors implements Contributors {
         final String username,
         final String provider
     ) {
-        try (final Database connected = this.database.connect()) {
-            connected.jooq().insertInto(
-                SLF_CONTRIBUTORS_XDSD,
-                SLF_CONTRIBUTORS_XDSD.USERNAME,
-                SLF_CONTRIBUTORS_XDSD.PROVIDER
-            ).values(
-                username,
-                provider
-            ).execute();
-        }
+        this.database.jooq().insertInto(
+            SLF_CONTRIBUTORS_XDSD,
+            SLF_CONTRIBUTORS_XDSD.USERNAME,
+            SLF_CONTRIBUTORS_XDSD.PROVIDER
+        ).values(
+            username,
+            provider
+        ).execute();
         return new StoredContributor(username, provider, this.storage);
     }
 
@@ -89,24 +87,22 @@ public final class SelfContributors implements Contributors {
         final String username,
         final String provider
     ) {
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_CONTRIBUTORS_XDSD)
-                .where(
-                    SLF_CONTRIBUTORS_XDSD.USERNAME.eq(username).and(
-                        SLF_CONTRIBUTORS_XDSD.PROVIDER.eq(provider)
-                    )
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_CONTRIBUTORS_XDSD)
+            .where(
+                SLF_CONTRIBUTORS_XDSD.USERNAME.eq(username).and(
+                    SLF_CONTRIBUTORS_XDSD.PROVIDER.eq(provider)
                 )
-                .fetch();
-            if (result.size() > 0) {
-                final Record rec = result.get(0);
-                return new StoredContributor(
-                    rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
-                    rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
-                    this.storage
-                );
-            }
+            )
+            .fetch();
+        if (result.size() > 0) {
+            final Record rec = result.get(0);
+            return new StoredContributor(
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
+                this.storage
+            );
         }
         return null;
     }
@@ -122,21 +118,19 @@ public final class SelfContributors implements Contributors {
     @Override
     public Iterator<Contributor> iterator() {
         final List<Contributor> contributors = new ArrayList<>();
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_CONTRIBUTORS_XDSD)
-                .limit(100)
-                .fetch();
-            for (final Record res : result) {
-                contributors.add(
-                    new StoredContributor(
-                        res.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
-                        res.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
-                        this.storage
-                    )
-                );
-            }
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_CONTRIBUTORS_XDSD)
+            .limit(100)
+            .fetch();
+        for (final Record res : result) {
+            contributors.add(
+                new StoredContributor(
+                    res.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
+                    res.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
+                    this.storage
+                )
+            );
         }
         return contributors.iterator();
     }

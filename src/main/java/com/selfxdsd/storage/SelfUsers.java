@@ -75,39 +75,35 @@ public final class SelfUsers implements Users {
         final String email,
         final String provider
     ) {
-        try (final Database db = this.database.connect()) {
-            final DSLContext jooq = db.jooq();
-            User dbUser = userFromDb(
-                jooq, username, provider
-            );
-            if (dbUser == null) {
-                jooq.insertInto(
-                    SLF_USERS_XDSD,
-                    SLF_USERS_XDSD.USERNAME,
-                    SLF_USERS_XDSD.PROVIDER,
-                    SLF_USERS_XDSD.EMAIL
-                ).values(
-                    username,
-                    provider,
-                    email
-                ).execute();
-            } else if (!dbUser.email().equals(email)) {
-                jooq.update(SLF_USERS_XDSD)
-                        .set(SLF_USERS_XDSD.EMAIL, email)
-                        .where(SLF_USERS_XDSD.USERNAME.eq(username))
-                        .execute();
-            } else {
-                return dbUser;
-            }
-            return this.userFromDb(jooq, username, provider);
+        final DSLContext jooq = this.database.jooq();
+        User dbUser = userFromDb(
+            jooq, username, provider
+        );
+        if (dbUser == null) {
+            jooq.insertInto(
+                SLF_USERS_XDSD,
+                SLF_USERS_XDSD.USERNAME,
+                SLF_USERS_XDSD.PROVIDER,
+                SLF_USERS_XDSD.EMAIL
+            ).values(
+                username,
+                provider,
+                email
+            ).execute();
+        } else if (!dbUser.email().equals(email)) {
+            jooq.update(SLF_USERS_XDSD)
+                    .set(SLF_USERS_XDSD.EMAIL, email)
+                    .where(SLF_USERS_XDSD.USERNAME.eq(username))
+                    .execute();
+        } else {
+            return dbUser;
         }
+        return this.userFromDb(jooq, username, provider);
     }
 
     @Override
     public User user(final String username, final String provider) {
-        try (final Database db = this.database.connect()) {
-            return userFromDb(db.jooq(), username, provider);
-        }
+        return userFromDb(this.database.jooq(), username, provider);
     }
 
     /**
@@ -145,22 +141,20 @@ public final class SelfUsers implements Users {
     @Override
     public Iterator<User> iterator() {
         final List<User> users = new ArrayList<>();
-        try (final Database db = this.database.connect()) {
-            final Result<Record> result = db.jooq()
-                .select()
-                .from(SLF_USERS_XDSD)
-                .limit(100)
-                .fetch();
-            for (final Record res : result) {
-                users.add(
-                    new StoredUser(
-                        res.getValue(SLF_USERS_XDSD.USERNAME),
-                        res.getValue(SLF_USERS_XDSD.EMAIL),
-                        res.getValue(SLF_USERS_XDSD.PROVIDER),
-                        this.storage
-                    )
-                );
-            }
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_USERS_XDSD)
+            .limit(100)
+            .fetch();
+        for (final Record res : result) {
+            users.add(
+                new StoredUser(
+                    res.getValue(SLF_USERS_XDSD.USERNAME),
+                    res.getValue(SLF_USERS_XDSD.EMAIL),
+                    res.getValue(SLF_USERS_XDSD.PROVIDER),
+                    this.storage
+                )
+            );
         }
         return users.iterator();
     }
