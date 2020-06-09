@@ -39,6 +39,7 @@ VALUES ('mihai/test', 'gitlab', 'mihai', 1, 'whtoken126');
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('john', 'github');
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('maria', 'github');
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('alexandra', 'github');
+INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('dmarkov', 'github');
 
 -- INSERT CONTRACTS
 

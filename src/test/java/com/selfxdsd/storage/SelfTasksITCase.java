@@ -76,4 +76,30 @@ public final class SelfTasksITCase {
         MatcherAssert.assertThat(found, Matchers.nullValue());
     }
 
+    /**
+     * SelfTasks.ofProject returns an empty iterable if the specified
+     * Project has no registered tasks.
+     */
+    @Test
+    public void returnsEmptyProjectTasks() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        MatcherAssert.assertThat(
+            all.ofProject("john/missing", Provider.Names.GITHUB),
+            Matchers.emptyIterable()
+        );
+    }
+
+    /**
+     * SelfTasks.ofContributor returns an empty iterable if the specified
+     * Contributor has no tasks assigned.
+     */
+    @Test
+    public void returnsEmptyContributorTasks() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        MatcherAssert.assertThat(
+            all.ofContributor("dmarkov", Provider.Names.GITHUB),
+            Matchers.emptyIterable()
+        );
+    }
+
 }
