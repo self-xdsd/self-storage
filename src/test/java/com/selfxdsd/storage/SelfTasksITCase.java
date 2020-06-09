@@ -22,10 +22,7 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Contract;
-import com.selfxdsd.api.Provider;
-import com.selfxdsd.api.Task;
-import com.selfxdsd.api.Tasks;
+import com.selfxdsd.api.*;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -74,6 +71,60 @@ public final class SelfTasksITCase {
             Provider.Names.GITHUB
         );
         MatcherAssert.assertThat(found, Matchers.nullValue());
+    }
+
+    /**
+     * SelfTasks can return the Tasks registered in a certain
+     * Project.
+     */
+    @Test
+    public void returnsProjectTasks() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        final Tasks ofProject = all.ofProject(
+            "amihaiemil/docker-java-api",
+            Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            ofProject,
+            Matchers.iterableWithSize(3)
+        );
+        for(final Task task : ofProject) {
+            final Project project = task.project();
+            MatcherAssert.assertThat(
+                project.repoFullName(),
+                Matchers.equalTo("amihaiemil/docker-java-api")
+            );
+            MatcherAssert.assertThat(
+                project.provider(),
+                Matchers.equalTo(Provider.Names.GITHUB)
+            );
+        }
+    }
+
+    /**
+     * SelfTasks can return the Tasks assigned to a Contributor.
+     */
+    @Test
+    public void returnsContributorTasks() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        final Tasks ofContributor = all.ofContributor(
+            "john", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            ofContributor,
+            Matchers.iterableWithSize(2)
+        );
+        for(final Task task : ofContributor) {
+            final Contributor contributor = task.assignee();
+            MatcherAssert.assertThat(
+                contributor.username(),
+                Matchers.equalTo("john")
+            );
+            MatcherAssert.assertThat(
+                contributor.provider(),
+                Matchers.equalTo(Provider.Names.GITHUB)
+            );
+        }
     }
 
     /**

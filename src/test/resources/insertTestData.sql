@@ -60,6 +60,15 @@ INSERT INTO self_xdsd.slf_contracts_xdsd
 VALUES ('amihaiemil/docker-java-api', 'maria', 'github', 'REV', 8000);
 
 -- INSERT TASKS
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role)
+VALUES
+('vlad/test', '123', 'github', 'DEV');
+
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role)
+VALUES
+('vlad/test', '124', 'github', 'DEV');
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
 (repo_fullname, issueId, provider, role, username, assigned, deadline)
