@@ -29,12 +29,17 @@ import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.StoredContributor;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.StoredProject;
+import com.selfxdsd.core.tasks.ContributorTasks;
+import com.selfxdsd.core.tasks.ProjectTasks;
 import com.selfxdsd.core.tasks.StoredTask;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.*;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
@@ -46,8 +51,9 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #39:30min Continue implementing and writing integration tests
- *  for the methods of SelfTasks. Method getById already implemented.
+ * @todo #41:30min Continue implementing and writing integration tests
+ *  for the methods of SelfTasks. Methods getById, ofProject and ofContributor
+ *  are already implemented.
  */
 public final class SelfTasks implements Tasks {
 
@@ -81,42 +87,7 @@ public final class SelfTasks implements Tasks {
         final String provider
     ) {
         try (final Database connected = this.database.connect()) {
-            //@checkstyle LineLength (100 lines)
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_TASKS_XDSD)
-                .join(SLF_PROJECTS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(
-                        SLF_TASKS_XDSD.REPO_FULLNAME
-                    ).and(
-                        SLF_PROJECTS_XDSD.PROVIDER.eq(
-                            SLF_TASKS_XDSD.PROVIDER
-                        )
-                    )
-                ).join(SLF_USERS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                        SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                    )
-                ).join(SLF_PMS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                ).join(SLF_CONTRACTS_XDSD)
-                .on(
-                    SLF_TASKS_XDSD.ROLE.eq(SLF_CONTRACTS_XDSD.ROLE).and(
-                        SLF_TASKS_XDSD.REPO_FULLNAME.eq(SLF_CONTRACTS_XDSD.REPO_FULLNAME).and(
-                            SLF_TASKS_XDSD.PROVIDER.eq(SLF_CONTRACTS_XDSD.PROVIDER).and(
-                                SLF_TASKS_XDSD.USERNAME.eq(SLF_CONTRACTS_XDSD.USERNAME)
-                            )
-                        )
-                    )
-                ).join(SLF_CONTRIBUTORS_XDSD)
-                .on(
-                    SLF_CONTRACTS_XDSD.USERNAME.eq(SLF_CONTRIBUTORS_XDSD.USERNAME).and(
-                        SLF_CONTRACTS_XDSD.PROVIDER.eq(SLF_CONTRIBUTORS_XDSD.PROVIDER)
-                    )
-                )
+            final Result<Record> result = this.selectTasks(connected)
                 .where(
                     SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
                         SLF_TASKS_XDSD.PROVIDER.eq(provider).and(
@@ -142,7 +113,27 @@ public final class SelfTasks implements Tasks {
         final String repoFullName,
         final String repoProvider
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Task> ofProject = new ArrayList<>();
+        try (final Database connected = this.database.connect()) {
+            final Result<Record> result = this.selectTasks(connected)
+                .where(
+                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                        SLF_TASKS_XDSD.PROVIDER.eq(repoProvider)
+                    )
+                )
+                .fetch();
+            for(final Record rec : result) {
+                ofProject.add(
+                    this.taskFromRecord(rec)
+                );
+            }
+        }
+        return new ProjectTasks(
+            repoFullName,
+            repoProvider,
+            ofProject,
+            this.storage
+        );
     }
 
     @Override
@@ -150,12 +141,79 @@ public final class SelfTasks implements Tasks {
         final String username,
         final String provider
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Task> ofContributor = new ArrayList<>();
+        try (final Database connected = this.database.connect()) {
+            final Result<Record> result = this.selectTasks(connected)
+                .where(
+                    SLF_TASKS_XDSD.USERNAME.eq(username).and(
+                        SLF_TASKS_XDSD.PROVIDER.eq(provider)
+                    )
+                )
+                .fetch();
+            for(final Record rec : result) {
+                ofContributor.add(
+                    this.taskFromRecord(rec)
+                );
+            }
+        }
+        return new ContributorTasks(
+            username,
+            provider,
+            ofContributor,
+            this.storage
+        );
     }
 
     @Override
     public Iterator<Task> iterator() {
         throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    /**
+     * Built the jooq SELECT/JOIN clause.
+     * A Task is linked to a Project and to a Contract, so we select the tasks,
+     * JOINED with Projects (also with Users + PMs to have the whole Project),
+     * and JOINED with Contracts (also with Contributors).
+     * @param connected Connected Database instance.
+     * @return JOOQ SELECT, to which we will apply the WHERE clause.
+     * @checkstyle LineLength (100 lines)
+     */
+    private SelectOnConditionStep<Record> selectTasks(final Database connected){
+        return connected.jooq()
+            .select()
+            .from(SLF_TASKS_XDSD)
+            .join(SLF_PROJECTS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(
+                    SLF_TASKS_XDSD.REPO_FULLNAME
+                ).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(
+                        SLF_TASKS_XDSD.PROVIDER
+                    )
+                )
+            ).join(SLF_USERS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                )
+            ).join(SLF_PMS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+            ).join(SLF_CONTRACTS_XDSD)
+            .on(
+                SLF_TASKS_XDSD.ROLE.eq(SLF_CONTRACTS_XDSD.ROLE).and(
+                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(SLF_CONTRACTS_XDSD.REPO_FULLNAME).and(
+                        SLF_TASKS_XDSD.PROVIDER.eq(SLF_CONTRACTS_XDSD.PROVIDER).and(
+                            SLF_TASKS_XDSD.USERNAME.eq(SLF_CONTRACTS_XDSD.USERNAME)
+                        )
+                    )
+                )
+            ).join(SLF_CONTRIBUTORS_XDSD)
+            .on(
+                SLF_CONTRACTS_XDSD.USERNAME.eq(SLF_CONTRIBUTORS_XDSD.USERNAME).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(SLF_CONTRIBUTORS_XDSD.PROVIDER)
+                )
+            );
     }
 
     /**
