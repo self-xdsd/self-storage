@@ -26,6 +26,7 @@ import com.selfxdsd.api.*;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Integration tests for {@link SelfTasks}.
@@ -36,10 +37,10 @@ import org.junit.Test;
 public final class SelfTasksITCase {
 
     /**
-     * SelfTasks can return an existing task.
+     * SelfTasks can return an existing assigned task.
      */
     @Test
-    public void returnsFoundTask() {
+    public void returnsFoundAssignedTask() {
         final Tasks all = new SelfJooq(new H2Database()).tasks();
         final Task found = all.getById(
             "123",
@@ -56,6 +57,33 @@ public final class SelfTasksITCase {
         );
         MatcherAssert.assertThat(
             found.role(), Matchers.equalTo(Contract.Roles.DEV)
+        );
+    }
+
+    /**
+     * SelfTasks can return an existing unassigned task.
+     */
+    @Test
+    public void returnsFoundUnassignedTask() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        final Task found = all.getById(
+            "123",
+            "vlad/test",
+            Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            found,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            found.project().repoFullName(),
+            Matchers.equalTo("vlad/test")
+        );
+        MatcherAssert.assertThat(
+            found.role(), Matchers.equalTo(Contract.Roles.DEV)
+        );
+        MatcherAssert.assertThat(
+            found.assignee(), Matchers.nullValue()
         );
     }
 
@@ -150,6 +178,48 @@ public final class SelfTasksITCase {
         MatcherAssert.assertThat(
             all.ofContributor("dmarkov", Provider.Names.GITHUB),
             Matchers.emptyIterable()
+        );
+    }
+
+    /**
+     * SelfTasks should complain if we try to register an Issue
+     * which doesn't correspond to any Project.
+     */
+    @Test (expected = IllegalStateException.class)
+    public void doesNotRegisterIssueWithoutProject() {
+        final Issue issue = Mockito.mock(Issue.class);
+        Mockito.when(issue.repoFullName()).thenReturn("ana/missing");
+        Mockito.when(issue.provider()).thenReturn(Provider.Names.GITHUB);
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        all.register(issue);
+    }
+
+    /**
+     * SelfTasks can register a new Issue.
+     */
+    @Test
+    public void registersNewIssue() {
+        final Issue issue = Mockito.mock(Issue.class);
+        Mockito.when(issue.repoFullName()).thenReturn("mihai/test");
+        Mockito.when(issue.provider()).thenReturn(Provider.Names.GITLAB);
+        Mockito.when(issue.issueId()).thenReturn("234");
+        Mockito.when(issue.role()).thenReturn(Contract.Roles.DEV);
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+
+        MatcherAssert.assertThat(
+            all.getById("234", "mihai/test", Provider.Names.GITLAB),
+            Matchers.nullValue()
+        );
+
+        final Task registered = all.register(issue);
+
+        MatcherAssert.assertThat(
+            registered.role(),
+            Matchers.equalTo(Contract.Roles.DEV)
+        );
+        MatcherAssert.assertThat(
+            all.getById("234", "mihai/test", Provider.Names.GITLAB),
+            Matchers.notNullValue()
         );
     }
 

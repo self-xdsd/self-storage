@@ -103,7 +103,33 @@ public final class SelfTasks implements Tasks {
 
     @Override
     public Task register(final Issue issue) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Project project = this.storage.projects().getProjectById(
+            issue.repoFullName(), issue.provider()
+        );
+        if (project == null) {
+            throw new IllegalStateException(
+                "Project not found, can't register Issue."
+            );
+        } else {
+            this.database.jooq().insertInto(
+                SLF_TASKS_XDSD,
+                SLF_TASKS_XDSD.REPO_FULLNAME,
+                SLF_TASKS_XDSD.ISSUEID,
+                SLF_TASKS_XDSD.PROVIDER,
+                SLF_TASKS_XDSD.ROLE
+            ).values(
+                issue.repoFullName(),
+                issue.issueId(),
+                issue.provider(),
+                issue.role()
+            ).execute();
+            return new StoredTask(
+                project,
+                issue.issueId(),
+                issue.role(),
+                this.storage
+            );
+        }
     }
 
     @Override
@@ -193,7 +219,7 @@ public final class SelfTasks implements Tasks {
             ).join(SLF_PMS_XDSD)
             .on(
                 SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-            ).join(SLF_CONTRACTS_XDSD)
+            ).leftJoin(SLF_CONTRACTS_XDSD)
             .on(
                 SLF_TASKS_XDSD.ROLE.eq(SLF_CONTRACTS_XDSD.ROLE).and(
                     SLF_TASKS_XDSD.REPO_FULLNAME.eq(SLF_CONTRACTS_XDSD.REPO_FULLNAME).and(
@@ -202,7 +228,7 @@ public final class SelfTasks implements Tasks {
                         )
                     )
                 )
-            ).join(SLF_CONTRIBUTORS_XDSD)
+            ).leftJoin(SLF_CONTRIBUTORS_XDSD)
             .on(
                 SLF_CONTRACTS_XDSD.USERNAME.eq(SLF_CONTRIBUTORS_XDSD.USERNAME).and(
                     SLF_CONTRACTS_XDSD.PROVIDER.eq(SLF_CONTRIBUTORS_XDSD.PROVIDER)
