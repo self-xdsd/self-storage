@@ -185,6 +185,11 @@ public final class SelfTasks implements Tasks {
     }
 
     @Override
+    public Tasks unassigned() {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
     public Iterator<Task> iterator() {
         throw new UnsupportedOperationException("Not yet implemented.");
     }
