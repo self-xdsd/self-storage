@@ -223,4 +223,22 @@ public final class SelfTasksITCase {
         );
     }
 
+    /**
+     * SelfTasks can be iterated.
+     */
+    @Test
+    public void canBeIterated() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        MatcherAssert.assertThat(
+            all,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(5)
+            )
+        );
+        for(final Task task : all) {
+            MatcherAssert.assertThat(task.project(), Matchers.notNullValue());
+            MatcherAssert.assertThat(task.role(), Matchers.notNullValue());
+        }
+    }
+
 }

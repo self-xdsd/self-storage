@@ -40,6 +40,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.*;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
@@ -191,7 +192,18 @@ public final class SelfTasks implements Tasks {
 
     @Override
     public Iterator<Task> iterator() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final int maxRecords = this.database.jooq().fetchCount(SLF_TASKS_XDSD);
+        return PagedIterator.create(
+            100,
+            maxRecords,
+            (offset, size) -> this.selectTasks(this.database)
+                .limit(size)
+                .offset(offset)
+                .fetch()
+                .stream()
+                .map(SelfTasks.this::taskFromRecord)
+                .collect(Collectors.toList())
+        );
     }
 
     /**
