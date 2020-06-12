@@ -32,6 +32,7 @@ import com.selfxdsd.core.projects.StoredProject;
 import com.selfxdsd.core.tasks.ContributorTasks;
 import com.selfxdsd.core.tasks.ProjectTasks;
 import com.selfxdsd.core.tasks.StoredTask;
+import com.selfxdsd.core.tasks.UnassignedTasks;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
@@ -187,7 +188,17 @@ public final class SelfTasks implements Tasks {
 
     @Override
     public Tasks unassigned() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Task> unassigned = new ArrayList<>();
+        final Result<Record> result = this.selectTasks(this.database)
+            .where(SLF_TASKS_XDSD.USERNAME.isNull())
+            .limit(100)
+            .fetch();
+        for(final Record rec : result) {
+            unassigned.add(
+                this.taskFromRecord(rec)
+            );
+        }
+        return new UnassignedTasks(unassigned, this.storage);
     }
 
     @Override

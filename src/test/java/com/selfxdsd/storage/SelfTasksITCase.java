@@ -241,4 +241,26 @@ public final class SelfTasksITCase {
         }
     }
 
+    /**
+     * SelfTasks can return the unassigned Tasks.
+     */
+    @Test
+    public void returnsUnassignedTasks() {
+        final Tasks unassigned = new SelfJooq(new H2Database())
+            .tasks().unassigned();
+        MatcherAssert.assertThat(
+            unassigned,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(2)
+            )
+        );
+        for(final Task task : unassigned) {
+            MatcherAssert.assertThat(task.assignee(), Matchers.nullValue());
+            MatcherAssert.assertThat(
+                task.assignmentDate(), Matchers.nullValue()
+            );
+            MatcherAssert.assertThat(task.deadline(), Matchers.nullValue());
+        }
+    }
+
 }
