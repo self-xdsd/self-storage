@@ -28,16 +28,20 @@ import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Project;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.StoredUser;
+import com.selfxdsd.core.contracts.ContributorContracts;
+import com.selfxdsd.core.contracts.ProjectContracts;
 import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.StoredContributor;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.StoredProject;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.*;
@@ -50,9 +54,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #35:30min Continue implementing and writing integration tests
- *  for the methods of SelfContracts. Methods findByID and iterator, already
- *  implemented.
  */
 public final class SelfContracts implements Contracts {
 
@@ -84,12 +85,27 @@ public final class SelfContracts implements Contracts {
         final String repoFullName,
         final String repoProvider
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Contract> ofProject = this.selectContracts()
+            .where(SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                SLF_CONTRACTS_XDSD.PROVIDER.eq(repoProvider)))
+            .fetch()
+            .stream()
+            .map(this::buildContract)
+            .collect(Collectors.toList());
+        return new ProjectContracts(repoFullName, repoProvider, ofProject,
+            this.storage);
     }
 
     @Override
     public Contracts ofContributor(final Contributor contributor) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Contract> ofProject = this.selectContracts()
+            .where(SLF_CONTRACTS_XDSD.USERNAME.eq(contributor.username()).and(
+                SLF_CONTRACTS_XDSD.PROVIDER.eq(contributor.provider())))
+            .fetch()
+            .stream()
+            .map(this::buildContract)
+            .collect(Collectors.toList());
+        return new ContributorContracts(contributor, ofProject, this.storage);
     }
 
     @Override
@@ -100,18 +116,49 @@ public final class SelfContracts implements Contracts {
         final BigDecimal hourlyRate,
         final String role
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final DSLContext jooq = this.database.jooq();
+        final Project project = this.storage.projects()
+            .getProjectById(repoFullName, provider);
+        if (project == null) {
+            throw new IllegalStateException("Can't attach the Contract to"
+                + " project. The Project with " + repoFullName
+                + " and " + provider + " was not found.");
+        }
+        final Contributor contributor = this.storage.contributors()
+            .getById(contributorUsername, provider);
+        if (contributor == null) {
+            throw new IllegalStateException("Can't attach the Contract to"
+                + " contributor. The Contributor with "
+                + contributorUsername + " and " + provider
+                + " was not found.");
+        }
+        final int execute = jooq
+            .insertInto(SLF_CONTRACTS_XDSD,
+                SLF_CONTRACTS_XDSD.REPO_FULLNAME,
+                SLF_CONTRACTS_XDSD.USERNAME,
+                SLF_CONTRACTS_XDSD.PROVIDER,
+                SLF_CONTRACTS_XDSD.HOURLY_RATE,
+                SLF_CONTRACTS_XDSD.ROLE)
+            .values(repoFullName, contributorUsername,
+                provider, hourlyRate.longValueExact(), role)
+            .execute();
+        if (execute > 0) {
+            return new StoredContract(project, contributor, hourlyRate, role,
+                this.storage);
+        }
+        throw new IllegalStateException("Something went wrong when inserting "
+            + "Contract into database.");
     }
 
     @Override
     public Contract findById(final Contract.Id id) {
-        final Result<Record> result = this.selectContracts(this.database)
+        final Result<Record> result = this.selectContracts()
             .where(
                 SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(id.getRepoFullName()).and(
                     SLF_CONTRACTS_XDSD.PROVIDER.eq(id.getProvider()).and(
-                      SLF_CONTRACTS_XDSD.USERNAME.eq(
-                          id.getContributorUsername()
-                      ).and(SLF_CONTRACTS_XDSD.ROLE.eq(id.getRole()))
+                        SLF_CONTRACTS_XDSD.USERNAME.eq(
+                            id.getContributorUsername()
+                        ).and(SLF_CONTRACTS_XDSD.ROLE.eq(id.getRole()))
                     )
                 )
             )
@@ -129,7 +176,7 @@ public final class SelfContracts implements Contracts {
         return PagedIterator.create(
             100,
             maxRecords,
-            (offset, size) -> this.selectContracts(this.database)
+            (offset, size) -> this.selectContracts()
                 .limit(size)
                 .offset(offset)
                 .fetch()
@@ -144,11 +191,10 @@ public final class SelfContracts implements Contracts {
      * A Contract is linked to a Project and to a Contributor, so we select
      * contracts, JOINED with Projects (also with Users + PMs to have the
      * whole Project), and JOINED with Contributors.
-     * @param connected Connected Database instance.
      * @return JOOQ SELECT, to which we will apply the WHERE clause.
      * @checkstyle LineLength (100 lines)
      */
-    private SelectOnConditionStep<Record> selectContracts(final Database connected){
+    private SelectOnConditionStep<Record> selectContracts(){
         return this.database.jooq()
             .select()
             .from(SLF_CONTRACTS_XDSD)

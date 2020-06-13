@@ -24,10 +24,14 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.Contract;
 import com.selfxdsd.api.Contracts;
+import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Provider;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.math.BigDecimal;
 
 /**
  * Integration tests for {@link SelfContracts}.
@@ -97,6 +101,90 @@ public final class SelfContractsITCase {
                 Matchers.greaterThan(0)
             )
         );
+    }
+
+    /**
+     * SelfContracts can add new contract.
+     */
+    @Test
+    public void addsContract(){
+        final Contracts all = new SelfJooq(new H2Database()).contracts();
+        final Contract contract = all
+            .addContract("amihaiemil/docker-java-api", "bob",
+                Provider.Names.GITHUB, BigDecimal.TEN,
+                Contract.Roles.DEV);
+        MatcherAssert.assertThat(contract.project().repoFullName(),
+            Matchers.equalTo("amihaiemil/docker-java-api"));
+        MatcherAssert.assertThat(contract.project().provider(),
+            Matchers.equalTo(Provider.Names.GITHUB));
+        MatcherAssert.assertThat(contract.contributor().username(),
+            Matchers.equalTo("bob"));
+        MatcherAssert.assertThat(contract.hourlyRate(),
+            Matchers.equalTo(BigDecimal.TEN));
+        MatcherAssert.assertThat(contract.role(),
+            Matchers.equalTo(Contract.Roles.DEV));
+
+    }
+
+    /**
+     * Throws IllegalStateException when contributor with key
+     * contributorUsername + provider is not found.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void throwsOnAddContractWhenContributorNotFound(){
+        new SelfJooq(new H2Database()).contracts()
+            .addContract("amihaiemil/docker-java-api", "dan",
+                Provider.Names.GITHUB, BigDecimal.TEN,
+                Contract.Roles.DEV);
+    }
+
+    /**
+     * Throws IllegalStateException if project with key repoFullName + provider
+     * is not found.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void throwsOnAddContractWhenProjectNotFound(){
+        new SelfJooq(new H2Database()).contracts()
+            .addContract("amihaiemil/other", "bob",
+                Provider.Names.GITHUB, BigDecimal.TEN,
+                Contract.Roles.DEV);
+    }
+
+    /**
+     * Throws IllegalStateException if contract is already into database.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void throwsOnAddContractWhenContractDuplicate(){
+        new SelfJooq(new H2Database()).contracts()
+            .addContract("amihaiemil/other", "john",
+                Provider.Names.GITHUB, BigDecimal.TEN,
+                Contract.Roles.DEV);
+    }
+
+    /**
+     * Returns contracts of a given project.
+     * See resource: insertData.sql.
+     */
+    @Test
+    public void returnsContractsOfProject(){
+        final Contracts ofProject = new SelfJooq(new H2Database()).contracts()
+            .ofProject("amihaiemil/docker-java-api",
+                Provider.Names.GITHUB);
+        MatcherAssert.assertThat(ofProject, Matchers.iterableWithSize(4));
+    }
+
+    /**
+     * Returns contracts of a given project.
+     * See resource: insertData.sql.
+     */
+    @Test
+    public void returnsContractsOfContributor(){
+        final Contributor contributor = Mockito.mock(Contributor.class);
+        Mockito.when(contributor.username()).thenReturn("john");
+        Mockito.when(contributor.provider()).thenReturn(Provider.Names.GITHUB);
+        final Contracts ofProject = new SelfJooq(new H2Database()).contracts()
+            .ofContributor(contributor);
+        MatcherAssert.assertThat(ofProject, Matchers.iterableWithSize(2));
     }
 
 }
