@@ -25,7 +25,9 @@ package com.selfxdsd.storage;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Contributors;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.StoredContributor;
+import com.selfxdsd.core.projects.StoredProject;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
 
 /**
@@ -112,6 +115,24 @@ public final class SelfContributors implements Contributors {
         final String repoFullName,
         final String repoProvider
     ) {
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_CONTRIBUTORS_XDSD)
+            .join(SLF_CONTRACTS_XDSD)
+            .on(
+                SLF_CONTRACTS_XDSD.USERNAME.eq(SLF_CONTRIBUTORS_XDSD.USERNAME)
+                    .and(
+                        SLF_CONTRACTS_XDSD.PROVIDER.eq(
+                            SLF_CONTRIBUTORS_XDSD.PROVIDER
+                        )
+                    )
+            )
+            .where(
+                SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(repoProvider)
+                )
+            )
+            .fetch();
         throw new UnsupportedOperationException("Not yet implemented.");
     }
 
