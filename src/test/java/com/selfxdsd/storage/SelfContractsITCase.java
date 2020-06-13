@@ -22,7 +22,9 @@
  */
 package com.selfxdsd.storage;
 
+import com.selfxdsd.api.Contract;
 import com.selfxdsd.api.Contracts;
+import com.selfxdsd.api.Provider;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -36,6 +38,52 @@ import org.junit.Test;
  * @since 0.0.1
  */
 public final class SelfContractsITCase {
+
+    /**
+     * SelfContracts.findById returns the found Contract.
+     */
+    @Test
+    public void returnsFoundContract() {
+        final Contracts all = new SelfJooq(new H2Database()).contracts();
+        final Contract johnDev = all.findById(
+            new Contract.Id(
+                "amihaiemil/docker-java-api",
+                "john",
+                Provider.Names.GITHUB,
+                Contract.Roles.DEV
+            )
+        );
+        MatcherAssert.assertThat(johnDev, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            johnDev.project().repoFullName(),
+            Matchers.equalTo("amihaiemil/docker-java-api")
+        );
+        MatcherAssert.assertThat(
+            johnDev.contributor().username(),
+            Matchers.equalTo("john")
+        );
+        MatcherAssert.assertThat(
+            johnDev.role(),
+            Matchers.equalTo(Contract.Roles.DEV)
+        );
+    }
+
+    /**
+     * SelfContracts.findById returns null if the Contract is not found.
+     */
+    @Test
+    public void returnsNullForNotFound() {
+        final Contracts all = new SelfJooq(new H2Database()).contracts();
+        final Contract missing = all.findById(
+            new Contract.Id(
+                "amihaiemil/docker-java-api",
+                "john_doe_missing",
+                Provider.Names.GITHUB,
+                Contract.Roles.DEV
+            )
+        );
+        MatcherAssert.assertThat(missing, Matchers.nullValue());
+    }
 
     /**
      * SelfContracts is iterable.

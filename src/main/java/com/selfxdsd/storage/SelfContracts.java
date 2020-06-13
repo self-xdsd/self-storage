@@ -33,6 +33,9 @@ import com.selfxdsd.core.contributors.StoredContributor;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.StoredProject;
 import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
+
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.stream.Collectors;
@@ -101,7 +104,21 @@ public final class SelfContracts implements Contracts {
 
     @Override
     public Contract findById(final Contract.Id id) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Result<Record> result = this.selectContracts(this.database)
+            .where(
+                SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(id.getRepoFullName()).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(id.getProvider()).and(
+                      SLF_CONTRACTS_XDSD.USERNAME.eq(
+                          id.getContributorUsername()
+                      ).and(SLF_CONTRACTS_XDSD.ROLE.eq(id.getRole()))
+                    )
+                )
+            )
+            .fetch();
+        if(!result.isEmpty()) {
+            return this.buildContract(result.get(0));
+        }
+        return null;
     }
 
     @Override
@@ -111,49 +128,59 @@ public final class SelfContracts implements Contracts {
         return PagedIterator.create(
             100,
             maxRecords,
-            (offset, size) -> {
-                //@checkstyle LineLength (50 lines)
-                return this.database.jooq()
-                    .select()
-                    .from(SLF_CONTRACTS_XDSD)
-                    .join(SLF_CONTRIBUTORS_XDSD)
-                    .on(
-                        SLF_CONTRACTS_XDSD.USERNAME.eq(
-                            SLF_CONTRIBUTORS_XDSD.USERNAME
-                        ).and(
-                            SLF_CONTRACTS_XDSD.PROVIDER.eq(
-                                SLF_CONTRIBUTORS_XDSD.PROVIDER
-                            )
-                        )
-                    )
-                    .join(SLF_PROJECTS_XDSD)
-                    .on(
-                        SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(
-                            SLF_PROJECTS_XDSD.REPO_FULLNAME
-                        ).and(
-                            SLF_CONTRACTS_XDSD.PROVIDER.eq(
-                                SLF_PROJECTS_XDSD.PROVIDER
-                            )
-                        )
-                    )
-                    .join(SLF_USERS_XDSD)
-                    .on(
-                        SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                            SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                        )
-                    )
-                    .join(SLF_PMS_XDSD)
-                    .on(
-                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                    )
-                    .limit(size)
-                    .offset(offset)
-                    .fetch()
-                    .stream()
-                    .map(SelfContracts.this::buildContract)
-                    .collect(Collectors.toList());
-            }
+            (offset, size) -> this.selectContracts(this.database)
+                .limit(size)
+                .offset(offset)
+                .fetch()
+                .stream()
+                .map(SelfContracts.this::buildContract)
+                .collect(Collectors.toList())
         );
+    }
+
+    /**
+     * Built the jooq SELECT/JOIN clause.
+     * A Contract is linked to a Project and to a Contributor, so we select
+     * contracts, JOINED with Projects (also with Users + PMs to have the
+     * whole Project), and JOINED with Contributors.
+     * @param connected Connected Database instance.
+     * @return JOOQ SELECT, to which we will apply the WHERE clause.
+     * @checkstyle LineLength (100 lines)
+     */
+    private SelectOnConditionStep<Record> selectContracts(final Database connected){
+        return this.database.jooq()
+            .select()
+            .from(SLF_CONTRACTS_XDSD)
+            .join(SLF_CONTRIBUTORS_XDSD)
+            .on(
+                SLF_CONTRACTS_XDSD.USERNAME.eq(
+                    SLF_CONTRIBUTORS_XDSD.USERNAME
+                ).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(
+                        SLF_CONTRIBUTORS_XDSD.PROVIDER
+                    )
+                )
+            )
+            .join(SLF_PROJECTS_XDSD)
+            .on(
+                SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(
+                    SLF_PROJECTS_XDSD.REPO_FULLNAME
+                ).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(
+                        SLF_PROJECTS_XDSD.PROVIDER
+                    )
+                )
+            )
+            .join(SLF_USERS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                )
+            )
+            .join(SLF_PMS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+            );
     }
 
     /**
