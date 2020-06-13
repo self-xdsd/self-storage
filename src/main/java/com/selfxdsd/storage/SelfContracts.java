@@ -92,7 +92,10 @@ public final class SelfContracts implements Contracts {
             .stream()
             .map(this::buildContract)
             .collect(Collectors.toList());
-        return new ProjectContracts(repoFullName, repoProvider, ofProject,
+        return new ProjectContracts(
+            repoFullName,
+            repoProvider,
+            ofProject,
             this.storage);
     }
 
@@ -142,12 +145,15 @@ public final class SelfContracts implements Contracts {
             .values(repoFullName, contributorUsername,
                 provider, hourlyRate.longValueExact(), role)
             .execute();
-        if (execute > 0) {
-            return new StoredContract(project, contributor, hourlyRate, role,
-                this.storage);
+        if (execute != 1) {
+            throw new IllegalStateException("Something went wrong when "
+                + "inserting Contract into database.");
         }
-        throw new IllegalStateException("Something went wrong when inserting "
-            + "Contract into database.");
+        return new StoredContract(project,
+            contributor,
+            hourlyRate,
+            role,
+            this.storage);
     }
 
     @Override
