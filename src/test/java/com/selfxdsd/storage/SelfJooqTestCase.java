@@ -82,6 +82,21 @@ public final class SelfJooqTestCase {
     }
 
     /**
+     * SelfJooq can return the Contracts.
+     */
+    @Test
+    public void returnsContracts() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.contracts(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfContracts.class)
+            )
+        );
+    }
+
+    /**
      * SelfJooq can return the Tasks.
      */
     @Test
