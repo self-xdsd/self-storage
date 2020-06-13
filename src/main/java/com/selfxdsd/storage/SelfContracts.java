@@ -50,8 +50,9 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #32:30min Continue implementing and writing integration tests
- *  for the methods of SelfContracts.
+ * @todo #35:30min Continue implementing and writing integration tests
+ *  for the methods of SelfContracts. Methods findByID and iterator, already
+ *  implemented.
  */
 public final class SelfContracts implements Contracts {
 
