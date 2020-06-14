@@ -137,6 +137,14 @@ public final class SelfContributors implements Contributors {
     }
 
     @Override
+    public Contributor elect(final String role) {
+        throw new UnsupportedOperationException(
+            "You can only elect a Contributor out of a Project's contributors."
+          + " Call #ofProject(...) first."
+        );
+    }
+
+    @Override
     public Iterator<Contributor> iterator() {
         final List<Contributor> contributors = new ArrayList<>();
         final Result<Record> result = this.database.jooq()

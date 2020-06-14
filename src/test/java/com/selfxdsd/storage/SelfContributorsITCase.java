@@ -22,6 +22,7 @@
  */
 package com.selfxdsd.storage;
 
+import com.selfxdsd.api.Contract;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Contributors;
 import com.selfxdsd.api.Provider;
@@ -126,5 +127,17 @@ public final class SelfContributorsITCase {
                 Matchers.greaterThan(0)
             )
         );
+    }
+
+    /**
+     * SelfContributors should throw an exception when
+     * trying to elect a Contributor.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void cannotElect() {
+        final Contributors contributors = new SelfJooq(
+            new H2Database()
+        ).contributors();
+        contributors.elect(Contract.Roles.DEV);
     }
 }
