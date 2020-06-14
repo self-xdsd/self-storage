@@ -53,6 +53,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #60:30min Implement and write integration tests for
+ *  method SelfTasks.ofContract(...).
  */
 public final class SelfTasks implements Tasks {
 
@@ -181,6 +183,11 @@ public final class SelfTasks implements Tasks {
             ofContributor,
             this.storage
         );
+    }
+
+    @Override
+    public Tasks ofContract(final Contract.Id id) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
