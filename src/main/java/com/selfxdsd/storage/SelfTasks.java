@@ -29,10 +29,7 @@ import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.StoredContributor;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.StoredProject;
-import com.selfxdsd.core.tasks.ContributorTasks;
-import com.selfxdsd.core.tasks.ProjectTasks;
-import com.selfxdsd.core.tasks.StoredTask;
-import com.selfxdsd.core.tasks.UnassignedTasks;
+import com.selfxdsd.core.tasks.*;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
@@ -53,8 +50,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #60:30min Implement and write integration tests for
- *  method SelfTasks.ofContract(...).
  */
 public final class SelfTasks implements Tasks {
 
@@ -187,7 +182,24 @@ public final class SelfTasks implements Tasks {
 
     @Override
     public Tasks ofContract(final Contract.Id id) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final List<Task> ofContract = new ArrayList<>();
+        final Result<Record> result = this.selectTasks(this.database)
+            .where(
+                SLF_TASKS_XDSD.USERNAME.eq(id.getContributorUsername()).and(
+                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(id.getRepoFullName()).and(
+                        SLF_TASKS_XDSD.ROLE.eq(id.getRole()).and(
+                            SLF_TASKS_XDSD.PROVIDER.eq(id.getProvider())
+                        )
+                    )
+                )
+            )
+            .fetch();
+        for(final Record rec : result) {
+            ofContract.add(
+                this.taskFromRecord(rec)
+            );
+        }
+        return new ContractTasks(id, ofContract, this.storage);
     }
 
     @Override

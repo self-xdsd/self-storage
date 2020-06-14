@@ -114,7 +114,9 @@ public final class SelfTasksITCase {
         );
         MatcherAssert.assertThat(
             ofProject,
-            Matchers.iterableWithSize(3)
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(5)
+            )
         );
         for(final Task task : ofProject) {
             final Project project = task.project();
@@ -263,4 +265,63 @@ public final class SelfTasksITCase {
         }
     }
 
+    /**
+     * SelfTasks can return the Tasks of a Contract.
+     */
+    @Test
+    public void returnsTasksOfContract() {
+        final Tasks alexandra = new SelfJooq(new H2Database())
+            .tasks().ofContract(
+                new Contract.Id(
+                    "amihaiemil/docker-java-api",
+                    "alexandra",
+                    Provider.Names.GITHUB,
+                    Contract.Roles.DEV
+                )
+            );
+        MatcherAssert.assertThat(
+            alexandra,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(3))
+        );
+    }
+
+    /**
+     * SelfTasks returns empty Tasks for existing Contract, if there are no
+     * Tasks assigned to it.
+     */
+    @Test
+    public void returnsNoTasksForExistingContract() {
+        final Tasks noTasks = new SelfJooq(new H2Database())
+            .tasks().ofContract(
+                new Contract.Id(
+                    "vlad/test",
+                    "maria",
+                    Provider.Names.GITHUB,
+                    Contract.Roles.DEV
+                )
+            );
+        MatcherAssert.assertThat(
+            noTasks, Matchers.emptyIterable()
+        );
+    }
+
+    /**
+     * SelfTasks returns empty Tasks for a missing Contract.
+     */
+    @Test
+    public void returnsNoTasksForMissingContract() {
+        final Tasks noTasks = new SelfJooq(new H2Database())
+            .tasks().ofContract(
+                new Contract.Id(
+                    "vlad/test",
+                    "johnathan",
+                    Provider.Names.GITHUB,
+                    Contract.Roles.QA
+                )
+            );
+        MatcherAssert.assertThat(
+            noTasks, Matchers.emptyIterable()
+        );
+    }
 }
