@@ -37,7 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
@@ -202,7 +201,7 @@ public final class SelfProjects implements Projects {
     @Override
     public Iterator<Project> iterator() {
         final int maxRecords = this.database.jooq()
-            .fetchCount(SLF_CONTRACTS_XDSD);
+            .fetchCount(SLF_PROJECTS_XDSD);
         return PagedIterator.create(
             100,
             maxRecords,

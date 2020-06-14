@@ -23,7 +23,6 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.Contract;
-import com.selfxdsd.api.Contracts;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Contributors;
 import com.selfxdsd.api.storage.Storage;
@@ -31,7 +30,6 @@ import com.selfxdsd.core.contracts.ContributorContracts;
 import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.ProjectContributors;
 import com.selfxdsd.core.contributors.StoredContributor;
-import com.selfxdsd.core.projects.StoredProject;
 import org.jooq.Record;
 import org.jooq.Result;
 
