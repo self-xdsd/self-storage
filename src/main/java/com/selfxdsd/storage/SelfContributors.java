@@ -22,18 +22,21 @@
  */
 package com.selfxdsd.storage;
 
+import com.selfxdsd.api.Contract;
+import com.selfxdsd.api.Contracts;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Contributors;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contracts.ContributorContracts;
 import com.selfxdsd.core.contracts.StoredContract;
+import com.selfxdsd.core.contributors.ProjectContributors;
 import com.selfxdsd.core.contributors.StoredContributor;
 import com.selfxdsd.core.projects.StoredProject;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
@@ -115,6 +118,7 @@ public final class SelfContributors implements Contributors {
         final String repoFullName,
         final String repoProvider
     ) {
+        final Map<Contributor, List<Contract>> contributors = new HashMap<>();
         final Result<Record> result = this.database.jooq()
             .select()
             .from(SLF_CONTRIBUTORS_XDSD)
@@ -133,7 +137,69 @@ public final class SelfContributors implements Contributors {
                 )
             )
             .fetch();
-        throw new UnsupportedOperationException("Not yet implemented.");
+        boolean firstOccurence;
+        for(final Record rec : result) {
+            firstOccurence = true;
+            final Contributor found = new StoredContributor(
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
+                this.storage
+            );
+            for(final Contributor key : contributors.keySet()) {
+                if(key.username().equals(found.username())
+                    && key.provider().equals(found.provider())){
+                    final List<Contract> contracts = contributors.get(key);
+                    contracts.add(
+                        new StoredContract(
+                            new Contract.Id(
+                                rec.getValue(SLF_CONTRACTS_XDSD.REPO_FULLNAME),
+                                rec.getValue(SLF_CONTRACTS_XDSD.USERNAME),
+                                rec.getValue(SLF_CONTRACTS_XDSD.PROVIDER),
+                                rec.getValue(SLF_CONTRACTS_XDSD.ROLE)
+                            ),
+                            BigDecimal.valueOf(
+                                rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
+                            ),
+                            this.storage
+                        )
+                    );
+                    firstOccurence = false;
+                }
+            }
+            if(firstOccurence) {
+                final List<Contract> contracts = new ArrayList<>();
+                contracts.add(
+                    new StoredContract(
+                        new Contract.Id(
+                            rec.getValue(SLF_CONTRACTS_XDSD.REPO_FULLNAME),
+                            rec.getValue(SLF_CONTRACTS_XDSD.USERNAME),
+                            rec.getValue(SLF_CONTRACTS_XDSD.PROVIDER),
+                            rec.getValue(SLF_CONTRACTS_XDSD.ROLE)
+                        ),
+                        BigDecimal.valueOf(
+                                rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
+                        ),
+                        this.storage
+                    )
+                );
+                contributors.put(found, contracts);
+            }
+        }
+        final List<Contributor> ofProject = new ArrayList<>();
+        for(final Contributor key : contributors.keySet()) {
+            final Contributor withContracts = new StoredContributor(
+                key.username(),
+                key.provider(),
+                new ContributorContracts(
+                    key, contributors.get(key), this.storage
+                ),
+                this.storage
+            );
+            ofProject.add(withContracts);
+        }
+        return new ProjectContributors(
+            repoFullName, repoProvider, ofProject, this.storage
+        );
     }
 
     @Override

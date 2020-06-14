@@ -22,10 +22,7 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Contract;
-import com.selfxdsd.api.Contributor;
-import com.selfxdsd.api.Contributors;
-import com.selfxdsd.api.Provider;
+import com.selfxdsd.api.*;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jooq.Record;
@@ -139,5 +136,59 @@ public final class SelfContributorsITCase {
             new H2Database()
         ).contributors();
         contributors.elect(Contract.Roles.DEV);
+    }
+
+    /**
+     * SelfContributors can return a Project's Contributors.
+     */
+    @Test
+    public void returnsProjectContributors() {
+        final Contributors contributors = new SelfJooq(
+            new H2Database()
+        ).contributors();
+        final Contributors ofProject = contributors.ofProject(
+            "amihaiemil/docker-java-api", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            ofProject,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(3)
+            )
+        );
+        for(final Contributor found : ofProject) {
+            MatcherAssert.assertThat(
+                found.provider(),
+                Matchers.equalTo(Provider.Names.GITHUB)
+            );
+            for(final Contract contract : found.contracts()) {
+                final Project project = contract.project();
+                MatcherAssert.assertThat(
+                    project.repoFullName(),
+                    Matchers.equalTo("amihaiemil/docker-java-api")
+                );
+                MatcherAssert.assertThat(
+                    project.provider(),
+                    Matchers.equalTo(Provider.Names.GITHUB)
+                );
+            }
+        }
+    }
+
+    /**
+     * SelfContributors returns an empty Contributors if the Project
+     * has no contributors.
+     */
+    @Test
+    public void projectContributorsNotFound() {
+        final Contributors contributors = new SelfJooq(
+            new H2Database()
+        ).contributors();
+        final Contributors ofProject = contributors.ofProject(
+            "john/missing", Provider.Names.GITLAB
+        );
+        MatcherAssert.assertThat(
+            ofProject,
+            Matchers.iterableWithSize(0)
+        );
     }
 }
