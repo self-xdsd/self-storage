@@ -6,6 +6,7 @@ package com.selfxdsd.storage.generated.jooq;
 
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfTasksXdsd;
@@ -27,6 +28,11 @@ public class Tables {
      * The table <code>self_xdsd.slf_contributors_xdsd</code>.
      */
     public static final SlfContributorsXdsd SLF_CONTRIBUTORS_XDSD = SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD;
+
+    /**
+     * The table <code>self_xdsd.slf_invoices_xdsd</code>.
+     */
+    public static final SlfInvoicesXdsd SLF_INVOICES_XDSD = SlfInvoicesXdsd.SLF_INVOICES_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_pms_xdsd</code>.
