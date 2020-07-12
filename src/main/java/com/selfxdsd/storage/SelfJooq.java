@@ -30,6 +30,8 @@ import com.selfxdsd.api.storage.Storage;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #66:30min Implement and write integration tests for the
+ *  Invoices and InvoicedTask infrastructure.
  */
 public final class SelfJooq implements Storage {
 
