@@ -96,3 +96,20 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
     FOREIGN KEY (repo_fullname, provider)
     REFERENCES self_xdsd.slf_projects_xdsd (repo_fullname, provider)
 );
+
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_invoices_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`slf_invoices_xdsd` (
+  `invoiceId` INT NOT NULL AUTO_INCREMENT,
+  `repo_fullname` VARCHAR(256) NOT NULL,
+  `username` VARCHAR(100) NOT NULL,
+  `provider` VARCHAR(50) NOT NULL,
+  `role` VARCHAR(32) NOT NULL,
+  `payment_timestamp` DATETIME NULL DEFAULT NULL,
+  `createdAt` DATETIME NOT NULL,
+  `transactionId` VARCHAR(256) NULL DEFAULT NULL,
+  PRIMARY KEY (`invoiceId`),
+  CONSTRAINT `fkContract`
+    FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role`)
+    REFERENCES `self_xdsd`.`slf_contracts_xdsd` (`repo_fullname` , `username` , `provider` , `role`))
