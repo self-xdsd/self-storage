@@ -330,7 +330,8 @@ public final class SelfTasks implements Tasks {
                 rec.getValue(SLF_TASKS_XDSD.ISSUEID),
                 this.storage,
                 rec.getValue(SLF_TASKS_XDSD.ASSIGNED),
-                rec.getValue(SLF_TASKS_XDSD.DEADLINE)
+                rec.getValue(SLF_TASKS_XDSD.DEADLINE),
+                30
             );
         }
         return task;

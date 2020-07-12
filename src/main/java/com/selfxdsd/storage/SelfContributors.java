@@ -25,6 +25,7 @@ package com.selfxdsd.storage;
 import com.selfxdsd.api.Contract;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Contributors;
+import com.selfxdsd.api.Task;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contracts.ContributorContracts;
 import com.selfxdsd.core.contracts.StoredContract;
@@ -201,10 +202,10 @@ public final class SelfContributors implements Contributors {
     }
 
     @Override
-    public Contributor elect(final String role) {
+    public Contributor elect(final Task task) {
         throw new UnsupportedOperationException(
             "You can only elect a Contributor out of a Project's contributors."
-          + " Call #ofProject(...) first."
+                + " Call #ofProject(...) first."
         );
     }
 

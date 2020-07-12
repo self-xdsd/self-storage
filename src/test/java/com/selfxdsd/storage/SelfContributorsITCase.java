@@ -28,6 +28,7 @@ import org.hamcrest.Matchers;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
 
@@ -135,7 +136,7 @@ public final class SelfContributorsITCase {
         final Contributors contributors = new SelfJooq(
             new H2Database()
         ).contributors();
-        contributors.elect(Contract.Roles.DEV);
+        contributors.elect(Mockito.mock(Task.class));
     }
 
     /**

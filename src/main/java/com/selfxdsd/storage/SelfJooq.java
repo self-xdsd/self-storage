@@ -31,7 +31,7 @@ import com.selfxdsd.api.storage.Storage;
  * @version $Id$
  * @since 0.0.1
  */
-public final class SelfJooq implements Storage, AutoCloseable{
+public final class SelfJooq implements Storage {
 
     /**
      * The Database we're working with.
@@ -81,6 +81,11 @@ public final class SelfJooq implements Storage, AutoCloseable{
 
     @Override
     public Invoices invoices() {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
+    public InvoicedTasks invoicedTasks() {
         throw new UnsupportedOperationException("Not yet implemented.");
     }
 
