@@ -26,8 +26,14 @@ import com.selfxdsd.api.InvoicedTask;
 import com.selfxdsd.api.InvoicedTasks;
 import com.selfxdsd.api.Task;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contracts.invoices.StoredInvoicedTask;
+import org.jooq.Record;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Iterator;
+
+import static com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD;
 
 /**
  * Invoiced tasks in Self.
@@ -71,7 +77,45 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
         final int invoiceId,
         final Task finished
     ) {
-        return null;
+        final Record inserted = this.database.jooq()
+            .insertInto(
+                SLF_INVOICEDTASKS_XDSD,
+                SLF_INVOICEDTASKS_XDSD.INVOICEID,
+                SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME,
+                SLF_INVOICEDTASKS_XDSD.USERNAME,
+                SLF_INVOICEDTASKS_XDSD.PROVIDER,
+                SLF_INVOICEDTASKS_XDSD.ROLE,
+                SLF_INVOICEDTASKS_XDSD.VALUE.cast(BigDecimal.class),
+                SLF_INVOICEDTASKS_XDSD.ISSUEID,
+                SLF_INVOICEDTASKS_XDSD.ASSIGNED,
+                SLF_INVOICEDTASKS_XDSD.DEADLINE,
+                SLF_INVOICEDTASKS_XDSD.INVOICED
+            ).values(
+                invoiceId,
+                finished.project().repoFullName(),
+                finished.assignee().username(),
+                finished.project().provider(),
+                finished.role(),
+                finished.value(),
+                finished.issue().issueId(),
+                finished.assignmentDate(),
+                finished.deadline(),
+                LocalDateTime.now()
+            )
+            .returningResult(
+                SLF_INVOICEDTASKS_XDSD.ID,
+                SLF_INVOICEDTASKS_XDSD.VALUE
+            )
+            .fetchOne();
+        return new StoredInvoicedTask(
+            inserted.getValue(SLF_INVOICEDTASKS_XDSD.ID),
+            invoiceId,
+            inserted.getValue(
+                SLF_INVOICEDTASKS_XDSD.VALUE.cast(BigDecimal.class)
+            ),
+            finished,
+            this.storage
+        );
     }
 
     @Override

@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> {
 
-    private static final long serialVersionUID = -140236732;
+    private static final long serialVersionUID = -1061941717;
 
     /**
      * The reference instance of <code>self_xdsd.slf_invoicedtasks_xdsd</code>
@@ -101,6 +101,11 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     public final TableField<SlfInvoicedtasksXdsdRecord, LocalDateTime> INVOICED = createField(DSL.name("invoiced"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.invoiceId</code>.
+     */
+    public final TableField<SlfInvoicedtasksXdsdRecord, Integer> INVOICEID = createField(DSL.name("invoiceId"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * Create a <code>self_xdsd.slf_invoicedtasks_xdsd</code> table reference
      */
     public SlfInvoicedtasksXdsd() {
@@ -140,7 +145,7 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_INVOICEDTASKS_XDSD_CONTRACTFK_IDX, Indexes.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK_IDX, Indexes.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFKEY);
+        return Arrays.<Index>asList(Indexes.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK_IDX);
     }
 
     @Override
@@ -185,11 +190,11 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, String, String, String, String, Long, String, LocalDateTime, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Integer, String, String, String, String, Long, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }
