@@ -78,12 +78,18 @@ public final class SelfInvoices implements Invoices {
 
     @Override
     public Invoice createNewInvoice(final Contract.Id contractId) {
-        return null;
+        throw new UnsupportedOperationException(
+            "Cannot create an Invoice outside of a Contract. "
+          + "Call #ofContract(...) first."
+        );
     }
 
     @Override
     public Invoice active() {
-        return null;
+        throw new UnsupportedOperationException(
+            "Cannot get the active Invoice out of all of them. "
+          + "Call #ofContract(...) first."
+        );
     }
 
     @Override
@@ -94,7 +100,8 @@ public final class SelfInvoices implements Invoices {
     @Override
     public Iterator<Invoice> iterator() {
         throw new UnsupportedOperationException(
-            "You cannot iterate over all Invoices."
+            "You cannot iterate over all Invoices. "
+          + "Call #ofContract(...) first."
         );
     }
 

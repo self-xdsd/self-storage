@@ -28,6 +28,7 @@ import com.selfxdsd.api.Invoices;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 
@@ -83,4 +84,36 @@ public final class SelfInvoicesITCase {
         );
     }
 
+    /**
+     * SelfInvoices shouldn't be able to create a new invoice.
+     */
+    @Test (expected = UnsupportedOperationException.class)
+    public void cannotCreateNewInvoice() {
+        final Invoices invoices = new SelfJooq(
+            new H2Database()
+        ).invoices();
+        invoices.createNewInvoice(Mockito.mock(Contract.Id.class));
+    }
+
+    /**
+     * SelfInvoices shouldn't be able iterate.
+     */
+    @Test (expected = UnsupportedOperationException.class)
+    public void cannotIterate() {
+        final Invoices invoices = new SelfJooq(
+            new H2Database()
+        ).invoices();
+        invoices.iterator();
+    }
+
+    /**
+     * SelfInvoices shouldn't be able to return any active Invoice.
+     */
+    @Test (expected = UnsupportedOperationException.class)
+    public void cannotReturnActive() {
+        final Invoices invoices = new SelfJooq(
+            new H2Database()
+        ).invoices();
+        invoices.active();
+    }
 }
