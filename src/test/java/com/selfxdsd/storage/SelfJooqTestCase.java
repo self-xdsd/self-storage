@@ -97,6 +97,21 @@ public final class SelfJooqTestCase {
     }
 
     /**
+     * SelfJooq can return the Invoices.
+     */
+    @Test
+    public void returnsInvoices() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.invoices(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfInvoices.class)
+            )
+        );
+    }
+
+    /**
      * SelfJooq can return the Tasks.
      */
     @Test

@@ -103,7 +103,9 @@ public final class SelfPms implements ProjectManagers {
                 SLF_PMS_XDSD.PROVIDER,
                 SLF_PMS_XDSD.ACCESS_TOKEN)
             .values(username, provider, accessToken)
-            .execute();
+            .returning(SLF_PMS_XDSD.ID)
+            .fetchOne()
+            .getValue(SLF_PMS_XDSD.ID);
         if(pmId > 0){
             return new StoredProjectManager(pmId,
                 username,
