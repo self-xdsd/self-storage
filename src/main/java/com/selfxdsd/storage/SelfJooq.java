@@ -89,7 +89,7 @@ public final class SelfJooq implements Storage {
 
     @Override
     public InvoicedTasks invoicedTasks() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        return new SelfInvoicedTasks(this, this.database);
     }
 
     @Override
