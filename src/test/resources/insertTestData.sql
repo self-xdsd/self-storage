@@ -111,3 +111,27 @@ INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 VALUES
 (1, 'amihaiemil/docker-java-api', 'john', 'github', 'DEV', NOW() , null, null);
 
+INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
+(invoiceId,
+ repo_fullname,
+ username,
+ provider,
+ role,
+ value,
+ issueId,
+ assigned,
+ deadline,
+ invoiced)
+VALUES
+(   1,
+    'amihaiemil/docker-java-api',
+    'john',
+    'github',
+    'DEV',
+    15000,
+    '123',
+    '2020-06-01',
+    '2020-06-11',
+    NOW()
+);
+

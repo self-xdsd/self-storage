@@ -109,7 +109,27 @@ CREATE TABLE `self_xdsd`.`slf_invoices_xdsd` (
   `payment_timestamp` DATETIME NULL DEFAULT NULL,
   `createdAt` DATETIME NOT NULL,
   `transactionId` VARCHAR(256) NULL DEFAULT NULL,
-  PRIMARY KEY (`invoiceId`),
+  PRIMARY KEY (`invoiceId`, `repo_fullname`, `username`, `provider`, `role`),
   CONSTRAINT `fkContract`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role`)
-    REFERENCES `self_xdsd`.`slf_contracts_xdsd` (`repo_fullname` , `username` , `provider` , `role`))
+    REFERENCES `self_xdsd`.`slf_contracts_xdsd` (`repo_fullname` , `username` , `provider` , `role`));
+
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_invoicedtasks_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `repo_fullname` VARCHAR(256) NOT NULL,
+  `username` VARCHAR(100) NOT NULL,
+  `provider` VARCHAR(50) NOT NULL,
+  `role` VARCHAR(32) NOT NULL,
+  `value` BIGINT NOT NULL,
+  `issueId` VARCHAR(50) NOT NULL,
+  `assigned` DATETIME NOT NULL,
+  `deadline` DATETIME NOT NULL,
+  `invoiced` DATETIME NOT NULL,
+  `invoiceId` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `invoiceContractFk`
+    FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
+    REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`));
