@@ -22,8 +22,14 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.InvoicedTasks;
+import com.selfxdsd.api.*;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * Integration tests for {@link SelfInvoicedTasks}.
@@ -43,6 +49,52 @@ public final class SelfInvoicedTasksITCase {
             new H2Database()
         ).invoicedTasks();
         tasks.iterator();
+    }
+
+    /**
+     * SelfInvoicedTask can register/Invoice a task.
+     * @checkstyle ExecutableStatementCount (100 lines)
+     */
+    @Test
+    public void registersTask() {
+        final Project project = Mockito.mock(Project.class);
+        Mockito.when(project.provider()).thenReturn(Provider.Names.GITHUB);
+        Mockito.when(project.repoFullName())
+            .thenReturn("amihaiemil/docker-java-api");
+        final Contributor john = Mockito.mock(Contributor.class);
+        Mockito.when(john.username()).thenReturn("john");
+        final Issue issue = Mockito.mock(Issue.class);
+        Mockito.when(issue.issueId()).thenReturn("456");
+
+        final Task task = Mockito.mock(Task.class);
+        Mockito.when(task.project()).thenReturn(project);
+        Mockito.when(task.assignee()).thenReturn(john);
+        Mockito.when(task.issue()).thenReturn(issue);
+        Mockito.when(task.value()).thenReturn(BigDecimal.valueOf(18500));
+        Mockito.when(task.role()).thenReturn(Contract.Roles.DEV);
+        Mockito.when(task.assignmentDate()).thenReturn(LocalDateTime.now());
+        Mockito.when(task.deadline()).thenReturn(
+            LocalDateTime.now().plusDays(10)
+        );
+
+        final InvoicedTasks tasks = new SelfJooq(
+            new H2Database()
+        ).invoicedTasks();
+        final InvoicedTask invoiced = tasks.register(1, task);
+
+        MatcherAssert.assertThat(invoiced.task(), Matchers.is(task));
+        MatcherAssert.assertThat(
+            invoiced.invoicedTaskId(),
+            Matchers.greaterThan(1)
+        );
+        MatcherAssert.assertThat(
+            invoiced.value(),
+            Matchers.equalTo(BigDecimal.valueOf(18500))
+        );
+        MatcherAssert.assertThat(
+            invoiced.invoice().invoiceId(),
+            Matchers.equalTo(1)
+        );
     }
 
 }

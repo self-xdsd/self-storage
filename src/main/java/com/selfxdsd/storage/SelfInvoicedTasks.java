@@ -85,7 +85,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 SLF_INVOICEDTASKS_XDSD.USERNAME,
                 SLF_INVOICEDTASKS_XDSD.PROVIDER,
                 SLF_INVOICEDTASKS_XDSD.ROLE,
-                SLF_INVOICEDTASKS_XDSD.VALUE.cast(BigDecimal.class),
+                SLF_INVOICEDTASKS_XDSD.VALUE.cast(BigDecimal.class).as("value"),
                 SLF_INVOICEDTASKS_XDSD.ISSUEID,
                 SLF_INVOICEDTASKS_XDSD.ASSIGNED,
                 SLF_INVOICEDTASKS_XDSD.DEADLINE,
@@ -110,8 +110,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
         return new StoredInvoicedTask(
             inserted.getValue(SLF_INVOICEDTASKS_XDSD.ID),
             invoiceId,
-            inserted.getValue(
-                SLF_INVOICEDTASKS_XDSD.VALUE.cast(BigDecimal.class)
+            BigDecimal.valueOf(
+                inserted.getValue(SLF_INVOICEDTASKS_XDSD.VALUE)
             ),
             finished,
             this.storage
