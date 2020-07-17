@@ -6,6 +6,7 @@ package com.selfxdsd.storage.generated.jooq;
 
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd;
@@ -13,6 +14,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfTasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfContractsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfContributorsXdsdRecord;
+import com.selfxdsd.storage.generated.jooq.tables.records.SlfInvoicedtasksXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfInvoicesXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfPmsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfProjectsXdsdRecord;
@@ -37,6 +39,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<SlfInvoicedtasksXdsdRecord, Integer> IDENTITY_SLF_INVOICEDTASKS_XDSD = Identities0.IDENTITY_SLF_INVOICEDTASKS_XDSD;
     public static final Identity<SlfInvoicesXdsdRecord, Integer> IDENTITY_SLF_INVOICES_XDSD = Identities0.IDENTITY_SLF_INVOICES_XDSD;
     public static final Identity<SlfPmsXdsdRecord, Integer> IDENTITY_SLF_PMS_XDSD = Identities0.IDENTITY_SLF_PMS_XDSD;
 
@@ -46,6 +49,7 @@ public class Keys {
 
     public static final UniqueKey<SlfContractsXdsdRecord> KEY_SLF_CONTRACTS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_CONTRACTS_XDSD_PRIMARY;
     public static final UniqueKey<SlfContributorsXdsdRecord> KEY_SLF_CONTRIBUTORS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_CONTRIBUTORS_XDSD_PRIMARY;
+    public static final UniqueKey<SlfInvoicedtasksXdsdRecord> KEY_SLF_INVOICEDTASKS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_INVOICEDTASKS_XDSD_PRIMARY;
     public static final UniqueKey<SlfInvoicesXdsdRecord> KEY_SLF_INVOICES_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_INVOICES_XDSD_PRIMARY;
     public static final UniqueKey<SlfPmsXdsdRecord> KEY_SLF_PMS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_PMS_XDSD_PRIMARY;
     public static final UniqueKey<SlfProjectsXdsdRecord> KEY_SLF_PROJECTS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_PROJECTS_XDSD_PRIMARY;
@@ -68,6 +72,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<SlfInvoicedtasksXdsdRecord, Integer> IDENTITY_SLF_INVOICEDTASKS_XDSD = Internal.createIdentity(SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.ID);
         public static Identity<SlfInvoicesXdsdRecord, Integer> IDENTITY_SLF_INVOICES_XDSD = Internal.createIdentity(SlfInvoicesXdsd.SLF_INVOICES_XDSD, SlfInvoicesXdsd.SLF_INVOICES_XDSD.INVOICEID);
         public static Identity<SlfPmsXdsdRecord, Integer> IDENTITY_SLF_PMS_XDSD = Internal.createIdentity(SlfPmsXdsd.SLF_PMS_XDSD, SlfPmsXdsd.SLF_PMS_XDSD.ID);
     }
@@ -75,6 +80,7 @@ public class Keys {
     private static class UniqueKeys0 {
         public static final UniqueKey<SlfContractsXdsdRecord> KEY_SLF_CONTRACTS_XDSD_PRIMARY = Internal.createUniqueKey(SlfContractsXdsd.SLF_CONTRACTS_XDSD, "KEY_slf_contracts_xdsd_PRIMARY", new TableField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.REPO_FULLNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER, SlfContractsXdsd.SLF_CONTRACTS_XDSD.ROLE }, true);
         public static final UniqueKey<SlfContributorsXdsdRecord> KEY_SLF_CONTRIBUTORS_XDSD_PRIMARY = Internal.createUniqueKey(SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD, "KEY_slf_contributors_xdsd_PRIMARY", new TableField[] { SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD.USERNAME, SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD.PROVIDER }, true);
+        public static final UniqueKey<SlfInvoicedtasksXdsdRecord> KEY_SLF_INVOICEDTASKS_XDSD_PRIMARY = Internal.createUniqueKey(SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD, "KEY_slf_invoicedtasks_xdsd_PRIMARY", new TableField[] { SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.ID }, true);
         public static final UniqueKey<SlfInvoicesXdsdRecord> KEY_SLF_INVOICES_XDSD_PRIMARY = Internal.createUniqueKey(SlfInvoicesXdsd.SLF_INVOICES_XDSD, "KEY_slf_invoices_xdsd_PRIMARY", new TableField[] { SlfInvoicesXdsd.SLF_INVOICES_XDSD.INVOICEID }, true);
         public static final UniqueKey<SlfPmsXdsdRecord> KEY_SLF_PMS_XDSD_PRIMARY = Internal.createUniqueKey(SlfPmsXdsd.SLF_PMS_XDSD, "KEY_slf_pms_xdsd_PRIMARY", new TableField[] { SlfPmsXdsd.SLF_PMS_XDSD.ID }, true);
         public static final UniqueKey<SlfProjectsXdsdRecord> KEY_SLF_PROJECTS_XDSD_PRIMARY = Internal.createUniqueKey(SlfProjectsXdsd.SLF_PROJECTS_XDSD, "KEY_slf_projects_xdsd_PRIMARY", new TableField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.REPO_FULLNAME, SlfProjectsXdsd.SLF_PROJECTS_XDSD.PROVIDER }, true);
