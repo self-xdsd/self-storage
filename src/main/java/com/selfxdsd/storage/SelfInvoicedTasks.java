@@ -40,6 +40,9 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd.SL
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @todo #72:30min Implement and test method ofInvoice here.
+ *  After that is finished, we should also implement
+ *  SelfInvoices.ofContract(...).
  */
 public final class SelfInvoicedTasks implements InvoicedTasks {
 
