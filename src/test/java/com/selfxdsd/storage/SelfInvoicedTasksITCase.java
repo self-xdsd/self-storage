@@ -110,6 +110,7 @@ public final class SelfInvoicedTasksITCase {
         Mockito.when(task.deadline()).thenReturn(
             LocalDateTime.now().plusDays(10)
         );
+        Mockito.when(task.estimation()).thenReturn(45);
 
         final InvoicedTasks tasks = new SelfJooq(
             new H2Database()
@@ -124,6 +125,10 @@ public final class SelfInvoicedTasksITCase {
         MatcherAssert.assertThat(
             invoiced.value(),
             Matchers.equalTo(BigDecimal.valueOf(18500))
+        );
+        MatcherAssert.assertThat(
+            invoiced.task().estimation(),
+            Matchers.equalTo(45)
         );
         MatcherAssert.assertThat(
             invoiced.invoice().invoiceId(),

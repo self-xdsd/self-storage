@@ -121,7 +121,8 @@ INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
  issueId,
  assigned,
  deadline,
- invoiced)
+ invoiced,
+ estimation_minutes)
 VALUES
 (   1,
     'amihaiemil/docker-java-api',
@@ -132,6 +133,7 @@ VALUES
     '123',
     '2020-06-01',
     '2020-06-11',
-    NOW()
+    NOW(),
+    60
 );
 

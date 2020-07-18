@@ -130,6 +130,7 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
   `deadline` DATETIME NOT NULL,
   `invoiced` DATETIME NOT NULL,
   `invoiceId` INT NOT NULL,
+  `estimation_minutes` INT NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `invoiceContractFk`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)

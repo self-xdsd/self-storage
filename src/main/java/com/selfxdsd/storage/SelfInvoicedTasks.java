@@ -110,7 +110,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 SLF_INVOICEDTASKS_XDSD.ISSUEID,
                 SLF_INVOICEDTASKS_XDSD.ASSIGNED,
                 SLF_INVOICEDTASKS_XDSD.DEADLINE,
-                SLF_INVOICEDTASKS_XDSD.INVOICED
+                SLF_INVOICEDTASKS_XDSD.INVOICED,
+                SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES
             ).values(
                 invoiceId,
                 finished.project().repoFullName(),
@@ -121,7 +122,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 finished.issue().issueId(),
                 finished.assignmentDate(),
                 finished.deadline(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                finished.estimation()
             )
             .returningResult(
                 SLF_INVOICEDTASKS_XDSD.ID,
@@ -132,7 +134,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             inserted.getValue(SLF_INVOICEDTASKS_XDSD.ID),
             invoiceId,
             BigDecimal.valueOf(
-                inserted.getValue(SLF_INVOICEDTASKS_XDSD.VALUE)
+                inserted.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
             finished,
             this.storage
@@ -160,7 +162,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             rec.getValue(SLF_INVOICEDTASKS_XDSD.ID),
             rec.getValue(SLF_INVOICEDTASKS_XDSD.INVOICEID),
             BigDecimal.valueOf(
-                rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE)
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
             new StoredTask(
                 this.storage.contracts().findById(

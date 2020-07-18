@@ -9,6 +9,7 @@ import com.selfxdsd.storage.generated.jooq.Keys;
 import com.selfxdsd.storage.generated.jooq.SelfXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfInvoicedtasksXdsdRecord;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> {
 
-    private static final long serialVersionUID = -1061941717;
+    private static final long serialVersionUID = -2091574506;
 
     /**
      * The reference instance of <code>self_xdsd.slf_invoicedtasks_xdsd</code>
@@ -54,6 +55,11 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.id</code>.
      */
     public final TableField<SlfInvoicedtasksXdsdRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.invoiceId</code>.
+     */
+    public final TableField<SlfInvoicedtasksXdsdRecord, Integer> INVOICEID = createField(DSL.name("invoiceId"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.repo_fullname</code>.
@@ -78,7 +84,7 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.value</code>.
      */
-    public final TableField<SlfInvoicedtasksXdsdRecord, Long> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.issueId</code>.
@@ -101,9 +107,9 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     public final TableField<SlfInvoicedtasksXdsdRecord, LocalDateTime> INVOICED = createField(DSL.name("invoiced"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
     /**
-     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.invoiceId</code>.
+     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.estimation_minutes</code>.
      */
-    public final TableField<SlfInvoicedtasksXdsdRecord, Integer> INVOICEID = createField(DSL.name("invoiceId"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<SlfInvoicedtasksXdsdRecord, Integer> ESTIMATION_MINUTES = createField(DSL.name("estimation_minutes"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_invoicedtasks_xdsd</code> table reference
@@ -190,11 +196,11 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, String, String, String, String, Long, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Integer, Integer, String, String, String, String, BigInteger, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }
