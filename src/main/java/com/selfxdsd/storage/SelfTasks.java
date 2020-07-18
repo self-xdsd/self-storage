@@ -50,9 +50,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #75:60min Both Task and InvoicedTask should save the task's estimation
- *  in the DB table. At the moment estimation is only given in StoredTask's
- *  constructor, but it is not processed further.
  */
 public final class SelfTasks implements Tasks {
 
