@@ -52,6 +52,40 @@ public final class SelfInvoicedTasksITCase {
     }
 
     /**
+     * SelfInvoicedTasks should return en existing Invoice's tasks.
+     */
+    @Test
+    public void returnsTasksOfInvoice() {
+        final InvoicedTasks tasks = new SelfJooq(
+            new H2Database()
+        ).invoicedTasks();
+        final InvoicedTasks ofInvoiceOne = tasks.ofInvoice(1);
+        for(final InvoicedTask invoiced : ofInvoiceOne) {
+            final Task task = invoiced.task();
+            MatcherAssert.assertThat(
+                invoiced.invoice().invoiceId(),
+                Matchers.equalTo(1)
+            );
+            MatcherAssert.assertThat(
+                task.project().repoFullName(),
+                Matchers.equalTo("amihaiemil/docker-java-api")
+            );
+            MatcherAssert.assertThat(
+                task.project().provider(),
+                Matchers.equalTo(Provider.Names.GITHUB)
+            );
+            MatcherAssert.assertThat(
+                task.assignee().username(),
+                Matchers.equalTo("john")
+            );
+            MatcherAssert.assertThat(
+                task.role(),
+                Matchers.equalTo(Contract.Roles.DEV)
+            );
+        }
+    }
+
+    /**
      * SelfInvoicedTask can register/Invoice a task.
      * @checkstyle ExecutableStatementCount (100 lines)
      */

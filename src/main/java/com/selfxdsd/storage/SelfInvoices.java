@@ -37,6 +37,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @todo #75:30min Implement and write integration tests for
+ *  method ofContract(...) in this class.
  */
 public final class SelfInvoices implements Invoices {
 

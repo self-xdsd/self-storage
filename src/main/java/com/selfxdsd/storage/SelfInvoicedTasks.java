@@ -22,16 +22,22 @@
  */
 package com.selfxdsd.storage;
 
+import com.selfxdsd.api.Contract;
 import com.selfxdsd.api.InvoicedTask;
 import com.selfxdsd.api.InvoicedTasks;
 import com.selfxdsd.api.Task;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contracts.invoices.InvoiceTasks;
 import com.selfxdsd.core.contracts.invoices.StoredInvoicedTask;
+import com.selfxdsd.core.tasks.StoredTask;
 import org.jooq.Record;
+import org.jooq.Result;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD;
 
@@ -40,9 +46,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd.SL
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #72:30min Implement and test method ofInvoice here.
- *  After that is finished, we should also implement
- *  SelfInvoices.ofContract(...).
  */
 public final class SelfInvoicedTasks implements InvoicedTasks {
 
@@ -72,7 +75,22 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
 
     @Override
     public InvoicedTasks ofInvoice(final int invoiceId) {
-        return null;
+        return new InvoiceTasks(
+            invoiceId,
+            () -> {
+                final Result<Record> results = database.jooq()
+                    .select()
+                    .from(SLF_INVOICEDTASKS_XDSD)
+                    .where(SLF_INVOICEDTASKS_XDSD.INVOICEID.eq(invoiceId))
+                    .fetch();
+                final List<InvoicedTask> tasks = new ArrayList<>();
+                for (final Record rec : results) {
+                    tasks.add(invoicedTaskFromRecord(rec));
+                }
+                return tasks.stream();
+            },
+            this.storage
+        );
     }
 
     @Override
@@ -127,5 +145,40 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             "You cannot iterate over all invoiced tasks. "
           + "Call #ofInvoice(...) first."
         );
+    }
+
+    /**
+     * Build an InvoicedTask from a DB Record.
+     * @param rec Record.
+     * @return InvoicedTask.
+     * @todo #75:60min At the moment, the Contract is read for each
+     *  InvoicedTask. Instead, we should take the Contract from the Invoice.
+     *  This way, we will read the Contract only once, instead of n times.
+     */
+    private InvoicedTask invoicedTaskFromRecord(final Record rec) {
+        final InvoicedTask task = new StoredInvoicedTask(
+            rec.getValue(SLF_INVOICEDTASKS_XDSD.ID),
+            rec.getValue(SLF_INVOICEDTASKS_XDSD.INVOICEID),
+            BigDecimal.valueOf(
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE)
+            ),
+            new StoredTask(
+                this.storage.contracts().findById(
+                    new Contract.Id(
+                        rec.getValue(SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME),
+                        rec.getValue(SLF_INVOICEDTASKS_XDSD.USERNAME),
+                        rec.getValue(SLF_INVOICEDTASKS_XDSD.PROVIDER),
+                        rec.getValue(SLF_INVOICEDTASKS_XDSD.ROLE)
+                    )
+                ),
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.ISSUEID),
+                this.storage,
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.ASSIGNED),
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.DEADLINE),
+                30
+            ),
+            this.storage
+        );
+        return task;
     }
 }
