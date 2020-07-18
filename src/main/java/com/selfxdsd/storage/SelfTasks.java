@@ -336,7 +336,7 @@ public final class SelfTasks implements Tasks {
                 this.storage,
                 rec.getValue(SLF_TASKS_XDSD.ASSIGNED),
                 rec.getValue(SLF_TASKS_XDSD.DEADLINE),
-                30
+                rec.getValue(SLF_TASKS_XDSD.ESTIMATION_MINUTES)
             );
         }
         return task;
