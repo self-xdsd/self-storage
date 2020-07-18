@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
-    private static final long serialVersionUID = -1840413705;
+    private static final long serialVersionUID = 591222094;
 
     /**
      * The reference instance of <code>self_xdsd.slf_tasks_xdsd</code>
@@ -83,6 +83,11 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
      * The column <code>self_xdsd.slf_tasks_xdsd.deadline</code>.
      */
     public final TableField<SlfTasksXdsdRecord, LocalDateTime> DEADLINE = createField(DSL.name("deadline"), org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_tasks_xdsd.estimation_minutes</code>.
+     */
+    public final TableField<SlfTasksXdsdRecord, Integer> ESTIMATION_MINUTES = createField(DSL.name("estimation_minutes"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_tasks_xdsd</code> table reference
@@ -173,11 +178,11 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<String, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<String, String, String, String, String, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

@@ -9,7 +9,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
 import java.time.LocalDateTime;
 
 import org.jooq.Field;
-import org.jooq.Record1;
+import org.jooq.Record5;
 import org.jooq.Record8;
 import org.jooq.Row8;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicesXdsdRecord extends UpdatableRecordImpl<SlfInvoicesXdsdRecord> implements Record8<Integer, String, String, String, String, LocalDateTime, LocalDateTime, String> {
 
-    private static final long serialVersionUID = 1198677407;
+    private static final long serialVersionUID = 1721942799;
 
     /**
      * Setter for <code>self_xdsd.slf_invoices_xdsd.invoiceId</code>.
@@ -140,8 +140,8 @@ public class SlfInvoicesXdsdRecord extends UpdatableRecordImpl<SlfInvoicesXdsdRe
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<Integer> key() {
-        return (Record1) super.key();
+    public Record5<Integer, String, String, String, String> key() {
+        return (Record5) super.key();
     }
 
     // -------------------------------------------------------------------------

@@ -115,12 +115,14 @@ public final class SelfTasks implements Tasks {
                 SLF_TASKS_XDSD.REPO_FULLNAME,
                 SLF_TASKS_XDSD.ISSUEID,
                 SLF_TASKS_XDSD.PROVIDER,
-                SLF_TASKS_XDSD.ROLE
+                SLF_TASKS_XDSD.ROLE,
+                SLF_TASKS_XDSD.ESTIMATION_MINUTES
             ).values(
                 issue.repoFullName(),
                 issue.issueId(),
                 issue.provider(),
-                issue.role()
+                issue.role(),
+                60
             ).execute();
             return new StoredTask(
                 project,

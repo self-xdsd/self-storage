@@ -88,6 +88,7 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   username VARCHAR(100) NULL DEFAULT NULL,
   assigned DATETIME NULL DEFAULT NULL,
   deadline DATETIME NULL DEFAULT NULL,
+  estimation_minutes INT NOT NULL,
   PRIMARY KEY (issueId, provider, repo_fullname),
   CONSTRAINT assignee
     FOREIGN KEY (repo_fullname, provider, role, username)

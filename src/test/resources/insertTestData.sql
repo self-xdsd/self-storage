@@ -70,40 +70,40 @@ VALUES ('vlad/test', 'maria', 'github', 'REV', 8000);
 
 -- INSERT TASKS
 INSERT INTO self_xdsd.slf_tasks_xdsd
-(repo_fullname, issueId, provider, role)
+(repo_fullname, issueId, provider, role, estimation_minutes)
 VALUES
-('vlad/test', '123', 'github', 'DEV');
+('vlad/test', '123', 'github', 'DEV', 60);
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
-(repo_fullname, issueId, provider, role)
+(repo_fullname, issueId, provider, role, estimation_minutes)
 VALUES
-('vlad/test', '124', 'github', 'DEV');
+('vlad/test', '124', 'github', 'DEV', 60);
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
-(repo_fullname, issueId, provider, role, username, assigned, deadline)
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes)
 VALUES
-('amihaiemil/docker-java-api', '123', 'github', 'DEV', 'alexandra', '2020-06-07', '2020-06-17');
+('amihaiemil/docker-java-api', '123', 'github', 'DEV', 'alexandra', '2020-06-07', '2020-06-17', 60);
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
-(repo_fullname, issueId, provider, role, username, assigned, deadline)
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes)
 VALUES
-('amihaiemil/docker-java-api', '124', 'github', 'DEV', 'alexandra', '2020-06-14', '2020-06-24');
+('amihaiemil/docker-java-api', '124', 'github', 'DEV', 'alexandra', '2020-06-14', '2020-06-24', 60);
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
-(repo_fullname, issueId, provider, role, username, assigned, deadline)
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes)
 VALUES
-('amihaiemil/docker-java-api', '125', 'github', 'DEV', 'alexandra', '2020-06-14', '2020-06-24');
+('amihaiemil/docker-java-api', '125', 'github', 'DEV', 'alexandra', '2020-06-14', '2020-06-24', 60);
 
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
-(repo_fullname, issueId, provider, role, username, assigned, deadline)
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes)
 VALUES
-('amihaiemil/docker-java-api', '343', 'github', 'DEV', 'john', '2020-06-07', '2020-06-17');
+('amihaiemil/docker-java-api', '343', 'github', 'DEV', 'john', '2020-06-07', '2020-06-17', 60);
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
-(repo_fullname, issueId, provider, role, username, assigned, deadline)
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes)
 VALUES
-('amihaiemil/docker-java-api', '223', 'github', 'REV', 'john', '2020-06-07', '2020-06-17');
+('amihaiemil/docker-java-api', '223', 'github', 'REV', 'john', '2020-06-07', '2020-06-17', 60);
 
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
