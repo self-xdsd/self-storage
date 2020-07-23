@@ -61,18 +61,16 @@ public final class SelfContributorsITCase {
             Matchers.equalTo(Provider.Names.GITHUB)
         );
 
-        try(final Database connect = testdb.connect()) {
-            final Result<Record> result = connect.jooq().select()
-                .from(SLF_CONTRIBUTORS_XDSD)
-                .where(
-                    SLF_CONTRIBUTORS_XDSD.USERNAME.eq("amihaiemil").and(
-                        SLF_CONTRIBUTORS_XDSD.PROVIDER.eq(
-                            Provider.Names.GITHUB
-                        )
+        final Result<Record> result = testdb.connect().jooq().select()
+            .from(SLF_CONTRIBUTORS_XDSD)
+            .where(
+                SLF_CONTRIBUTORS_XDSD.USERNAME.eq("amihaiemil").and(
+                    SLF_CONTRIBUTORS_XDSD.PROVIDER.eq(
+                        Provider.Names.GITHUB
                     )
-                ).fetch();
-            MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
-        }
+                )
+            ).fetch();
+        MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
     }
 
     /**

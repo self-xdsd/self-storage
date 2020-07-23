@@ -115,26 +115,24 @@ public final class SelfProjects implements Projects {
     @Override
     public Projects assignedTo(final int projectManagerId) {
         final List<Project> assigned = new ArrayList<>();
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_PROJECTS_XDSD)
-                .join(SLF_USERS_XDSD)
-                .on(
-                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
-                        SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
-                    )
-                ).join(SLF_PMS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+        final Result<Record> result = this.database.connect().jooq()
+            .select()
+            .from(SLF_PROJECTS_XDSD)
+            .join(SLF_USERS_XDSD)
+            .on(
+                SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
+                    SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
                 )
-                .where(
-                    SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
-                )
-                .fetch();
-            for(final Record rec : result) {
-                assigned.add(this.projectFromRecord(rec));
-            }
+            ).join(SLF_PMS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+            )
+            .where(
+                SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
+            )
+            .fetch();
+        for(final Record rec : result) {
+            assigned.add(this.projectFromRecord(rec));
         }
         return new PmProjects(projectManagerId, assigned);
     }
@@ -142,28 +140,26 @@ public final class SelfProjects implements Projects {
     @Override
     public Projects ownedBy(final User user) {
         final List<Project> owned = new ArrayList<>();
-        try (final Database connected = this.database.connect()) {
-            final Result<Record> result = connected.jooq()
-                .select()
-                .from(SLF_PROJECTS_XDSD)
-                .join(SLF_USERS_XDSD)
-                .on(
-                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
-                        SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
-                    )
-                ).join(SLF_PMS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+        final Result<Record> result = this.database.connect().jooq()
+            .select()
+            .from(SLF_PROJECTS_XDSD)
+            .join(SLF_USERS_XDSD)
+            .on(
+                SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
+                    SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
                 )
-                .where(
-                    SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
-                        SLF_PROJECTS_XDSD.PROVIDER.eq(user.provider().name())
-                    )
+            ).join(SLF_PMS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+            )
+            .where(
+                SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(user.provider().name())
                 )
-                .fetch();
-            for(final Record rec : result) {
-                owned.add(this.projectFromRecord(rec));
-            }
+            )
+            .fetch();
+        for(final Record rec : result) {
+            owned.add(this.projectFromRecord(rec));
         }
         return new UserProjects(user, owned);
     }

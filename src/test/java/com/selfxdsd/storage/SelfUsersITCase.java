@@ -98,14 +98,12 @@ public final class SelfUsersITCase {
         final Users users = new SelfJooq(database).users();
         users.signUp("foo", "foo@mail.com", Provider.Names.GITHUB);
 
-        try(Database testDb = database.connect()) {
-            final Result<Record> result = testDb.jooq().select()
-                .from(SLF_USERS_XDSD)
-                .where(SLF_USERS_XDSD.USERNAME.eq("foo")
-                    .and(SLF_USERS_XDSD.PROVIDER.eq(Provider.Names.GITHUB)))
-                .fetch();
-            MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
-        }
+        final Result<Record> result = database.connect().jooq().select()
+            .from(SLF_USERS_XDSD)
+            .where(SLF_USERS_XDSD.USERNAME.eq("foo")
+                .and(SLF_USERS_XDSD.PROVIDER.eq(Provider.Names.GITHUB)))
+            .fetch();
+        MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
     }
 
     /**
@@ -117,15 +115,13 @@ public final class SelfUsersITCase {
         final Users users = new SelfJooq(database).users();
         users.signUp("mihai", "mihaiNew@example.com", Provider.Names.GITLAB);
 
-        try(Database testDb = database.connect()) {
-            final Result<Record> result = testDb.jooq().select()
-                .from(SLF_USERS_XDSD)
-                .where(SLF_USERS_XDSD.USERNAME.eq("mihai")
-                    .and(SLF_USERS_XDSD.EMAIL
-                        .eq("mihaiNew@example.com")))
-                .fetch();
-            MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
-        }
+        final Result<Record> result = database.connect().jooq().select()
+            .from(SLF_USERS_XDSD)
+            .where(SLF_USERS_XDSD.USERNAME.eq("mihai")
+                .and(SLF_USERS_XDSD.EMAIL
+                    .eq("mihaiNew@example.com")))
+            .fetch();
+        MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
     }
 
 }
