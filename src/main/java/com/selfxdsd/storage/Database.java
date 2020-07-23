@@ -24,13 +24,15 @@ package com.selfxdsd.storage;
 
 import org.jooq.DSLContext;
 
+import java.io.Closeable;
+
 /**
  * Database accessible via jOOQ.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public interface Database extends AutoCloseable {
+public interface Database extends Closeable {
 
     /**
      * Return a connected instance of this Database.
