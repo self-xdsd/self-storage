@@ -38,7 +38,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.*;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
@@ -119,12 +121,13 @@ public final class SelfTasks implements Tasks {
                 issue.issueId(),
                 issue.provider(),
                 issue.role(),
-                60
+                issue.estimation()
             ).execute();
             return new StoredTask(
                 project,
                 issue.issueId(),
                 issue.role(),
+                issue.estimation(),
                 this.storage
             );
         }
@@ -135,23 +138,28 @@ public final class SelfTasks implements Tasks {
         final String repoFullName,
         final String repoProvider
     ) {
-        final List<Task> ofProject = new ArrayList<>();
-        final Result<Record> result = this.selectTasks(this.database)
-            .where(
-                SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
-                    SLF_TASKS_XDSD.PROVIDER.eq(repoProvider)
-                )
-            )
-            .fetch();
-        for(final Record rec : result) {
-            ofProject.add(
-                this.taskFromRecord(rec)
-            );
-        }
         return new ProjectTasks(
             repoFullName,
             repoProvider,
-            ofProject,
+            new Supplier<Stream<Task>>() {
+                @Override
+                public Stream<Task> get() {
+                    final List<Task> ofProject = new ArrayList<>();
+                    final Result<Record> result = selectTasks(database)
+                        .where(
+                            SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                                SLF_TASKS_XDSD.PROVIDER.eq(repoProvider)
+                            )
+                        )
+                        .fetch();
+                    for(final Record rec : result) {
+                        ofProject.add(
+                            taskFromRecord(rec)
+                        );
+                    }
+                    return ofProject.stream();
+                }
+            },
             this.storage
         );
     }
@@ -312,6 +320,7 @@ public final class SelfTasks implements Tasks {
                 project,
                 rec.getValue(SLF_TASKS_XDSD.ISSUEID),
                 rec.getValue(SLF_TASKS_XDSD.ROLE),
+                rec.getValue(SLF_TASKS_XDSD.ESTIMATION_MINUTES),
                 this.storage
             );
         } else {

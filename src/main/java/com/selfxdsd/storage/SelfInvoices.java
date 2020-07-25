@@ -115,11 +115,13 @@ public final class SelfInvoices implements Invoices {
     private Invoice buildInvoice(final Record record){
         return new StoredInvoice(
             record.getValue(SLF_INVOICES_XDSD.INVOICEID),
-            new Contract.Id(
-                record.getValue(SLF_INVOICES_XDSD.REPO_FULLNAME),
-                record.getValue(SLF_INVOICES_XDSD.USERNAME),
-                record.getValue(SLF_INVOICES_XDSD.PROVIDER),
-                record.getValue(SLF_INVOICES_XDSD.ROLE)
+                this.storage.contracts().findById(
+                    new Contract.Id(
+                    record.getValue(SLF_INVOICES_XDSD.REPO_FULLNAME),
+                    record.getValue(SLF_INVOICES_XDSD.USERNAME),
+                    record.getValue(SLF_INVOICES_XDSD.PROVIDER),
+                    record.getValue(SLF_INVOICES_XDSD.ROLE)
+                )
             ),
             record.getValue(SLF_INVOICES_XDSD.CREATEDAT),
             record.getValue(SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP),

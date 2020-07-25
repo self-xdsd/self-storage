@@ -58,7 +58,7 @@ public final class SelfInvoicesITCase {
             Matchers.lessThanOrEqualTo(LocalDateTime.now())
         );
         MatcherAssert.assertThat(
-            found.contractId(),
+            found.contract().contractId(),
             Matchers.equalTo(
                 new Contract.Id(
                     "amihaiemil/docker-java-api",
