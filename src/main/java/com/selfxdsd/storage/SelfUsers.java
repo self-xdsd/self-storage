@@ -72,8 +72,8 @@ public final class SelfUsers implements Users {
     @Override
     public User signUp(
         final String username,
-        final String email,
-        final String provider
+        final String provider,
+        final String email
     ) {
         final DSLContext jooq = this.database.jooq();
         User dbUser = userFromDb(
