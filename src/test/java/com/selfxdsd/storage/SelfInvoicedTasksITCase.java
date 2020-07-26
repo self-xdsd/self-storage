@@ -92,6 +92,9 @@ public final class SelfInvoicedTasksITCase {
     /**
      * SelfInvoicedTask can register/Invoice a task.
      * @checkstyle ExecutableStatementCount (100 lines)
+     * @todo #79:30min Modify the test bellow to work solely
+     *  with real data from the test H2 database. It should not
+     *  require any mocking at all.
      */
     @Test
     public void registersTask() {
