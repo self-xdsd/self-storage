@@ -22,10 +22,7 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Contract;
-import com.selfxdsd.api.InvoicedTask;
-import com.selfxdsd.api.InvoicedTasks;
-import com.selfxdsd.api.Task;
+import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contracts.invoices.InvoiceTasks;
 import com.selfxdsd.core.contracts.invoices.StoredInvoicedTask;
@@ -74,15 +71,18 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
 
 
     @Override
-    public InvoicedTasks ofInvoice(final int invoiceId) {
+    public InvoicedTasks ofInvoice(final Invoice invoice) {
         return new InvoiceTasks(
-            invoiceId,
+            invoice,
             () -> {
                 final Result<Record> results = database.jooq()
                     .select()
                     .from(SLF_INVOICEDTASKS_XDSD)
-                    .where(SLF_INVOICEDTASKS_XDSD.INVOICEID.eq(invoiceId))
-                    .fetch();
+                    .where(
+                        SLF_INVOICEDTASKS_XDSD.INVOICEID.eq(
+                            invoice.invoiceId()
+                        )
+                    ).fetch();
                 final List<InvoicedTask> tasks = new ArrayList<>();
                 for (final Record rec : results) {
                     tasks.add(invoicedTaskFromRecord(rec));
@@ -95,7 +95,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
 
     @Override
     public InvoicedTask register(
-        final int invoiceId,
+        final Invoice invoice,
         final Task finished
     ) {
         final Record inserted = this.database.jooq()
@@ -113,7 +113,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 SLF_INVOICEDTASKS_XDSD.INVOICED,
                 SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES
             ).values(
-                invoiceId,
+                invoice.invoiceId(),
                 finished.project().repoFullName(),
                 finished.assignee().username(),
                 finished.project().provider(),
@@ -132,7 +132,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             .fetchOne();
         return new StoredInvoicedTask(
             inserted.getValue(SLF_INVOICEDTASKS_XDSD.ID),
-            invoiceId,
+            invoice.invoiceId(),
             BigDecimal.valueOf(
                 inserted.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
