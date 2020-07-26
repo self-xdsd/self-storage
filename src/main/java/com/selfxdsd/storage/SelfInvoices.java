@@ -24,11 +24,14 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contracts.invoices.ContractInvoices;
 import com.selfxdsd.core.contracts.invoices.StoredInvoice;
 import org.jooq.Record;
 import org.jooq.Result;
 
 import java.util.Iterator;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
 
@@ -37,8 +40,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #75:30min Implement and write integration tests for
- *  method ofContract(...) in this class.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -96,7 +97,18 @@ public final class SelfInvoices implements Invoices {
 
     @Override
     public Invoices ofContract(final Contract.Id id) {
-        return null;
+        final Contract contract = this.storage.contracts().findById(id);
+        final Supplier<Stream<Invoice>> ofContract = () -> this.database.jooq()
+            .select()
+            .from(SLF_INVOICES_XDSD)
+            .where(SLF_INVOICES_XDSD.REPO_FULLNAME.eq(id.getRepoFullName())
+                .and(SLF_INVOICES_XDSD.USERNAME.eq(id.getContributorUsername()))
+                .and(SLF_INVOICES_XDSD.PROVIDER.eq(id.getProvider()))
+                .and(SLF_INVOICES_XDSD.ROLE.eq(id.getRole()))
+            )
+            .stream()
+            .map(record -> buildInvoice(record, contract));
+        return new ContractInvoices(id, ofContract, this.storage);
     }
 
     @Override
@@ -112,17 +124,29 @@ public final class SelfInvoices implements Invoices {
      * @param record Record.
      * @return Invoice.
      */
-    private Invoice buildInvoice(final Record record){
+    private Invoice buildInvoice(final Record record) {
+        final Contract contract = this.storage.contracts().findById(
+            new Contract.Id(
+                record.getValue(SLF_INVOICES_XDSD.REPO_FULLNAME),
+                record.getValue(SLF_INVOICES_XDSD.USERNAME),
+                record.getValue(SLF_INVOICES_XDSD.PROVIDER),
+                record.getValue(SLF_INVOICES_XDSD.ROLE)
+            )
+        );
+        return this.buildInvoice(record, contract);
+    }
+
+    /**
+     * Builds an Invoice from a {@link Record} and a {@link Contract}.
+     *
+     * @param record Record.
+     * @param contract Contract.
+     * @return Invoice.
+     */
+    private Invoice buildInvoice(final Record record, final Contract contract) {
         return new StoredInvoice(
             record.getValue(SLF_INVOICES_XDSD.INVOICEID),
-                this.storage.contracts().findById(
-                    new Contract.Id(
-                    record.getValue(SLF_INVOICES_XDSD.REPO_FULLNAME),
-                    record.getValue(SLF_INVOICES_XDSD.USERNAME),
-                    record.getValue(SLF_INVOICES_XDSD.PROVIDER),
-                    record.getValue(SLF_INVOICES_XDSD.ROLE)
-                )
-            ),
+            contract,
             record.getValue(SLF_INVOICES_XDSD.CREATEDAT),
             record.getValue(SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP),
             record.getValue(SLF_INVOICES_XDSD.TRANSACTIONID),

@@ -116,4 +116,39 @@ public final class SelfInvoicesITCase {
         ).invoices();
         invoices.active();
     }
+
+    /**
+     * SelfInvoices can return invoices of a Contract.Id.
+     */
+    @Test
+    public void returnsInvoicesOfContract() {
+        final Invoices invoices = new SelfJooq(new H2Database()).invoices();
+        final Contract.Id id = new Contract.Id(
+            "amihaiemil/docker-java-api",
+            "john",
+            "github",
+            "DEV"
+        );
+        final Iterable<Invoice> ofContract = () -> invoices.ofContract(id)
+            .iterator();
+        MatcherAssert.assertThat(ofContract, Matchers.iterableWithSize(1));
+    }
+
+    /**
+     * SelfInvoices returns empty iterable if there are not invoices for
+     * a contract id.
+     */
+    @Test
+    public void returnsEmptyIfInvoicesOfContractNotFound() {
+        final Invoices invoices = new SelfJooq(new H2Database()).invoices();
+        final Contract.Id id = new Contract.Id(
+            "vlad/test",
+            "maria",
+            "github",
+            "DEV"
+        );
+        final Iterable<Invoice> ofContract = () -> invoices.ofContract(id)
+            .iterator();
+        MatcherAssert.assertThat(ofContract, Matchers.emptyIterable());
+    }
 }
