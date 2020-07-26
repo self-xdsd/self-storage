@@ -59,7 +59,9 @@ public final class SelfInvoicedTasksITCase {
         final InvoicedTasks tasks = new SelfJooq(
             new H2Database()
         ).invoicedTasks();
-        final InvoicedTasks ofInvoiceOne = tasks.ofInvoice(1);
+        final Invoice one = Mockito.mock(Invoice.class);
+        Mockito.when(one.invoiceId()).thenReturn(1);
+        final InvoicedTasks ofInvoiceOne = tasks.ofInvoice(one);
         for(final InvoicedTask invoiced : ofInvoiceOne) {
             final Task task = invoiced.task();
             MatcherAssert.assertThat(
@@ -115,7 +117,9 @@ public final class SelfInvoicedTasksITCase {
         final InvoicedTasks tasks = new SelfJooq(
             new H2Database()
         ).invoicedTasks();
-        final InvoicedTask invoiced = tasks.register(1, task);
+        final Invoice one = Mockito.mock(Invoice.class);
+        Mockito.when(one.invoiceId()).thenReturn(1);
+        final InvoicedTask invoiced = tasks.register(one, task);
 
         MatcherAssert.assertThat(invoiced.task(), Matchers.is(task));
         MatcherAssert.assertThat(
