@@ -85,7 +85,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                     ).fetch();
                 final List<InvoicedTask> tasks = new ArrayList<>();
                 for (final Record rec : results) {
-                    tasks.add(invoicedTaskFromRecord(rec));
+                    tasks.add(invoicedTaskFromRecord(rec, invoice));
                 }
                 return tasks.stream();
             },
@@ -152,12 +152,13 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
     /**
      * Build an InvoicedTask from a DB Record.
      * @param rec Record.
+     * @param invoice Invoice to which the task belongs.
      * @return InvoicedTask.
-     * @todo #75:60min At the moment, the Contract is read for each
-     *  InvoicedTask. Instead, we should take the Contract from the Invoice.
-     *  This way, we will read the Contract only once, instead of n times.
      */
-    private InvoicedTask invoicedTaskFromRecord(final Record rec) {
+    private InvoicedTask invoicedTaskFromRecord(
+        final Record rec,
+        final Invoice invoice
+    ) {
         final InvoicedTask task = new StoredInvoicedTask(
             rec.getValue(SLF_INVOICEDTASKS_XDSD.ID),
             rec.getValue(SLF_INVOICEDTASKS_XDSD.INVOICEID),
@@ -165,14 +166,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
             new StoredTask(
-                this.storage.contracts().findById(
-                    new Contract.Id(
-                        rec.getValue(SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME),
-                        rec.getValue(SLF_INVOICEDTASKS_XDSD.USERNAME),
-                        rec.getValue(SLF_INVOICEDTASKS_XDSD.PROVIDER),
-                        rec.getValue(SLF_INVOICEDTASKS_XDSD.ROLE)
-                    )
-                ),
+                invoice.contract(),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ISSUEID),
                 this.storage,
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ASSIGNED),

@@ -23,6 +23,7 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
+import com.selfxdsd.api.storage.Storage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -56,12 +57,13 @@ public final class SelfInvoicedTasksITCase {
      */
     @Test
     public void returnsTasksOfInvoice() {
-        final InvoicedTasks tasks = new SelfJooq(
-            new H2Database()
-        ).invoicedTasks();
-        final Invoice one = Mockito.mock(Invoice.class);
-        Mockito.when(one.invoiceId()).thenReturn(1);
-        final InvoicedTasks ofInvoiceOne = tasks.ofInvoice(one);
+        final Storage storage = new SelfJooq(new H2Database());
+        final Invoices invoices = storage.invoices();
+        final InvoicedTasks tasks = storage.invoicedTasks();
+
+        final InvoicedTasks ofInvoiceOne = tasks.ofInvoice(
+            invoices.getById(1)
+        );
         for(final InvoicedTask invoiced : ofInvoiceOne) {
             final Task task = invoiced.task();
             MatcherAssert.assertThat(
