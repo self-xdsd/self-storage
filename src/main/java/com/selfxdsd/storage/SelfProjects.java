@@ -99,12 +99,7 @@ public final class SelfProjects implements Projects {
             manager.id()
         ).execute();
         return new StoredProject(
-            new StoredUser(
-                repo.owner().username(),
-                repo.owner().email(),
-                repo.provider(),
-                this.storage
-            ),
+            repo.owner(),
             repo.fullName(),
             webHookToken,
             manager,
