@@ -59,6 +59,10 @@ public final class SelfUsersITCase {
             Matchers.equalTo("github")
         );
         MatcherAssert.assertThat(
+            found.role(),
+            Matchers.equalTo("user")
+        );
+        MatcherAssert.assertThat(
             found.email(),
             Matchers.equalTo("vlad@example.com")
         );
@@ -134,4 +138,26 @@ public final class SelfUsersITCase {
         MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
     }
 
+    /**
+     * Sign up a user by updating them into database (they updated their role).
+     */
+    @Test
+    public void signUpUserByUpdateRole() {
+        final H2Database database = new H2Database();
+        final Users users = new SelfJooq(database).users();
+        users.signUp(
+            "mihai",
+            Provider.Names.GITLAB,
+            "mihai@example.com",
+            "admin"
+        );
+
+        final Result<Record> result = database.connect().jooq().select()
+            .from(SLF_USERS_XDSD)
+            .where(SLF_USERS_XDSD.USERNAME.eq("mihai")
+                .and(SLF_USERS_XDSD.ROLE
+                    .eq("admin")))
+            .fetch();
+        MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
+    }
 }

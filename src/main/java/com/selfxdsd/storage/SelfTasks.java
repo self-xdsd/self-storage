@@ -317,7 +317,7 @@ public final class SelfTasks implements Tasks {
             new StoredUser(
                 rec.getValue(SLF_USERS_XDSD.USERNAME),
                 rec.getValue(SLF_USERS_XDSD.EMAIL),
-                "role",
+                rec.getValue(SLF_USERS_XDSD.ROLE),
                 rec.getValue(SLF_USERS_XDSD.PROVIDER),
                 this.storage
             ),

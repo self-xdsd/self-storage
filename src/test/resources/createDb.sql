@@ -24,6 +24,7 @@ CREATE TABLE self_xdsd.slf_contributors_xdsd (
 
 CREATE TABLE self_xdsd.slf_users_xdsd (
   username VARCHAR(100) NOT NULL,
+  role VARCHAR (100) NOT NULL,
   provider VARCHAR(50) NOT NULL,
   email VARCHAR(150) NULL DEFAULT NULL,
   access_token VARCHAR(512) NULL DEFAULT NULL,

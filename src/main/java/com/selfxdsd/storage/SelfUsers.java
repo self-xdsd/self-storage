@@ -85,17 +85,25 @@ public final class SelfUsers implements Users {
                 SLF_USERS_XDSD,
                 SLF_USERS_XDSD.USERNAME,
                 SLF_USERS_XDSD.PROVIDER,
+                SLF_USERS_XDSD.ROLE,
                 SLF_USERS_XDSD.EMAIL
             ).values(
                 username,
                 provider,
+                role,
                 email
             ).execute();
-        } else if (!dbUser.email().equals(email)) {
+        } else if (!dbUser.email().equals(email)
+            || !dbUser.role().equals(role)
+        ) {
             jooq.update(SLF_USERS_XDSD)
-                    .set(SLF_USERS_XDSD.EMAIL, email)
-                    .where(SLF_USERS_XDSD.USERNAME.eq(username))
-                    .execute();
+                .set(SLF_USERS_XDSD.EMAIL, email)
+                .set(SLF_USERS_XDSD.ROLE, role)
+                .where(
+                    SLF_USERS_XDSD.USERNAME.eq(username).and(
+                        SLF_USERS_XDSD.PROVIDER.eq(provider)
+                    )
+                ).execute();
         } else {
             return dbUser;
         }
@@ -131,7 +139,7 @@ public final class SelfUsers implements Users {
             final User found = new StoredUser(
                 rec.getValue(SLF_USERS_XDSD.USERNAME),
                 rec.getValue(SLF_USERS_XDSD.EMAIL),
-                "role",
+                rec.getValue(SLF_USERS_XDSD.ROLE),
                 rec.getValue(SLF_USERS_XDSD.PROVIDER),
                 this.storage
             );
@@ -153,7 +161,7 @@ public final class SelfUsers implements Users {
                 new StoredUser(
                     res.getValue(SLF_USERS_XDSD.USERNAME),
                     res.getValue(SLF_USERS_XDSD.EMAIL),
-                    "role",
+                    res.getValue(SLF_USERS_XDSD.ROLE),
                     res.getValue(SLF_USERS_XDSD.PROVIDER),
                     this.storage
                 )

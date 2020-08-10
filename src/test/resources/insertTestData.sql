@@ -1,13 +1,13 @@
 -- INSERT USERS
 INSERT INTO self_xdsd.slf_users_xdsd
-(username, provider, email, access_token)
-VALUES ('vlad', 'github', 'vlad@example.com', 'vladgh123token');
+(username, provider, role, email, access_token)
+VALUES ('vlad', 'github', 'user', 'vlad@example.com', 'vladgh123token');
 INSERT INTO self_xdsd.slf_users_xdsd
-(username, provider, email, access_token)
-VALUES ('mihai', 'gitlab', 'mihai@example.com', 'mihaigl123token');
+(username, provider, role, email, access_token)
+VALUES ('mihai', 'gitlab', 'user' ,'mihai@example.com', 'mihaigl123token');
 INSERT INTO self_xdsd.slf_users_xdsd
-(username, provider, email, access_token)
-VALUES ('amihaiemil', 'github', 'amihaiemil@gmail.com.com', 'amihaigh123token');
+(username, provider, role, email, access_token)
+VALUES ('amihaiemil', 'github', 'user', 'amihaiemil@gmail.com.com', 'amihaigh123token');
 
 -----------------
 -- INSERT PROJECT MANAGERS
