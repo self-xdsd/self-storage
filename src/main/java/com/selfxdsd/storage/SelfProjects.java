@@ -47,8 +47,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #96:30min Fix the paging mechanism for this class.
- *  See how InMemoryProjects is implemented.
+ * @todo #96:30min Check and fix the usage of PagedIterator. I'm not
+ *  sure it's needed anymore, with the new Paging mechanism.g
  */
 public final class SelfProjects extends BasePaged implements Projects {
 
