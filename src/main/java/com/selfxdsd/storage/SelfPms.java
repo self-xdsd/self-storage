@@ -100,17 +100,18 @@ public final class SelfPms implements ProjectManagers {
     ) {
         final int pmId = this.database.jooq()
             .insertInto(SLF_PMS_XDSD,
+                SLF_PMS_XDSD.USERID,
                 SLF_PMS_XDSD.USERNAME,
                 SLF_PMS_XDSD.PROVIDER,
                 SLF_PMS_XDSD.ACCESS_TOKEN)
-            .values(username, provider, accessToken)
+            .values(userId, username, provider, accessToken)
             .returning(SLF_PMS_XDSD.ID)
             .fetchOne()
             .getValue(SLF_PMS_XDSD.ID);
         if(pmId > 0){
             return new StoredProjectManager(
                 pmId,
-                "userId",
+                userId,
                 username,
                 provider,
                 accessToken,
@@ -146,7 +147,7 @@ public final class SelfPms implements ProjectManagers {
     private ProjectManager buildProjectManager(final Record record){
         return new StoredProjectManager(
             record.getValue(SLF_PMS_XDSD.ID),
-            "userId",
+            record.getValue(SLF_PMS_XDSD.USERID),
             record.getValue(SLF_PMS_XDSD.USERNAME),
             record.getValue(SLF_PMS_XDSD.PROVIDER),
             record.get(SLF_PMS_XDSD.ACCESS_TOKEN),

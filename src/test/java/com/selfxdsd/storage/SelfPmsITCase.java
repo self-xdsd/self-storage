@@ -110,6 +110,8 @@ public final class SelfPmsITCase {
             .register("123", "zoeself", Provider.Names.GITLAB, "123gitlab");
         MatcherAssert.assertThat(registered.id(),
             Matchers.greaterThan(0));
+        MatcherAssert.assertThat(registered.userId(),
+            Matchers.equalTo(123));
         MatcherAssert.assertThat(registered.provider().name(),
             Matchers.equalTo(Provider.Names.GITLAB));
     }

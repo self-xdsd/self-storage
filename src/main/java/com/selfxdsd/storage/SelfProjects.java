@@ -269,7 +269,7 @@ public final class SelfProjects extends BasePaged implements Projects {
             rec.getValue(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN),
             new StoredProjectManager(
                 rec.getValue(SLF_PMS_XDSD.ID),
-                "userId",
+                rec.getValue(SLF_PMS_XDSD.USERID),
                 rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),

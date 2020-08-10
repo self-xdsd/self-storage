@@ -35,6 +35,7 @@ CREATE TABLE self_xdsd.slf_users_xdsd (
 -- -----------------------------------------------------
 CREATE TABLE self_xdsd.slf_pms_xdsd (
   id INT NOT NULL AUTO_INCREMENT,
+  userid VARCHAR(100) NOT NULL,
   username VARCHAR(100) NOT NULL,
   provider VARCHAR(50) NOT NULL,
   access_token VARCHAR(256) NOT NULL,

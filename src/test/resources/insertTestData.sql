@@ -13,8 +13,8 @@ VALUES ('amihaiemil', 'github', 'amihaiemil@gmail.com.com', 'amihaigh123token');
 -- INSERT PROJECT MANAGERS
 
 INSERT INTO self_xdsd.slf_pms_xdsd
-(username, provider, access_token)
-VALUES ('zoeself', 'github', 'pm1ghtoken123');
+(userid, username, provider, access_token)
+VALUES ('33162107', 'zoeself', 'github', 'pm1ghtoken123');
 
 -- INSERT PROJECTS
 
