@@ -169,62 +169,79 @@ public final class SelfTasks implements Tasks {
         final String username,
         final String provider
     ) {
-        final List<Task> ofContributor = new ArrayList<>();
-        final Result<Record> result = this.selectTasks(this.database)
-            .where(
-                SLF_TASKS_XDSD.USERNAME.eq(username).and(
-                    SLF_TASKS_XDSD.PROVIDER.eq(provider)
-                )
-            )
-            .fetch();
-        for(final Record rec : result) {
-            ofContributor.add(
-                this.taskFromRecord(rec)
-            );
-        }
         return new ContributorTasks(
             username,
             provider,
-            ofContributor,
+            () -> {
+                final List<Task> ofContributor = new ArrayList<>();
+                final Result<Record> result = this.selectTasks(this.database)
+                    .where(
+                        SLF_TASKS_XDSD.USERNAME.eq(username).and(
+                            SLF_TASKS_XDSD.PROVIDER.eq(provider)
+                        )
+                    )
+                    .fetch();
+                for(final Record rec : result) {
+                    ofContributor.add(
+                        this.taskFromRecord(rec)
+                    );
+                }
+                return ofContributor.stream();
+            },
             this.storage
         );
     }
 
     @Override
     public Tasks ofContract(final Contract.Id id) {
-        final List<Task> ofContract = new ArrayList<>();
-        final Result<Record> result = this.selectTasks(this.database)
-            .where(
-                SLF_TASKS_XDSD.USERNAME.eq(id.getContributorUsername()).and(
-                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(id.getRepoFullName()).and(
-                        SLF_TASKS_XDSD.ROLE.eq(id.getRole()).and(
-                            SLF_TASKS_XDSD.PROVIDER.eq(id.getProvider())
+        return new ContractTasks(
+            id,
+            () -> {
+                final List<Task> ofContract = new ArrayList<>();
+                final Result<Record> result = this.selectTasks(this.database)
+                    .where(
+                        SLF_TASKS_XDSD.USERNAME.eq(
+                            id.getContributorUsername()
+                        ).and(
+                            SLF_TASKS_XDSD.REPO_FULLNAME.eq(
+                                id.getRepoFullName()
+                            ).and(
+                                SLF_TASKS_XDSD.ROLE.eq(id.getRole()).and(
+                                    SLF_TASKS_XDSD.PROVIDER.eq(id.getProvider())
+                                )
+                            )
                         )
                     )
-                )
-            )
-            .fetch();
-        for(final Record rec : result) {
-            ofContract.add(
-                this.taskFromRecord(rec)
-            );
-        }
-        return new ContractTasks(id, ofContract, this.storage);
+                    .fetch();
+                for(final Record rec : result) {
+                    ofContract.add(
+                        this.taskFromRecord(rec)
+                    );
+                }
+                return ofContract.stream();
+            },
+            this.storage
+        );
     }
 
     @Override
     public Tasks unassigned() {
-        final List<Task> unassigned = new ArrayList<>();
-        final Result<Record> result = this.selectTasks(this.database)
-            .where(SLF_TASKS_XDSD.USERNAME.isNull())
-            .limit(100)
-            .fetch();
-        for(final Record rec : result) {
-            unassigned.add(
-                this.taskFromRecord(rec)
-            );
-        }
-        return new UnassignedTasks(unassigned, this.storage);
+        return new UnassignedTasks(
+            () -> {
+                final List<Task> unassigned = new ArrayList<>();
+                final Result<Record> result = this.selectTasks(this.database)
+                    .where(SLF_TASKS_XDSD.USERNAME.isNull())
+                    .limit(100)
+                    .fetch();
+                for(final Record rec : result) {
+                    unassigned.add(
+                        this.taskFromRecord(rec)
+                    );
+                }
+                return unassigned.stream();
+            },
+            this.storage
+        );
     }
 
     @Override
@@ -300,6 +317,7 @@ public final class SelfTasks implements Tasks {
             new StoredUser(
                 rec.getValue(SLF_USERS_XDSD.USERNAME),
                 rec.getValue(SLF_USERS_XDSD.EMAIL),
+                "role",
                 rec.getValue(SLF_USERS_XDSD.PROVIDER),
                 this.storage
             ),
@@ -307,6 +325,7 @@ public final class SelfTasks implements Tasks {
             rec.getValue(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN),
             new StoredProjectManager(
                 rec.getValue(SLF_PMS_XDSD.ID),
+                "userId",
                 rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),

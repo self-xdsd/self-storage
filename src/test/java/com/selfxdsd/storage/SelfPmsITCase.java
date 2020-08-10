@@ -107,7 +107,7 @@ public final class SelfPmsITCase {
             new H2Database()
         ).projectManagers();
         final ProjectManager registered = pms
-            .register("zoeself", Provider.Names.GITLAB, "123gitlab");
+            .register("123", "zoeself", Provider.Names.GITLAB, "123gitlab");
         MatcherAssert.assertThat(registered.id(),
             Matchers.greaterThan(0));
         MatcherAssert.assertThat(registered.provider().name(),

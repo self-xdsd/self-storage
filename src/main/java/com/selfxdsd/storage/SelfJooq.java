@@ -71,7 +71,7 @@ public final class SelfJooq implements Storage {
 
     @Override
     public Projects projects() {
-        return new SelfProjects(this, this.database);
+        return new SelfProjects(this, this.database, null);
     }
 
     @Override

@@ -93,6 +93,7 @@ public final class SelfPms implements ProjectManagers {
 
     @Override
     public ProjectManager register(
+        final String userId,
         final String username,
         final String provider,
         final String accessToken
@@ -107,7 +108,9 @@ public final class SelfPms implements ProjectManagers {
             .fetchOne()
             .getValue(SLF_PMS_XDSD.ID);
         if(pmId > 0){
-            return new StoredProjectManager(pmId,
+            return new StoredProjectManager(
+                pmId,
+                "userId",
                 username,
                 provider,
                 accessToken,
@@ -143,6 +146,7 @@ public final class SelfPms implements ProjectManagers {
     private ProjectManager buildProjectManager(final Record record){
         return new StoredProjectManager(
             record.getValue(SLF_PMS_XDSD.ID),
+            "userId",
             record.getValue(SLF_PMS_XDSD.USERNAME),
             record.getValue(SLF_PMS_XDSD.PROVIDER),
             record.get(SLF_PMS_XDSD.ACCESS_TOKEN),

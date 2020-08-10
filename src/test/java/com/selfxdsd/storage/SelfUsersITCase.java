@@ -96,7 +96,12 @@ public final class SelfUsersITCase {
     public void signUpUserByInsert() {
         final H2Database database = new H2Database();
         final Users users = new SelfJooq(database).users();
-        users.signUp("foo", Provider.Names.GITHUB, "foo@mail.com");
+        users.signUp(
+            "foo",
+            Provider.Names.GITHUB,
+            "foo@mail.com",
+            "user"
+        );
 
         final Result<Record> result = database.connect().jooq().select()
             .from(SLF_USERS_XDSD)
@@ -113,7 +118,12 @@ public final class SelfUsersITCase {
     public void signUpUserByUpdateEmail() {
         final H2Database database = new H2Database();
         final Users users = new SelfJooq(database).users();
-        users.signUp("mihai", Provider.Names.GITLAB, "mihaiNew@example.com");
+        users.signUp(
+            "mihai",
+            Provider.Names.GITLAB,
+            "mihaiNew@example.com",
+            "user"
+        );
 
         final Result<Record> result = database.connect().jooq().select()
             .from(SLF_USERS_XDSD)

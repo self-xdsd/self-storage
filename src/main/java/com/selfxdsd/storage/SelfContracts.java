@@ -41,7 +41,6 @@ import org.jooq.SelectOnConditionStep;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.*;
@@ -85,30 +84,38 @@ public final class SelfContracts implements Contracts {
         final String repoFullName,
         final String repoProvider
     ) {
-        final List<Contract> ofProject = this.selectContracts()
-            .where(SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
-                SLF_CONTRACTS_XDSD.PROVIDER.eq(repoProvider)))
-            .fetch()
-            .stream()
-            .map(this::buildContract)
-            .collect(Collectors.toList());
         return new ProjectContracts(
             repoFullName,
             repoProvider,
-            ofProject,
+            () -> this.selectContracts()
+                    .where(
+                        SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(repoFullName)
+                            .and(
+                                SLF_CONTRACTS_XDSD.PROVIDER.eq(repoProvider)
+                            )
+                    ).fetch()
+                    .stream()
+                    .map(this::buildContract)
+                    .collect(Collectors.toList()).stream(),
             this.storage);
     }
 
     @Override
     public Contracts ofContributor(final Contributor contributor) {
-        final List<Contract> ofProject = this.selectContracts()
-            .where(SLF_CONTRACTS_XDSD.USERNAME.eq(contributor.username()).and(
-                SLF_CONTRACTS_XDSD.PROVIDER.eq(contributor.provider())))
-            .fetch()
-            .stream()
-            .map(this::buildContract)
-            .collect(Collectors.toList());
-        return new ContributorContracts(contributor, ofProject, this.storage);
+        return new ContributorContracts(
+            contributor,
+            () -> this.selectContracts()
+                .where(SLF_CONTRACTS_XDSD.USERNAME.eq(
+                    contributor.username()
+                ).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(contributor.provider())))
+                .fetch()
+                .stream()
+                .map(this::buildContract)
+                .collect(Collectors.toList())
+                .stream(),
+            this.storage
+        );
     }
 
     @Override
@@ -246,6 +253,7 @@ public final class SelfContracts implements Contracts {
             new StoredUser(
                 rec.getValue(SLF_USERS_XDSD.USERNAME),
                 rec.getValue(SLF_USERS_XDSD.EMAIL),
+                "role",
                 rec.getValue(SLF_USERS_XDSD.PROVIDER),
                 this.storage
             ),
@@ -253,6 +261,7 @@ public final class SelfContracts implements Contracts {
             rec.getValue(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN),
             new StoredProjectManager(
                 rec.getValue(SLF_PMS_XDSD.ID),
+                "userId",
                 rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),

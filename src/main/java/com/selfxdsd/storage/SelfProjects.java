@@ -24,6 +24,7 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.BasePaged;
 import com.selfxdsd.core.StoredUser;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.PmProjects;
@@ -46,8 +47,10 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #96:30min Fix the paging mechanism for this class.
+ *  See how InMemoryProjects is implemented.
  */
-public final class SelfProjects implements Projects {
+public final class SelfProjects extends BasePaged implements Projects {
 
     /**
      * Parent Storage.
@@ -63,11 +66,14 @@ public final class SelfProjects implements Projects {
      * Ctor.
      * @param storage Parent Storage.
      * @param database Database.
+     * @param page Projects page we're on.
      */
     public SelfProjects(
         final Storage storage,
-        final Database database
+        final Database database,
+        final Page page
     ) {
+        super(page, 0);
         this.storage = storage;
         this.database = database;
     }
@@ -109,54 +115,72 @@ public final class SelfProjects implements Projects {
 
     @Override
     public Projects assignedTo(final int projectManagerId) {
-        final List<Project> assigned = new ArrayList<>();
-        final Result<Record> result = this.database.connect().jooq()
-            .select()
-            .from(SLF_PROJECTS_XDSD)
-            .join(SLF_USERS_XDSD)
-            .on(
-                SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
-                    SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
-                )
-            ).join(SLF_PMS_XDSD)
-            .on(
-                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-            )
-            .where(
-                SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
-            )
-            .fetch();
-        for(final Record rec : result) {
-            assigned.add(this.projectFromRecord(rec));
-        }
-        return new PmProjects(projectManagerId, assigned);
+        return new PmProjects(
+            projectManagerId,
+            () -> {
+                final List<Project> assigned = new ArrayList<>();
+                final Result<Record> result = this.database.connect().jooq()
+                    .select()
+                    .from(SLF_PROJECTS_XDSD)
+                    .join(SLF_USERS_XDSD)
+                    .on(
+                        SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
+                            .and(
+                                 SLF_USERS_XDSD.PROVIDER.eq(
+                                     SLF_PROJECTS_XDSD.PROVIDER
+                                 )
+                            )
+                    ).join(SLF_PMS_XDSD)
+                    .on(
+                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                    )
+                    .where(
+                        SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
+                    )
+                    .fetch();
+                for(final Record rec : result) {
+                    assigned.add(this.projectFromRecord(rec));
+                }
+                return assigned.stream();
+            }
+        );
     }
 
     @Override
     public Projects ownedBy(final User user) {
-        final List<Project> owned = new ArrayList<>();
-        final Result<Record> result = this.database.connect().jooq()
-            .select()
-            .from(SLF_PROJECTS_XDSD)
-            .join(SLF_USERS_XDSD)
-            .on(
-                SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME).and(
-                    SLF_USERS_XDSD.PROVIDER.eq(SLF_PROJECTS_XDSD.PROVIDER)
-                )
-            ).join(SLF_PMS_XDSD)
-            .on(
-                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-            )
-            .where(
-                SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
-                    SLF_PROJECTS_XDSD.PROVIDER.eq(user.provider().name())
-                )
-            )
-            .fetch();
-        for(final Record rec : result) {
-            owned.add(this.projectFromRecord(rec));
-        }
-        return new UserProjects(user, owned);
+        return new UserProjects(
+            user,
+            () -> {
+                final List<Project> owned = new ArrayList<>();
+                final Result<Record> result = this.database.connect().jooq()
+                    .select()
+                    .from(SLF_PROJECTS_XDSD)
+                    .join(SLF_USERS_XDSD)
+                    .on(
+                        SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
+                            .and(
+                                SLF_USERS_XDSD.PROVIDER.eq(
+                                    SLF_PROJECTS_XDSD.PROVIDER
+                                )
+                            )
+                    ).join(SLF_PMS_XDSD)
+                    .on(
+                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                    )
+                    .where(
+                        SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
+                            SLF_PROJECTS_XDSD.PROVIDER.eq(
+                                user.provider().name()
+                            )
+                        )
+                    )
+                    .fetch();
+                for(final Record rec : result) {
+                    owned.add(this.projectFromRecord(rec));
+                }
+                return owned.stream();
+            }
+        );
     }
 
     @Override
@@ -186,6 +210,11 @@ public final class SelfProjects implements Projects {
         if(!result.isEmpty()) {
             return this.projectFromRecord(result.get(0));
         }
+        return null;
+    }
+
+    @Override
+    public Projects page(final Page page) {
         return null;
     }
 
@@ -230,6 +259,7 @@ public final class SelfProjects implements Projects {
         final User owner = new StoredUser(
             rec.getValue(SLF_USERS_XDSD.USERNAME),
             rec.getValue(SLF_USERS_XDSD.EMAIL),
+            "role",
             rec.getValue(SLF_USERS_XDSD.PROVIDER),
             this.storage
         );
@@ -239,6 +269,7 @@ public final class SelfProjects implements Projects {
             rec.getValue(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN),
             new StoredProjectManager(
                 rec.getValue(SLF_PMS_XDSD.ID),
+                "userId",
                 rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),

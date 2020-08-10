@@ -73,7 +73,8 @@ public final class SelfUsers implements Users {
     public User signUp(
         final String username,
         final String provider,
-        final String email
+        final String email,
+        final String role
     ) {
         final DSLContext jooq = this.database.jooq();
         User dbUser = userFromDb(
@@ -130,6 +131,7 @@ public final class SelfUsers implements Users {
             final User found = new StoredUser(
                 rec.getValue(SLF_USERS_XDSD.USERNAME),
                 rec.getValue(SLF_USERS_XDSD.EMAIL),
+                "role",
                 rec.getValue(SLF_USERS_XDSD.PROVIDER),
                 this.storage
             );
@@ -151,6 +153,7 @@ public final class SelfUsers implements Users {
                 new StoredUser(
                     res.getValue(SLF_USERS_XDSD.USERNAME),
                     res.getValue(SLF_USERS_XDSD.EMAIL),
+                    "role",
                     res.getValue(SLF_USERS_XDSD.PROVIDER),
                     this.storage
                 )

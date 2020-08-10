@@ -190,14 +190,14 @@ public final class SelfContributors implements Contributors {
                 key.username(),
                 key.provider(),
                 new ContributorContracts(
-                    key, contributors.get(key), this.storage
+                    key, () -> contributors.get(key).stream(), this.storage
                 ),
                 this.storage
             );
             ofProject.add(withContracts);
         }
         return new ProjectContributors(
-            repoFullName, repoProvider, ofProject, this.storage
+            repoFullName, repoProvider, () -> ofProject.stream(), this.storage
         );
     }
 
