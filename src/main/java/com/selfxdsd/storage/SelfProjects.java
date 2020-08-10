@@ -33,9 +33,7 @@ import com.selfxdsd.core.projects.UserProjects;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
@@ -129,70 +127,56 @@ public final class SelfProjects extends BasePaged implements Projects {
     public Projects assignedTo(final int projectManagerId) {
         return new PmProjects(
             projectManagerId,
-            () -> {
-                final List<Project> assigned = new ArrayList<>();
-                final Result<Record> result = this.database.connect().jooq()
-                    .select()
-                    .from(SLF_PROJECTS_XDSD)
-                    .join(SLF_USERS_XDSD)
-                    .on(
-                        SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
-                            .and(
-                                 SLF_USERS_XDSD.PROVIDER.eq(
-                                     SLF_PROJECTS_XDSD.PROVIDER
-                                 )
+            () -> this.database.connect().jooq()
+                .select()
+                .from(SLF_PROJECTS_XDSD)
+                .join(SLF_USERS_XDSD)
+                .on(
+                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
+                        .and(
+                            SLF_USERS_XDSD.PROVIDER.eq(
+                                SLF_PROJECTS_XDSD.PROVIDER
                             )
-                    ).join(SLF_PMS_XDSD)
-                    .on(
-                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                    )
-                    .where(
-                        SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
-                    )
-                    .fetch();
-                for(final Record rec : result) {
-                    assigned.add(this.projectFromRecord(rec));
-                }
-                return assigned.stream();
-            }
-        );
+                        )
+                ).join(SLF_PMS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                )
+                .where(
+                    SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
+                )
+                .stream()
+                .map(this::projectFromRecord));
     }
 
     @Override
     public Projects ownedBy(final User user) {
         return new UserProjects(
             user,
-            () -> {
-                final List<Project> owned = new ArrayList<>();
-                final Result<Record> result = this.database.connect().jooq()
-                    .select()
-                    .from(SLF_PROJECTS_XDSD)
-                    .join(SLF_USERS_XDSD)
-                    .on(
-                        SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
-                            .and(
-                                SLF_USERS_XDSD.PROVIDER.eq(
-                                    SLF_PROJECTS_XDSD.PROVIDER
-                                )
-                            )
-                    ).join(SLF_PMS_XDSD)
-                    .on(
-                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                    )
-                    .where(
-                        SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
-                            SLF_PROJECTS_XDSD.PROVIDER.eq(
-                                user.provider().name()
+            () -> this.database.connect().jooq()
+                .select()
+                .from(SLF_PROJECTS_XDSD)
+                .join(SLF_USERS_XDSD)
+                .on(
+                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
+                        .and(
+                            SLF_USERS_XDSD.PROVIDER.eq(
+                                SLF_PROJECTS_XDSD.PROVIDER
                             )
                         )
+                ).join(SLF_PMS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                )
+                .where(
+                    SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
+                        SLF_PROJECTS_XDSD.PROVIDER.eq(
+                            user.provider().name()
+                        )
                     )
-                    .fetch();
-                for(final Record rec : result) {
-                    owned.add(this.projectFromRecord(rec));
-                }
-                return owned.stream();
-            }
-        );
+                )
+                .stream()
+                .map(this::projectFromRecord));
     }
 
     @Override
@@ -252,7 +236,6 @@ public final class SelfProjects extends BasePaged implements Projects {
             )
             .limit(page.getSize())
             .offset((page.getNumber()  - 1) * page.getSize())
-            .fetch()
             .stream()
             .map(this::projectFromRecord)
             .iterator();
