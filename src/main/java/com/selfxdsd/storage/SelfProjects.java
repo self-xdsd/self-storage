@@ -63,19 +63,44 @@ public final class SelfProjects extends BasePaged implements Projects {
     private final Database database;
 
     /**
+     * Total number of Projects in Self.
+     */
+    private final int totalRecords;
+
+    /**
      * Ctor.
      * @param storage Parent Storage.
      * @param database Database.
-     * @param page Projects page we're on.
      */
     public SelfProjects(
         final Storage storage,
-        final Database database,
-        final Page page
+        final Database database
     ) {
-        super(page, 0);
+        this(
+            storage,
+            database,
+            new Page(1, 10),
+            database.jooq().fetchCount(SLF_PROJECTS_XDSD)
+        );
+    }
+
+    /**
+     * Ctor for paging.
+     * @param storage Storage.
+     * @param database Database.
+     * @param page Page we're on.
+     * @param totalRecords Total number of records.
+     */
+    private SelfProjects(
+        final Storage storage,
+        final Database database,
+        final Page page,
+        final int totalRecords
+    ) {
+        super(page, totalRecords);
         this.storage = storage;
         this.database = database;
+        this.totalRecords = totalRecords;
     }
 
     @Override
@@ -215,7 +240,12 @@ public final class SelfProjects extends BasePaged implements Projects {
 
     @Override
     public Projects page(final Page page) {
-        return null;
+        return new SelfProjects(
+            this.storage,
+            this.database,
+            page,
+            this.totalRecords
+        );
     }
 
     @Override

@@ -111,7 +111,7 @@ public final class SelfPmsITCase {
         MatcherAssert.assertThat(registered.id(),
             Matchers.greaterThan(0));
         MatcherAssert.assertThat(registered.userId(),
-            Matchers.equalTo(123));
+            Matchers.equalTo("123"));
         MatcherAssert.assertThat(registered.provider().name(),
             Matchers.equalTo(Provider.Names.GITLAB));
     }

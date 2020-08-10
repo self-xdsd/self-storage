@@ -25,8 +25,11 @@ package com.selfxdsd.storage;
 import com.selfxdsd.api.storage.Storage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.jooq.DSLContext;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 
 /**
  * Unit tests for {@link SelfJooq}.
@@ -56,7 +59,14 @@ public final class SelfJooqTestCase {
      */
     @Test
     public void returnsProjects() {
-        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        final Database database = Mockito.mock(Database.class);
+        final DSLContext jooq = Mockito.mock(DSLContext.class);
+        Mockito.when(jooq.fetchCount(SLF_PROJECTS_XDSD))
+            .thenReturn(10);
+        Mockito.when(database.connect()).thenReturn(database);
+        Mockito.when(database.jooq()).thenReturn(jooq);
+
+        final Storage storage = new SelfJooq(database);
         MatcherAssert.assertThat(
             storage.projects(),
             Matchers.allOf(
