@@ -15,7 +15,10 @@ import java.util.function.BiFunction;
  * @author criske
  * @version $Id$
  * @since 0.0.1
+ * @deprecated Since paging is exposed to storage api, we don't need
+ * this internal paging mechanism anymore.
  */
+@Deprecated(forRemoval = true, since = "0.0.4")
 abstract class PagedIterator<E> implements Iterator<E> {
     /**
      * Current iterating position. 0-index based.

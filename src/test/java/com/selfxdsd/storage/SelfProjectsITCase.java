@@ -23,6 +23,7 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
+import com.selfxdsd.api.storage.Paged;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -230,6 +231,33 @@ public final class SelfProjectsITCase {
                 Matchers.notNullValue()
             );
         }
+    }
+
+    /**
+     * SelfProjects can be iterated by page.
+     */
+    @Test
+    public void canBeIteratedByPage() {
+        final Projects projects = new SelfJooq(new H2Database())
+            .projects()
+            .page(new Paged.Page(2, 2));
+        MatcherAssert.assertThat(
+            projects,
+            Matchers.iterableWithSize(2)
+        );
+        for(final Project project : projects) {
+            MatcherAssert.assertThat(
+                project,
+                Matchers.notNullValue()
+            );
+        }
+        MatcherAssert.assertThat("When setting MAX_VALUE for page size "
+                + " should iterate all records",
+            projects.page(new Paged.Page(1, Integer.MAX_VALUE)),
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(4)
+            )
+        );
     }
 
     /**

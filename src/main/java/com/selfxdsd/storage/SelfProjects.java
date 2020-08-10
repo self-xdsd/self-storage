@@ -36,7 +36,6 @@ import org.jooq.Result;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
@@ -63,11 +62,6 @@ public final class SelfProjects extends BasePaged implements Projects {
     private final Database database;
 
     /**
-     * Total number of Projects in Self.
-     */
-    private final int totalRecords;
-
-    /**
      * Ctor.
      * @param storage Parent Storage.
      * @param database Database.
@@ -79,8 +73,7 @@ public final class SelfProjects extends BasePaged implements Projects {
         this(
             storage,
             database,
-            new Page(1, 10),
-            database.jooq().fetchCount(SLF_PROJECTS_XDSD)
+            new Page(1, 10)
         );
     }
 
@@ -89,18 +82,14 @@ public final class SelfProjects extends BasePaged implements Projects {
      * @param storage Storage.
      * @param database Database.
      * @param page Page we're on.
-     * @param totalRecords Total number of records.
      */
     private SelfProjects(
         final Storage storage,
         final Database database,
-        final Page page,
-        final int totalRecords
-    ) {
-        super(page, totalRecords);
+        final Page page) {
+        super(page,  database.jooq().fetchCount(SLF_PROJECTS_XDSD));
         this.storage = storage;
         this.database = database;
-        this.totalRecords = totalRecords;
     }
 
     @Override
@@ -243,41 +232,32 @@ public final class SelfProjects extends BasePaged implements Projects {
         return new SelfProjects(
             this.storage,
             this.database,
-            page,
-            this.totalRecords
+            page
         );
     }
 
     @Override
     public Iterator<Project> iterator() {
-        final int maxRecords = this.database.jooq()
-            .fetchCount(SLF_PROJECTS_XDSD);
-        return PagedIterator.create(
-            100,
-            maxRecords,
-            (offset, size) -> {
-                //@checkstyle LineLength (50 lines)
-                return this.database.jooq()
-                    .select()
-                    .from(SLF_PROJECTS_XDSD)
-                    .join(SLF_USERS_XDSD)
-                    .on(
-                        SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                            SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                        )
-                    )
-                    .join(SLF_PMS_XDSD)
-                    .on(
-                        SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                    )
-                    .limit(size)
-                    .offset(offset)
-                    .fetch()
-                    .stream()
-                    .map(SelfProjects.this::projectFromRecord)
-                    .collect(Collectors.toList());
-            }
-        );
+        final Page page = super.current();
+        return this.database.jooq()
+            .select()
+            .from(SLF_PROJECTS_XDSD)
+            .join(SLF_USERS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                )
+            )
+            .join(SLF_PMS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+            )
+            .limit(page.getSize())
+            .offset((page.getNumber()  - 1) * page.getSize())
+            .fetch()
+            .stream()
+            .map(this::projectFromRecord)
+            .iterator();
     }
 
     /**
