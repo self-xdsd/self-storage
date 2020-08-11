@@ -261,6 +261,32 @@ public final class SelfProjectsITCase {
     }
 
     /**
+     * SelfProjects page has correct info about total pages.
+     */
+    @Test
+    public void hasCorrectTotalPages() {
+        final Projects projects = new SelfJooq(new H2Database()).projects();
+        MatcherAssert.assertThat(projects
+            .page(new Paged.Page(1, 4))
+            .totalPages(), Matchers.is(1));
+        for (int i = 0; i <= 16; i++) {
+            final Repo repo = mockRepo("amihaiemil/repo" + i,
+                "amihaiemil", "github");
+            final ProjectManager manager = Mockito.mock(ProjectManager.class);
+            Mockito.when(manager.id()).thenReturn(1);
+            projects.register(repo, manager, "wbtoken" + i);
+        }
+        MatcherAssert.assertThat(projects
+            .page(new Paged.Page(1, 4))
+            .totalPages(), Matchers.is(6));
+        //This should be 6 too. Will fail when the `totalRecords` bug is fixed
+        //https://github.com/self-xdsd/self-core/issues/374
+        MatcherAssert.assertThat(projects
+            .totalPages(), Matchers.is(1));
+    }
+
+
+    /**
      * Mock a User for test.
      * @param username Username.
      * @param provider Provider.
