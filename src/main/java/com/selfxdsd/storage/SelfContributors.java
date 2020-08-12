@@ -22,10 +22,7 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Contract;
-import com.selfxdsd.api.Contributor;
-import com.selfxdsd.api.Contributors;
-import com.selfxdsd.api.Task;
+import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contracts.ContributorContracts;
 import com.selfxdsd.core.contracts.StoredContract;
@@ -117,6 +114,11 @@ public final class SelfContributors implements Contributors {
         final String repoFullName,
         final String repoProvider
     ) {
+        final Project project = this.storage.projects()
+                .getProjectById(repoFullName, repoProvider);
+        if (project == null) {
+            return new EmptyContributors(this);
+        }
         final Map<Contributor, List<Contract>> contributors = new HashMap<>();
         final Result<Record> result = this.database.jooq()
             .select()
@@ -196,9 +198,8 @@ public final class SelfContributors implements Contributors {
             );
             ofProject.add(withContracts);
         }
-        return new ProjectContributors(
-            repoFullName, repoProvider, () -> ofProject.stream(), this.storage
-        );
+        return new ProjectContributors(project, ofProject::stream,
+                this.storage);
     }
 
     @Override
@@ -227,5 +228,54 @@ public final class SelfContributors implements Contributors {
             );
         }
         return contributors.iterator();
+    }
+
+
+    /**
+     * Empty representation of Contributors.
+     */
+    private static final class EmptyContributors implements Contributors {
+
+        /**
+         * Contributors delegate used just for register a new Contributor.
+         */
+        private final Contributors contributors;
+
+        /**
+         * Ctor.
+         * @param contributors Contributors delegate;
+         */
+        private EmptyContributors(final Contributors contributors) {
+            this.contributors = contributors;
+        }
+
+        @Override
+        public Contributor register(final String username,
+                                    final String provider) {
+            return this.contributors.register(username, provider);
+        }
+
+        @Override
+        public Contributor getById(final String username,
+                                   final String provider) {
+            return null;
+        }
+
+        @Override
+        public Contributors ofProject(final String repoFullName,
+                                      final String repoProvider) {
+            return this;
+        }
+
+        @Override
+        public Contributor elect(final Task task) {
+            return null;
+        }
+
+        @Override
+        public Iterator<Contributor> iterator() {
+            return Collections.emptyIterator();
+        }
+
     }
 }

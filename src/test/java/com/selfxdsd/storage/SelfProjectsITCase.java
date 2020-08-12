@@ -279,12 +279,8 @@ public final class SelfProjectsITCase {
         MatcherAssert.assertThat(projects
             .page(new Paged.Page(1, 4))
             .totalPages(), Matchers.is(5));
-        //The default page size is 10. Adding 16 records to initial 4
-        //should show 2 as total pages.
-        //Will fail when the `totalRecords` bug is fixed
-        //https://github.com/self-xdsd/self-core/issues/374
         MatcherAssert.assertThat(projects
-            .totalPages(), Matchers.is(1));
+            .totalPages(), Matchers.is(2));
     }
 
 

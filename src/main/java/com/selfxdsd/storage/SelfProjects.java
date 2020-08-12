@@ -83,7 +83,7 @@ public final class SelfProjects extends BasePaged implements Projects {
         final Storage storage,
         final Database database,
         final Page page) {
-        super(page,  database.jooq().fetchCount(SLF_PROJECTS_XDSD));
+        super(page, () -> database.jooq().fetchCount(SLF_PROJECTS_XDSD));
         this.storage = storage;
         this.database = database;
     }
