@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> {
 
-    private static final long serialVersionUID = -2091574506;
+    private static final long serialVersionUID = 1703422666;
 
     /**
      * The reference instance of <code>self_xdsd.slf_invoicedtasks_xdsd</code>
@@ -110,6 +110,11 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.estimation_minutes</code>.
      */
     public final TableField<SlfInvoicedtasksXdsdRecord, Integer> ESTIMATION_MINUTES = createField(DSL.name("estimation_minutes"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.commission</code>.
+     */
+    public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> COMMISSION = createField(DSL.name("commission"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_invoicedtasks_xdsd</code> table reference
@@ -196,11 +201,11 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, Integer, String, String, String, String, BigInteger, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Integer, Integer, String, String, String, String, BigInteger, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer, BigInteger> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

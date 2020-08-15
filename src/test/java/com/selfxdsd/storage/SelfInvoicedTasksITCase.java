@@ -125,7 +125,7 @@ public final class SelfInvoicedTasksITCase {
         final Invoice one = Mockito.mock(Invoice.class);
         Mockito.when(one.invoiceId()).thenReturn(1);
         final InvoicedTask invoiced = tasks.register(
-            one, task, BigDecimal.valueOf(0)
+            one, task, BigDecimal.valueOf(100)
         );
 
         MatcherAssert.assertThat(invoiced.task(), Matchers.is(task));
@@ -136,6 +136,14 @@ public final class SelfInvoicedTasksITCase {
         MatcherAssert.assertThat(
             invoiced.value(),
             Matchers.equalTo(BigDecimal.valueOf(18500))
+        );
+        MatcherAssert.assertThat(
+            invoiced.commission(),
+            Matchers.equalTo(BigDecimal.valueOf(100))
+        );
+        MatcherAssert.assertThat(
+            invoiced.totalAmount(),
+            Matchers.equalTo(BigDecimal.valueOf(18600))
         );
         MatcherAssert.assertThat(
             invoiced.task().estimation(),

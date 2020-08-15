@@ -107,12 +107,15 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 SLF_INVOICEDTASKS_XDSD.USERNAME,
                 SLF_INVOICEDTASKS_XDSD.PROVIDER,
                 SLF_INVOICEDTASKS_XDSD.ROLE,
-                SLF_INVOICEDTASKS_XDSD.VALUE.cast(BigDecimal.class).as("value"),
+                SLF_INVOICEDTASKS_XDSD.VALUE
+                    .cast(BigDecimal.class).as("value"),
                 SLF_INVOICEDTASKS_XDSD.ISSUEID,
                 SLF_INVOICEDTASKS_XDSD.ASSIGNED,
                 SLF_INVOICEDTASKS_XDSD.DEADLINE,
                 SLF_INVOICEDTASKS_XDSD.INVOICED,
-                SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES
+                SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES,
+                SLF_INVOICEDTASKS_XDSD.COMMISSION
+                    .cast(BigDecimal.class).as("commission")
             ).values(
                 invoice.invoiceId(),
                 finished.project().repoFullName(),
@@ -124,7 +127,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 finished.assignmentDate(),
                 finished.deadline(),
                 LocalDateTime.now(),
-                finished.estimation()
+                finished.estimation(),
+                commission
             )
             .returningResult(
                 SLF_INVOICEDTASKS_XDSD.ID,
@@ -137,7 +141,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             BigDecimal.valueOf(
                 inserted.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
-            BigDecimal.valueOf(0),
+            commission,
             finished,
             this.storage
         );
@@ -167,7 +171,9 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             BigDecimal.valueOf(
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
-            BigDecimal.valueOf(0),
+            BigDecimal.valueOf(
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).longValue()
+            ),
             new StoredTask(
                 invoice.contract(),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ISSUEID),
