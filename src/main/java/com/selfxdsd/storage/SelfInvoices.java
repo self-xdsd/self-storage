@@ -40,8 +40,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #101:30min Implement and test boolean::registerAsPaid(Invoice) for
- *  SelfInvoices.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -115,7 +113,21 @@ public final class SelfInvoices implements Invoices {
 
     @Override
     public boolean registerAsPaid(final Invoice invoice) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(!invoice.isPaid()) {
+            throw new IllegalArgumentException(
+                "Invoice #" + invoice.invoiceId() + " is not paid!"
+            );
+        }
+        final int updated = this.database.jooq().update(SLF_INVOICES_XDSD).set(
+                SLF_INVOICES_XDSD.TRANSACTIONID,
+                invoice.transactionId()
+            ).set(
+                SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
+                invoice.paymentTime()
+            ).where(
+                SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
+            ).execute();
+        return updated == 1;
     }
 
     @Override

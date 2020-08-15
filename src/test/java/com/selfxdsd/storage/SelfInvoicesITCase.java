@@ -22,14 +22,13 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Contract;
-import com.selfxdsd.api.Invoice;
-import com.selfxdsd.api.Invoices;
+import com.selfxdsd.api.*;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -150,5 +149,80 @@ public final class SelfInvoicesITCase {
         final Iterable<Invoice> ofContract = () -> invoices.ofContract(id)
             .iterator();
         MatcherAssert.assertThat(ofContract, Matchers.emptyIterable());
+    }
+
+    /**
+     * SelfInvoices shouldn't mark as paid an Invoice which is not actually
+     * paid.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void registerAsPaidRejectsUnpaidInvoice() {
+        final Invoices invoices = new SelfJooq(new H2Database()).invoices();
+        final Invoice unpaid = invoices.getById(1);
+        invoices.registerAsPaid(unpaid);
+    }
+
+    /**
+     * SelfInvoices can register a paid Invoice.
+     */
+    @Test
+    public void registerAsPaidWorks() {
+        final Invoices invoices = new SelfJooq(new H2Database()).invoices();
+        final Invoice unpaid = invoices.getById(2);
+        final Invoice paid = new Invoice() {
+            @Override
+            public int invoiceId() {
+                return unpaid.invoiceId();
+            }
+
+            @Override
+            public InvoicedTask register(
+                final Task task,
+                final BigDecimal commission
+            ) {
+                throw new IllegalStateException(
+                    "Can't register a new Task on paid Invoice!"
+                );
+            }
+
+            @Override
+            public Contract contract() {
+                return unpaid.contract();
+            }
+
+            @Override
+            public LocalDateTime createdAt() {
+                return unpaid.createdAt();
+            }
+
+            @Override
+            public LocalDateTime paymentTime() {
+                return LocalDateTime.now();
+            }
+
+            @Override
+            public String transactionId() {
+                return "transaction12345";
+            }
+
+            @Override
+            public InvoicedTasks tasks() {
+                return unpaid.tasks();
+            }
+
+            @Override
+            public BigDecimal totalAmount() {
+                return unpaid.totalAmount();
+            }
+
+            @Override
+            public boolean isPaid() {
+                return true;
+            }
+        };
+        MatcherAssert.assertThat(
+            invoices.registerAsPaid(paid),
+            Matchers.is(Boolean.TRUE)
+        );
     }
 }
