@@ -6,7 +6,7 @@
 
     <groupId>com.selfxdsd</groupId>
     <artifactId>self-storage</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.7-SNAPSHOT</version>
     <name>Self XDSD Storage Module</name>
     <description>Storage Module for Self XDSD</description>
     <properties>
