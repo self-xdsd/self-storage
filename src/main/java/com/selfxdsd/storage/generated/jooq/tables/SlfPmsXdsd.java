@@ -8,6 +8,7 @@ import com.selfxdsd.storage.generated.jooq.Keys;
 import com.selfxdsd.storage.generated.jooq.SelfXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfPmsXdsdRecord;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
 
-    private static final long serialVersionUID = -1668773807;
+    private static final long serialVersionUID = -1693535511;
 
     /**
      * The reference instance of <code>self_xdsd.slf_pms_xdsd</code>
@@ -71,6 +72,11 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
      * The column <code>self_xdsd.slf_pms_xdsd.userId</code>.
      */
     public final TableField<SlfPmsXdsdRecord, String> USERID = createField(DSL.name("userId"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_pms_xdsd.commission</code>.
+     */
+    public final TableField<SlfPmsXdsdRecord, BigInteger> COMMISSION = createField(DSL.name("commission"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_pms_xdsd</code> table reference
@@ -152,11 +158,11 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Integer, String, String, String, String, BigInteger> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

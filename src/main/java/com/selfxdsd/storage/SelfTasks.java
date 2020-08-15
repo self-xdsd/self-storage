@@ -329,7 +329,9 @@ public final class SelfTasks implements Tasks {
                 rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
-                BigDecimal.valueOf(0),
+                BigDecimal.valueOf(
+                    rec.getValue(SLF_PMS_XDSD.COMMISSION).longValue()
+                ),
                 this.storage
             ),
             this.storage

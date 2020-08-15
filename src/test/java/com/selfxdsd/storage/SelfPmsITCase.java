@@ -55,6 +55,10 @@ public final class SelfPmsITCase {
             found.provider().name(),
             Matchers.equalTo(Provider.Names.GITHUB)
         );
+        MatcherAssert.assertThat(
+            found.commission(),
+            Matchers.equalTo(BigDecimal.valueOf(50))
+        );
     }
 
     /**
@@ -79,9 +83,13 @@ public final class SelfPmsITCase {
             new H2Database()
         ).projectManagers();
 
-        final ProjectManager projectManager = pms.pick(Provider.Names.GITHUB);
+        final ProjectManager manager = pms.pick(Provider.Names.GITHUB);
 
-        MatcherAssert.assertThat(projectManager, Matchers.notNullValue());
+        MatcherAssert.assertThat(manager, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            manager.commission(),
+            Matchers.equalTo(BigDecimal.valueOf(50))
+        );
     }
 
     /**
@@ -122,6 +130,8 @@ public final class SelfPmsITCase {
             Matchers.equalTo("123"));
         MatcherAssert.assertThat(registered.provider().name(),
             Matchers.equalTo(Provider.Names.GITLAB));
+        MatcherAssert.assertThat(registered.commission(),
+            Matchers.equalTo(BigDecimal.valueOf(50)));
     }
 
     /**

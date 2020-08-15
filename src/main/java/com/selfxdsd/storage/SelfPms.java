@@ -101,12 +101,15 @@ public final class SelfPms implements ProjectManagers {
         final BigDecimal commission
     ) {
         final int pmId = this.database.jooq()
-            .insertInto(SLF_PMS_XDSD,
+            .insertInto(
+                SLF_PMS_XDSD,
                 SLF_PMS_XDSD.USERID,
                 SLF_PMS_XDSD.USERNAME,
                 SLF_PMS_XDSD.PROVIDER,
-                SLF_PMS_XDSD.ACCESS_TOKEN)
-            .values(userId, username, provider, accessToken)
+                SLF_PMS_XDSD.ACCESS_TOKEN,
+                SLF_PMS_XDSD.COMMISSION.cast(BigDecimal.class).as("commission")
+            )
+            .values(userId, username, provider, accessToken, commission)
             .returning(SLF_PMS_XDSD.ID)
             .fetchOne()
             .getValue(SLF_PMS_XDSD.ID);
@@ -117,8 +120,9 @@ public final class SelfPms implements ProjectManagers {
                 username,
                 provider,
                 accessToken,
-                BigDecimal.valueOf(0),
-                storage);
+                commission,
+                this.storage
+            );
         }
         throw new IllegalStateException("Something went wrong while"
             + " inserting a PM into database.");
@@ -154,7 +158,9 @@ public final class SelfPms implements ProjectManagers {
             record.getValue(SLF_PMS_XDSD.USERNAME),
             record.getValue(SLF_PMS_XDSD.PROVIDER),
             record.get(SLF_PMS_XDSD.ACCESS_TOKEN),
-            BigDecimal.valueOf(0),
+            BigDecimal.valueOf(
+                record.getValue(SLF_PMS_XDSD.COMMISSION).longValue()
+            ),
             this.storage
         );
     }
