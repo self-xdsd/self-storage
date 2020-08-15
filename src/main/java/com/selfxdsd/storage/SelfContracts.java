@@ -265,6 +265,7 @@ public final class SelfContracts implements Contracts {
                 rec.getValue(SLF_PMS_XDSD.USERNAME),
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
+                BigDecimal.valueOf(0),
                 this.storage
             ),
             this.storage

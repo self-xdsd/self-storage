@@ -96,7 +96,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
     @Override
     public InvoicedTask register(
         final Invoice invoice,
-        final Task finished
+        final Task finished,
+        final BigDecimal commission
     ) {
         final Record inserted = this.database.jooq()
             .insertInto(
@@ -136,6 +137,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             BigDecimal.valueOf(
                 inserted.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
+            BigDecimal.valueOf(0),
             finished,
             this.storage
         );
@@ -165,6 +167,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             BigDecimal.valueOf(
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
+            BigDecimal.valueOf(0),
             new StoredTask(
                 invoice.contract(),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ISSUEID),

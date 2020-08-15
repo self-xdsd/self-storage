@@ -29,6 +29,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 /**
  * Integration tests for {@link SelfPms}.
  * Read the package-info.java if you want to run these tests manually.
@@ -107,7 +109,13 @@ public final class SelfPmsITCase {
             new H2Database()
         ).projectManagers();
         final ProjectManager registered = pms
-            .register("123", "zoeself", Provider.Names.GITLAB, "123gitlab");
+            .register(
+                "123",
+                "zoeself",
+                Provider.Names.GITLAB,
+                "123gitlab",
+                BigDecimal.valueOf(50)
+            );
         MatcherAssert.assertThat(registered.id(),
             Matchers.greaterThan(0));
         MatcherAssert.assertThat(registered.userId(),

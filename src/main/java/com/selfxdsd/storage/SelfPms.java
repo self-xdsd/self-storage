@@ -29,6 +29,7 @@ import com.selfxdsd.core.managers.StoredProjectManager;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,8 @@ public final class SelfPms implements ProjectManagers {
         final String userId,
         final String username,
         final String provider,
-        final String accessToken
+        final String accessToken,
+        final BigDecimal commission
     ) {
         final int pmId = this.database.jooq()
             .insertInto(SLF_PMS_XDSD,
@@ -115,6 +117,7 @@ public final class SelfPms implements ProjectManagers {
                 username,
                 provider,
                 accessToken,
+                BigDecimal.valueOf(0),
                 storage);
         }
         throw new IllegalStateException("Something went wrong while"
@@ -151,6 +154,7 @@ public final class SelfPms implements ProjectManagers {
             record.getValue(SLF_PMS_XDSD.USERNAME),
             record.getValue(SLF_PMS_XDSD.PROVIDER),
             record.get(SLF_PMS_XDSD.ACCESS_TOKEN),
+            BigDecimal.valueOf(0),
             this.storage
         );
     }

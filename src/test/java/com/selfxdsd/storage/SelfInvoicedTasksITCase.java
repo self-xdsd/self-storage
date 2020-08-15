@@ -124,7 +124,9 @@ public final class SelfInvoicedTasksITCase {
         ).invoicedTasks();
         final Invoice one = Mockito.mock(Invoice.class);
         Mockito.when(one.invoiceId()).thenReturn(1);
-        final InvoicedTask invoiced = tasks.register(one, task);
+        final InvoicedTask invoiced = tasks.register(
+            one, task, BigDecimal.valueOf(0)
+        );
 
         MatcherAssert.assertThat(invoiced.task(), Matchers.is(task));
         MatcherAssert.assertThat(
