@@ -29,6 +29,7 @@ import com.selfxdsd.core.contracts.invoices.StoredInvoice;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -81,9 +82,38 @@ public final class SelfInvoices implements Invoices {
 
     @Override
     public Invoice createNewInvoice(final Contract.Id contractId) {
-        throw new UnsupportedOperationException(
-            "Cannot create an Invoice outside of a Contract. "
-          + "Call #ofContract(...) first."
+        final Contract contract = this.storage
+            .contracts().findById(contractId);
+        if(contract == null) {
+            throw new IllegalStateException(
+                "The specified Contract does not exist, "
+              + "can't create an Invoice for it."
+            );
+        }
+        final LocalDateTime createdAt = LocalDateTime.now();
+        final int invoiceId = this.database.jooq().insertInto(
+            SLF_INVOICES_XDSD,
+            SLF_INVOICES_XDSD.REPO_FULLNAME,
+            SLF_INVOICES_XDSD.USERNAME,
+            SLF_INVOICES_XDSD.PROVIDER,
+            SLF_INVOICES_XDSD.ROLE,
+            SLF_INVOICES_XDSD.CREATEDAT
+        ).values(
+            contractId.getRepoFullName(),
+            contractId.getContributorUsername(),
+            contractId.getProvider(),
+            contractId.getRole(),
+            createdAt
+        ).returning(SLF_INVOICES_XDSD.INVOICEID)
+            .fetchOne()
+            .getValue(SLF_INVOICES_XDSD.INVOICEID);
+        return new StoredInvoice(
+            invoiceId,
+            contract,
+            createdAt,
+            null,
+            null,
+            this.storage
         );
     }
 

@@ -26,7 +26,6 @@ import com.selfxdsd.api.*;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -84,14 +83,68 @@ public final class SelfInvoicesITCase {
     }
 
     /**
-     * SelfInvoices shouldn't be able to create a new invoice.
+     * SelfInvoices shouldn't be able to create a new invoice on a missing
+     * Contract.
      */
-    @Test (expected = UnsupportedOperationException.class)
-    public void cannotCreateNewInvoice() {
+    @Test (expected = IllegalStateException.class)
+    public void cannotCreateNewInvoiceOnMissingContract() {
         final Invoices invoices = new SelfJooq(
             new H2Database()
         ).invoices();
-        invoices.createNewInvoice(Mockito.mock(Contract.Id.class));
+        invoices.createNewInvoice(
+            new Contract.Id(
+                "john/missing",
+                "mihai",
+                "github",
+                "QA"
+            )
+        );
+    }
+
+    /**
+     * SelfInvoices should be able to create a new Invoice on
+     * an existing Contract.
+     */
+    @Test
+    public void createsNewInvoice() {
+        final Invoices invoices = new SelfJooq(
+            new H2Database()
+        ).invoices();
+        final Contract.Id contractId = new Contract.Id(
+            "amihaiemil/docker-java-api",
+            "alexandra",
+            "github",
+            "DEV"
+        );
+        final Invoice created = invoices.createNewInvoice(contractId);
+        MatcherAssert.assertThat(
+            created.invoiceId(),
+            Matchers.greaterThan(2)
+        );
+        MatcherAssert.assertThat(
+            created.contract().contractId(),
+            Matchers.equalTo(contractId)
+        );
+        MatcherAssert.assertThat(
+            created.createdAt(),
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            created.paymentTime(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            created.transactionId(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            created.tasks(),
+            Matchers.emptyIterable()
+        );
+        MatcherAssert.assertThat(
+            created.totalAmount(),
+            Matchers.equalTo(BigDecimal.valueOf(0))
+        );
     }
 
     /**
