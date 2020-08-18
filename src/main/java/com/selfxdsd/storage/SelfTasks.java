@@ -134,6 +134,15 @@ public final class SelfTasks implements Tasks {
     }
 
     @Override
+    public Task assign(
+        final Task task,
+        final Contract contract,
+        final int days
+    ) {
+        return null;
+    }
+
+    @Override
     public Tasks ofProject(
         final String repoFullName,
         final String repoProvider
