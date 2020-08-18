@@ -23,8 +23,11 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
+import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.tasks.StoredTask;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -322,6 +325,89 @@ public final class SelfTasksITCase {
             );
         MatcherAssert.assertThat(
             noTasks, Matchers.emptyIterable()
+        );
+    }
+
+    /**
+     * SelfTasks.assign(...) complains if the given Task and Contract
+     * do not match.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void assignComplainsOnDifferentContract() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Contract contract = storage.contracts().findById(
+            new Contract.Id(
+                "amihaiemil/docker-java-api",
+                "john",
+                "github",
+                "DEV"
+            )
+        );
+        final Tasks tasks = storage.tasks();
+        final Task task = tasks.getById(
+            "123", "vlad/test", "github"
+        );
+        tasks.assign(task, contract, 10);
+    }
+
+    /**
+     * SelfTasks.assign(...) will assign the given Task to the given Contract.
+     * @todo #110:30min Unignore this test once we have method Task.issueId().
+     *  Then, we will be able to access the task's issueId without having to
+     *  call the Provider inside SelfTasks.assign (the provider's API is
+     *  called when method Task.issue() is used). This is being done in
+     *  self-xdsd/self-core#437.
+     */
+    @Test
+    @Ignore
+    public void assignsTaskToContract() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Contract contract = storage.contracts().findById(
+            new Contract.Id(
+                "vlad/test",
+                "maria",
+                "github",
+                "DEV"
+            )
+        );
+        final Tasks tasks = storage.tasks();
+        final Task task = tasks.getById(
+            "123", "vlad/test", "github"
+        );
+        MatcherAssert.assertThat(
+            task.assignee(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            task.assignmentDate(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            task.deadline(),
+            Matchers.nullValue()
+        );
+        final Task assigned = tasks.assign(task, contract, 10);
+        MatcherAssert.assertThat(
+            assigned,
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(StoredTask.class)
+            )
+        );
+        final Task assignedSelect = tasks.getById(
+            "123", "vlad/test", "github"
+        );
+        MatcherAssert.assertThat(
+            assignedSelect.assignee().username(),
+            Matchers.equalTo("maria")
+        );
+        MatcherAssert.assertThat(
+            assignedSelect.assignmentDate(),
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            assignedSelect.deadline(),
+            Matchers.equalTo(task.assignmentDate().plusDays(10))
         );
     }
 }

@@ -35,6 +35,7 @@ import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -139,6 +140,49 @@ public final class SelfTasks implements Tasks {
         final Contract contract,
         final int days
     ) {
+        final Project proj = task.project();
+        final Contract.Id contractId = contract.contractId();
+        final Contract.Id assignee = new Contract.Id(
+            proj.repoFullName(),
+            contractId.getContributorUsername(),
+            proj.provider(),
+            task.role()
+        );
+        if(!contractId.equals(assignee)) {
+            throw new IllegalArgumentException(
+                "Given Task cannot be assigned to the given Contract. "
+              + "The project or the role is not a match."
+            );
+        }
+        final String issueId = task.issue().issueId();
+        final LocalDateTime assigned = LocalDateTime.now();
+        final int updated = this.database.jooq().update(SLF_TASKS_XDSD)
+            .set(
+                SLF_TASKS_XDSD.USERNAME,
+                assignee.getContributorUsername()
+            ).set(
+                SLF_TASKS_XDSD.ASSIGNED,
+                assigned
+            ).set(
+                SLF_TASKS_XDSD.DEADLINE,
+                assigned.plusDays(days)
+            ).where(
+                SLF_TASKS_XDSD.ISSUEID.eq(issueId).and(
+                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(proj.repoFullName()).and(
+                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider())
+                    )
+                )
+            ).execute();
+        if(updated == 1) {
+            return new StoredTask(
+                contract,
+                issueId,
+                this.storage,
+                assigned,
+                assigned.plusDays(days),
+                task.estimation()
+            );
+        }
         return null;
     }
 
