@@ -53,6 +53,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #113:30min Implement methods unassign and remove here.
+ *  Don't forget about integration tests.
  */
 public final class SelfTasks implements Tasks {
 
@@ -187,6 +189,11 @@ public final class SelfTasks implements Tasks {
     }
 
     @Override
+    public Task unassign(final Task task) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
     public Tasks ofProject(
         final String repoFullName,
         final String repoProvider
@@ -295,6 +302,11 @@ public final class SelfTasks implements Tasks {
             },
             this.storage
         );
+    }
+
+    @Override
+    public boolean remove(final Task task) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override

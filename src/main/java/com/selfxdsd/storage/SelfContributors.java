@@ -42,6 +42,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #113:60min Implement paging mechanism for SelfContributors
+ *  and EmptyContributors. Don't forget about integration tests.
  */
 public final class SelfContributors implements Contributors {
 
@@ -203,6 +205,11 @@ public final class SelfContributors implements Contributors {
     }
 
     @Override
+    public Contributors page(final Page page) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
     public Contributor elect(final Task task) {
         throw new UnsupportedOperationException(
             "You can only elect a Contributor out of a Project's contributors."
@@ -228,6 +235,16 @@ public final class SelfContributors implements Contributors {
             );
         }
         return contributors.iterator();
+    }
+
+    @Override
+    public Page current() {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
+    public int totalPages() {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
 
@@ -268,6 +285,11 @@ public final class SelfContributors implements Contributors {
         }
 
         @Override
+        public Contributors page(final Page page) {
+            throw new UnsupportedOperationException("Not yet implemented.");
+        }
+
+        @Override
         public Contributor elect(final Task task) {
             return null;
         }
@@ -277,5 +299,14 @@ public final class SelfContributors implements Contributors {
             return Collections.emptyIterator();
         }
 
+        @Override
+        public Page current() {
+            throw new UnsupportedOperationException("Not yet implemented.");
+        }
+
+        @Override
+        public int totalPages() {
+            throw new UnsupportedOperationException("Not yet implemented.");
+        }
     }
 }
