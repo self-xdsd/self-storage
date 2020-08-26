@@ -74,6 +74,12 @@ public final class SelfContributorsITCase {
                 )
             ).fetch();
         MatcherAssert.assertThat(result.isEmpty(), Matchers.is(false));
+
+        //clean up
+        testdb.connect().jooq()
+            .delete(SLF_CONTRIBUTORS_XDSD)
+            .where(SLF_CONTRIBUTORS_XDSD.USERNAME.eq("amihaiemil"))
+            .execute();
     }
 
     /**
@@ -224,7 +230,7 @@ public final class SelfContributorsITCase {
         final SelfJooq jooq = new SelfJooq(database);
         final Contributors contributors = jooq.contributors();
         IntStream
-            .range(1, 50).mapToObj(i -> "user" + i)
+            .rangeClosed(1, 50).mapToObj(i -> "user" + i)
             .forEach(user -> contributors.register(user, "github"));
         MatcherAssert.assertThat(contributors,
             Matchers.iterableWithSize(50 + 5));
@@ -276,7 +282,7 @@ public final class SelfContributorsITCase {
         final SelfJooq jooq = new SelfJooq(database);
         final Contributors contributors = jooq.contributors();
         IntStream
-            .range(1, 50).mapToObj(i -> "user" + i)
+            .rangeClosed(1, 50).mapToObj(i -> "user" + i)
             .forEach(user -> contributors.register(user, "github"));
 
         final Contributor found = contributors
@@ -362,13 +368,13 @@ public final class SelfContributorsITCase {
                 .page(new Paged.Page(1, 3))
                 .ofProject("amihaiemil/docker-java-api",
                     Provider.Names.GITHUB),
-            Matchers.iterableWithSize(2));
+            Matchers.iterableWithSize(3));
 
         MatcherAssert.assertThat(contributors
                 .page(new Paged.Page(2, 3))
                 .ofProject("amihaiemil/docker-java-api",
                     Provider.Names.GITHUB),
-            Matchers.iterableWithSize(1));
+            Matchers.emptyIterable());
 
     }
 }

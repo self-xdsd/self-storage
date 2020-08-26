@@ -29,8 +29,7 @@ import com.selfxdsd.core.contracts.ContributorContracts;
 import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.ProjectContributors;
 import com.selfxdsd.core.contributors.StoredContributor;
-import org.jooq.Record;
-import org.jooq.Result;
+import org.jooq.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -156,32 +155,42 @@ public final class SelfContributors extends BasePaged implements Contributors {
         }
         final Page page = super.current();
         final Map<Contributor, List<Contract>> contributors = new HashMap<>();
-        final Result<Record> result = this.database.jooq()
-            .select()
+
+        final DSLContext jooq = this.database.jooq();
+
+        //In order to do pagination, we need to apply limit/offset
+        //on CONTRIBUTORS table first, and only after that, this "PAGED"
+        //CONTRIBUTORS "virtual" table will be joined with CONTRACTS.
+        //SelfContributorsITCase#returnsProjectContributorsOfPage()
+        //test reflects this behaviour.
+        final Table<?> pagedContributors = jooq
+            .select(SLF_CONTRIBUTORS_XDSD.USERNAME.as("username"),
+                SLF_CONTRIBUTORS_XDSD.PROVIDER.as("provider"))
             .from(SLF_CONTRIBUTORS_XDSD)
-            .join(SLF_CONTRACTS_XDSD)
-            .on(
-                SLF_CONTRACTS_XDSD.USERNAME.eq(SLF_CONTRIBUTORS_XDSD.USERNAME)
-                    .and(
-                        SLF_CONTRACTS_XDSD.PROVIDER.eq(
-                            SLF_CONTRIBUTORS_XDSD.PROVIDER
-                        )
-                    )
-            )
-            .where(
-                SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
-                    SLF_CONTRACTS_XDSD.PROVIDER.eq(repoProvider)
-                )
-            )
             .limit(page.getSize())
             .offset((page.getNumber()  - 1) * page.getSize())
+            .asTable("pagedContributors");
+        final Field<String> pagedFieldUsername =
+            (Field<String>) pagedContributors.field("username");
+        final Field<String> pagedFieldProvider =
+            (Field<String>) pagedContributors.field("provider");
+
+        final Result<Record> result = jooq
+            .select()
+            .from(pagedContributors)
+            .join(SLF_CONTRACTS_XDSD)
+            .on(SLF_CONTRACTS_XDSD.USERNAME.eq(pagedFieldUsername)
+                .and(SLF_CONTRACTS_XDSD.PROVIDER.eq(pagedFieldProvider)))
+            .where(SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(repoFullName)
+                .and(SLF_CONTRACTS_XDSD.PROVIDER.eq(repoProvider)))
             .fetch();
+
         boolean firstOccurence;
         for(final Record rec : result) {
             firstOccurence = true;
             final Contributor found = new StoredContributor(
-                rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
-                rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
+                rec.getValue(pagedFieldUsername),
+                rec.getValue(pagedFieldProvider),
                 this.storage
             );
             for(final Contributor key : contributors.keySet()) {
