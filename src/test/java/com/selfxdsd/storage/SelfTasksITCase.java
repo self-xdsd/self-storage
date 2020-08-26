@@ -27,7 +27,6 @@ import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.tasks.StoredTask;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -352,14 +351,8 @@ public final class SelfTasksITCase {
 
     /**
      * SelfTasks.assign(...) will assign the given Task to the given Contract.
-     * @todo #110:30min Unignore this test once we have method Task.issueId().
-     *  Then, we will be able to access the task's issueId without having to
-     *  call the Provider inside SelfTasks.assign (the provider's API is
-     *  called when method Task.issue() is used). This is being done in
-     *  self-xdsd/self-core#437.
      */
     @Test
-    @Ignore
     public void assignsTaskToContract() {
         final Storage storage = new SelfJooq(new H2Database());
         final Contract contract = storage.contracts().findById(
@@ -407,7 +400,7 @@ public final class SelfTasksITCase {
         );
         MatcherAssert.assertThat(
             assignedSelect.deadline(),
-            Matchers.equalTo(task.assignmentDate().plusDays(10))
+            Matchers.equalTo(assignedSelect.assignmentDate().plusDays(10))
         );
     }
 }

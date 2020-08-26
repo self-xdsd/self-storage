@@ -156,7 +156,7 @@ public final class SelfTasks implements Tasks {
               + "The project or the role is not a match."
             );
         }
-        final String issueId = task.issue().issueId();
+        final String issueId = task.issueId();
         final LocalDateTime assigned = LocalDateTime.now();
         final int updated = this.database.jooq().update(SLF_TASKS_XDSD)
             .set(
