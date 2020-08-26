@@ -232,8 +232,8 @@ public final class SelfContributorsITCase {
             Matchers.is(1));
 
         final Contributors page = contributors.page(new Paged.Page(1, 10));
-        MatcherAssert.assertThat(contributors,
-            Matchers.iterableWithSize(50 + 5));
+        MatcherAssert.assertThat(page,
+            Matchers.iterableWithSize(10));
         MatcherAssert.assertThat(page.totalPages(),
             Matchers.is(5 + 1));
 
