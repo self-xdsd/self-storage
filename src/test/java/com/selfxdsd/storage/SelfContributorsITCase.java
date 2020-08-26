@@ -312,7 +312,7 @@ public final class SelfContributorsITCase {
             .page(new Paged.Page(1, 2));
         MatcherAssert.assertThat(
             ofProjectPageOne,
-            Matchers.iterableWithSize(Matchers.is(2))
+            Matchers.iterableWithSize(2)
         );
         MatcherAssert.assertThat(
             ofProjectPageOne.totalPages(),
@@ -340,7 +340,7 @@ public final class SelfContributorsITCase {
             .page(new Paged.Page(2, 2));
         MatcherAssert.assertThat(
             ofProjectPageTwo,
-            Matchers.iterableWithSize(Matchers.is(2))
+            Matchers.iterableWithSize(1)
         );
         MatcherAssert.assertThat(
             ofProjectPageTwo.totalPages(),
@@ -368,7 +368,7 @@ public final class SelfContributorsITCase {
                 .page(new Paged.Page(2, 3))
                 .ofProject("amihaiemil/docker-java-api",
                     Provider.Names.GITHUB),
-            Matchers.iterableWithSize(2));
+            Matchers.iterableWithSize(1));
 
     }
 }

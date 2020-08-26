@@ -26,6 +26,7 @@ import com.selfxdsd.api.Contract;
 import com.selfxdsd.api.Contracts;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Provider;
+import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -108,7 +109,8 @@ public final class SelfContractsITCase {
      */
     @Test
     public void addsContract(){
-        final Contracts all = new SelfJooq(new H2Database()).contracts();
+        final H2Database database = new H2Database();
+        final Contracts all = new SelfJooq(database).contracts();
         final Contract contract = all
             .addContract("amihaiemil/docker-java-api", "bob",
                 Provider.Names.GITHUB, BigDecimal.TEN,
@@ -124,6 +126,11 @@ public final class SelfContractsITCase {
         MatcherAssert.assertThat(contract.role(),
             Matchers.equalTo(Contract.Roles.DEV));
 
+        //cleanup
+        database.connect().jooq()
+            .delete(SlfContractsXdsd.SLF_CONTRACTS_XDSD)
+            .where(SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME.eq("bob"))
+            .execute();
     }
 
     /**
