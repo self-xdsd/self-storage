@@ -24,6 +24,7 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.BasePaged;
 import com.selfxdsd.core.contracts.ContributorContracts;
 import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.ProjectContributors;
@@ -42,10 +43,9 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #113:60min Implement paging mechanism for SelfContributors
- *  and EmptyContributors. Don't forget about integration tests.
+ * @checkstyle ExecutableStatementCount (500 lines)
  */
-public final class SelfContributors implements Contributors {
+public final class SelfContributors extends BasePaged implements Contributors {
 
     /**
      * Parent Storage.
@@ -66,6 +66,19 @@ public final class SelfContributors implements Contributors {
         final Storage storage,
         final Database database
     ) {
+        this(storage, database, Page.all());
+    }
+
+    /**
+     * Ctor.
+     * @param storage Parent Storage.
+     * @param database Database.
+     * @param page Current Page.
+     */
+    private SelfContributors(final Storage storage,
+                             final Database database,
+                             final Page page){
+        super(page, () -> database.jooq().fetchCount(SLF_CONTRIBUTORS_XDSD));
         this.storage = storage;
         this.database = database;
     }
@@ -91,17 +104,37 @@ public final class SelfContributors implements Contributors {
         final String username,
         final String provider
     ) {
-        final Result<Record> result = this.database.jooq()
-            .select()
-            .from(SLF_CONTRIBUTORS_XDSD)
-            .where(
-                SLF_CONTRIBUTORS_XDSD.USERNAME.eq(username).and(
-                    SLF_CONTRIBUTORS_XDSD.PROVIDER.eq(provider)
+        final Page page = super.current();
+        final Record rec;
+        if (page.getSize() == Integer.MAX_VALUE) {
+            //we are in "all" page, it's safe to query whole table.
+            rec = this.database.jooq()
+                .select()
+                .from(SLF_CONTRIBUTORS_XDSD)
+                .where(
+                    SLF_CONTRIBUTORS_XDSD.USERNAME.eq(username).and(
+                        SLF_CONTRIBUTORS_XDSD.PROVIDER.eq(provider)
+                    )
                 )
-            )
-            .fetch();
-        if (result.size() > 0) {
-            final Record rec = result.get(0);
+                .stream()
+                .findFirst()
+                .orElse(null);
+        } else {
+            //we "extract" the page from table than we search the contributor
+            //on that page using streams.
+            rec = this.database.jooq()
+                .select()
+                .from(SLF_CONTRIBUTORS_XDSD)
+                .limit(page.getSize())
+                .offset((page.getNumber() - 1) * page.getSize())
+                .stream()
+                .filter(r -> r.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME)
+                    .equals(username) && r
+                    .getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER).equals(provider))
+                .findFirst()
+                .orElse(null);
+        }
+        if (rec != null) {
             return new StoredContributor(
                 rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
                 rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
@@ -121,6 +154,7 @@ public final class SelfContributors implements Contributors {
         if (project == null) {
             return new EmptyContributors(this);
         }
+        final Page page = super.current();
         final Map<Contributor, List<Contract>> contributors = new HashMap<>();
         final Result<Record> result = this.database.jooq()
             .select()
@@ -139,6 +173,8 @@ public final class SelfContributors implements Contributors {
                     SLF_CONTRACTS_XDSD.PROVIDER.eq(repoProvider)
                 )
             )
+            .limit(page.getSize())
+            .offset((page.getNumber()  - 1) * page.getSize())
             .fetch();
         boolean firstOccurence;
         for(final Record rec : result) {
@@ -206,7 +242,7 @@ public final class SelfContributors implements Contributors {
 
     @Override
     public Contributors page(final Page page) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        return new SelfContributors(this.storage, this.database, page);
     }
 
     @Override
@@ -219,39 +255,26 @@ public final class SelfContributors implements Contributors {
 
     @Override
     public Iterator<Contributor> iterator() {
-        final List<Contributor> contributors = new ArrayList<>();
-        final Result<Record> result = this.database.jooq()
+        final Page page = super.current();
+        return this.database.jooq()
             .select()
             .from(SLF_CONTRIBUTORS_XDSD)
-            .limit(100)
-            .fetch();
-        for (final Record res : result) {
-            contributors.add(
-                new StoredContributor(
-                    res.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
-                    res.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
-                    this.storage
-                )
-            );
-        }
-        return contributors.iterator();
+            .limit(page.getSize())
+            .offset((page.getNumber() - 1) * page.getSize())
+            .stream()
+            .map(rec -> (Contributor) new StoredContributor(
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
+                this.storage
+            ))
+            .iterator();
     }
-
-    @Override
-    public Page current() {
-        throw new UnsupportedOperationException("Not yet implemented.");
-    }
-
-    @Override
-    public int totalPages() {
-        throw new UnsupportedOperationException("Not yet implemented.");
-    }
-
 
     /**
      * Empty representation of Contributors.
      */
-    private static final class EmptyContributors implements Contributors {
+    static final class EmptyContributors extends BasePaged
+            implements Contributors {
 
         /**
          * Contributors delegate used just for register a new Contributor.
@@ -260,9 +283,20 @@ public final class SelfContributors implements Contributors {
 
         /**
          * Ctor.
-         * @param contributors Contributors delegate;
+         * @param contributors Contributors delegate.
          */
         private EmptyContributors(final Contributors contributors) {
+            this(contributors, Page.all());
+        }
+
+        /**
+         * Ctor.
+         * @param contributors Contributors delegate.
+         * @param page Current Page.
+         */
+        private EmptyContributors(final Contributors contributors,
+                                  final Page page) {
+            super(page, () -> 0);
             this.contributors = contributors;
         }
 
@@ -286,7 +320,7 @@ public final class SelfContributors implements Contributors {
 
         @Override
         public Contributors page(final Page page) {
-            throw new UnsupportedOperationException("Not yet implemented.");
+            return new EmptyContributors(this.contributors, page);
         }
 
         @Override
@@ -299,14 +333,5 @@ public final class SelfContributors implements Contributors {
             return Collections.emptyIterator();
         }
 
-        @Override
-        public Page current() {
-            throw new UnsupportedOperationException("Not yet implemented.");
-        }
-
-        @Override
-        public int totalPages() {
-            throw new UnsupportedOperationException("Not yet implemented.");
-        }
     }
 }

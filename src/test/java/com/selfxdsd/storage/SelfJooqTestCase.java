@@ -29,6 +29,7 @@ import org.jooq.DSLContext;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 
 /**
@@ -81,7 +82,13 @@ public final class SelfJooqTestCase {
      */
     @Test
     public void returnsContributors() {
-        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        final Database database = Mockito.mock(Database.class);
+        final DSLContext jooq = Mockito.mock(DSLContext.class);
+        Mockito.when(jooq.fetchCount(SLF_CONTRIBUTORS_XDSD))
+            .thenReturn(Integer.MAX_VALUE);
+        Mockito.when(database.connect()).thenReturn(database);
+        Mockito.when(database.jooq()).thenReturn(jooq);
+        final Storage storage = new SelfJooq(database);
         MatcherAssert.assertThat(
             storage.contributors(),
             Matchers.allOf(
