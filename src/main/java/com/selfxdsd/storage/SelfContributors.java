@@ -170,6 +170,7 @@ public final class SelfContributors extends BasePaged implements Contributors {
             .limit(page.getSize())
             .offset((page.getNumber()  - 1) * page.getSize())
             .asTable("pagedContributors");
+
         final Field<String> pagedFieldUsername =
             (Field<String>) pagedContributors.field("username");
         final Field<String> pagedFieldProvider =
