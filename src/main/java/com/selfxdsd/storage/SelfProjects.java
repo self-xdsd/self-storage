@@ -156,29 +156,6 @@ public final class SelfProjects extends BasePaged implements Projects {
     public Projects ownedBy(final User user) {
         final Page page = super.current();
         final DSLContext jooq = this.database.connect().jooq();
-
-        Result<Record> fetch =  jooq
-            .select()
-            .from(jooq.select()
-                .from(SLF_PROJECTS_XDSD)
-                .limit(page.getSize())
-                .offset((page.getNumber() - 1) * page.getSize())
-                .asTable("projects_page"))
-            .join(SLF_USERS_XDSD)
-            .on(SLF_USERS_XDSD.USERNAME
-                .eq(DSL.field("projects_page.username")
-                    .cast(String.class))
-                .and(SLF_USERS_XDSD.PROVIDER
-                    .eq(DSL.field("projects_page.provider")
-                        .cast(String.class))))
-            .join(SLF_PMS_XDSD)
-            .on(DSL.field("projects_page.pmid").eq(SLF_PMS_XDSD.ID))
-            .where(DSL.field("projects_page.username")
-                .eq(user.username())
-                .and(DSL.field("projects_page.provider")
-                    .eq(user.provider().name())))
-            .fetch();
-
         return new UserProjects(
             user,
             () -> jooq
@@ -197,7 +174,7 @@ public final class SelfProjects extends BasePaged implements Projects {
                             .cast(String.class))))
                 .join(SLF_PMS_XDSD)
                 .on(DSL.field("projects_page.pmid").eq(SLF_PMS_XDSD.ID))
-                .where(DSL.field("projects_page.username")
+                .where(SLF_USERS_XDSD.USERNAME
                     .eq(user.username())
                     .and(DSL.field("projects_page.provider")
                         .eq(user.provider().name())))
@@ -262,23 +239,23 @@ public final class SelfProjects extends BasePaged implements Projects {
     @Override
     public Iterator<Project> iterator() {
         final Page page = super.current();
-        return this.database.jooq()
+        final DSLContext jooq = this.database.jooq();
+        return jooq
             .select()
-            .from(SLF_PROJECTS_XDSD)
+            .from(jooq.select()
+                .from(SLF_PROJECTS_XDSD)
+                .limit(page.getSize())
+                .offset((page.getNumber() - 1) * page.getSize())
+                .asTable("projects_page"))
             .join(SLF_USERS_XDSD)
-            .on(
-                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                )
-            )
+            .on(DSL.field("projects_page.username")
+                    .eq(SLF_USERS_XDSD.USERNAME)
+                    .and(DSL.field("projects_page.provider")
+                        .eq(SLF_USERS_XDSD.PROVIDER)))
             .join(SLF_PMS_XDSD)
-            .on(
-                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-            )
-//            .limit(page.getSize())
-//            .offset((page.getNumber() - 1) * page.getSize())
+            .on(DSL.field("projects_page.pmid").eq(SLF_PMS_XDSD.ID))
             .stream()
-            .map((Record rec) -> projectFromRecord(rec, false))
+            .map(rec -> projectFromRecord(rec, true))
             .iterator();
     }
 
