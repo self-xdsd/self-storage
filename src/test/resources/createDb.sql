@@ -95,7 +95,7 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   PRIMARY KEY (issueId, provider, repo_fullname),
   CONSTRAINT assignee
     FOREIGN KEY (repo_fullname, provider, role, username)
-    REFERENCES self_xdsd.slf_contracts_xdsd (repo_fullname, provider, role, username),
+    REFERENCES self_xdsd.slf_contracts_xdsd (repo_fullname, username, provider, role),
   CONSTRAINT parent_project
     FOREIGN KEY (repo_fullname, provider)
     REFERENCES self_xdsd.slf_projects_xdsd (repo_fullname, provider)
