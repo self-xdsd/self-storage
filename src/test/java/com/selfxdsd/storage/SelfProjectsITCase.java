@@ -29,6 +29,8 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
+
 /**
  * Integration tests for {@link SelfProjects}.
  * Read the package-info.java if you want to run these tests manually.
@@ -171,7 +173,8 @@ public final class SelfProjectsITCase {
      */
     @Test
     public void registersNewProject() {
-        final Projects all = new SelfJooq(new H2Database()).projects();
+        final H2Database database = new H2Database();
+        final Projects all = new SelfJooq(database).projects();
         MatcherAssert.assertThat(
             all.getProjectById(
                 "amihaiemil/eo-jsonp-impl",
@@ -201,6 +204,12 @@ public final class SelfProjectsITCase {
             ),
             Matchers.notNullValue()
         );
+
+        //cleanup
+        database.connect().jooq().delete(SLF_PROJECTS_XDSD)
+            .where(SLF_PROJECTS_XDSD.REPO_FULLNAME
+                .eq("amihaiemil/eo-jsonp-impl"))
+            .execute();
     }
 
     /**
@@ -265,12 +274,13 @@ public final class SelfProjectsITCase {
      */
     @Test
     public void hasCorrectTotalPages() {
-        final Projects projects = new SelfJooq(new H2Database()).projects();
+        final H2Database database = new H2Database();
+        final Projects projects = new SelfJooq(database).projects();
         MatcherAssert.assertThat(projects
             .page(new Paged.Page(1, 4))
             .totalPages(), Matchers.is(1));
         for (int i = 0; i < 16; i++) {
-            final Repo repo = mockRepo("amihaiemil/repo" + i,
+            final Repo repo = this.mockRepo("amihaiemil/repo" + i,
                 "amihaiemil", "github");
             final ProjectManager manager = Mockito.mock(ProjectManager.class);
             Mockito.when(manager.id()).thenReturn(1);
@@ -280,7 +290,128 @@ public final class SelfProjectsITCase {
             .page(new Paged.Page(1, 4))
             .totalPages(), Matchers.is(5));
         MatcherAssert.assertThat(projects
-            .totalPages(), Matchers.is(2));
+            .totalPages(), Matchers.is(1));
+
+        //cleanup
+        database.connect().jooq().delete(SLF_PROJECTS_XDSD).where(
+            SLF_PROJECTS_XDSD.REPO_FULLNAME.like("amihaiemil/repo%")
+        ).execute();
+    }
+
+    /**
+     * SelfProjects can return the Projects owned by a certain User in pages
+     * of Projects.
+     */
+    @Test
+    public void returnsOwnedByUserInPage() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        MatcherAssert.assertThat(all, Matchers.iterableWithSize(4));
+
+        final Projects pageOne = all.page(new Paged.Page(1, 2));
+        MatcherAssert.assertThat(pageOne, Matchers.iterableWithSize(2));
+        MatcherAssert.assertThat(
+            "`amihaiemil` should own 2 projects on page 1",
+            pageOne.ownedBy(mockUser("amihaiemil", "github")),
+            Matchers.iterableWithSize(2)
+        );
+        MatcherAssert.assertThat(
+            "`vlad` should own no projects project on page 1",
+            pageOne.ownedBy(mockUser("vlad", "github")),
+            Matchers.emptyIterable()
+        );
+
+        final Projects pageTwo = all.page(new Paged.Page(2, 2));
+        MatcherAssert.assertThat(pageTwo, Matchers.iterableWithSize(2));
+        MatcherAssert.assertThat(
+            "`amihaiemil` should own no projects on page 2",
+            pageTwo.ownedBy(mockUser("amihaiemil", "github")),
+            Matchers.emptyIterable()
+        );
+        MatcherAssert.assertThat(
+            "`vlad` should own 1 project on page 2",
+            pageTwo.ownedBy(mockUser("vlad", "github")),
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            "`mihai` should own 1 project on page 2",
+            pageTwo.ownedBy(mockUser("mihai", "gitlab")),
+            Matchers.iterableWithSize(1)
+        );
+    }
+
+    /**
+     * Owned by User Projects can be be paged.
+     */
+    @Test
+    public void returnsPageOfOwnedByUser() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+
+        final Projects ofAmihaiemil = all
+            .ownedBy(mockUser("amihaiemil", "github"));
+        MatcherAssert.assertThat(ofAmihaiemil, Matchers.iterableWithSize(2));
+        MatcherAssert.assertThat(ofAmihaiemil
+            .page(new Paged.Page(1, 1)),
+            Matchers.iterableWithSize(1));
+        MatcherAssert.assertThat(all.page(new Paged.Page(2, 1)),
+            Matchers.iterableWithSize(1));
+
+        final Projects ofAmihaiemilSubpage = all
+            .page(new Paged.Page(1, 3))
+            .ownedBy(mockUser("amihaiemil", "github"));
+        MatcherAssert.assertThat(ofAmihaiemilSubpage,
+            Matchers.iterableWithSize(2));
+        MatcherAssert.assertThat(ofAmihaiemilSubpage
+                .page(new Paged.Page(1, 1)),
+            Matchers.iterableWithSize(1));
+        MatcherAssert.assertThat(ofAmihaiemilSubpage
+                .page(new Paged.Page(2, 1)),
+            Matchers.iterableWithSize(1));
+    }
+
+    /**
+     * SelfProjects can return the Projects assigned to PM in pages
+     * of Projects.
+     */
+    @Test
+    public void returnsAssignedToPmInPage() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+
+        MatcherAssert.assertThat(all
+                .page(new Paged.Page(1, 3))
+                .assignedTo(1),
+            Matchers.iterableWithSize(3));
+        MatcherAssert.assertThat(all
+                .page(new Paged.Page(1, 3))
+                .assignedTo(2),
+            Matchers.emptyIterable());
+
+        MatcherAssert.assertThat(all
+                .page(new Paged.Page(2, 3))
+                .assignedTo(1),
+            Matchers.iterableWithSize(1));
+    }
+
+    /**
+     * SelfProjects assigned can be paged.
+     */
+    @Test
+    public void returnsPageOfAssignedToPm() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        final Projects ofZoeself = all.assignedTo(1);
+        MatcherAssert.assertThat(ofZoeself,
+            Matchers.iterableWithSize(4));
+        MatcherAssert.assertThat(ofZoeself
+                .page(new Paged.Page(1, 3)),
+            Matchers.iterableWithSize(3));
+        MatcherAssert.assertThat(ofZoeself
+                .page(new Paged.Page(2, 3)),
+            Matchers.iterableWithSize(1));
+
+        final Projects ofZoeselfSubpage = all
+            .page(new Paged.Page(1, 2))
+            .assignedTo(1);
+        MatcherAssert.assertThat(ofZoeselfSubpage,
+            Matchers.iterableWithSize(2));
     }
 
 
