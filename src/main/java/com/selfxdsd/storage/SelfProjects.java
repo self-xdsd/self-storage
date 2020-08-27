@@ -23,6 +23,7 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
+import com.selfxdsd.api.User;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.BasePaged;
 import com.selfxdsd.core.StoredUser;
@@ -30,8 +31,8 @@ import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.PmProjects;
 import com.selfxdsd.core.projects.StoredProject;
 import com.selfxdsd.core.projects.UserProjects;
-import org.jooq.Record;
-import org.jooq.Result;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -70,7 +71,7 @@ public final class SelfProjects extends BasePaged implements Projects {
         this(
             storage,
             database,
-            new Page(1, 10)
+            Page.all()
         );
     }
 
@@ -126,58 +127,82 @@ public final class SelfProjects extends BasePaged implements Projects {
 
     @Override
     public Projects assignedTo(final int projectManagerId) {
+        final Page page = super.current();
+        final DSLContext jooq = this.database.connect().jooq();
         return new PmProjects(
             projectManagerId,
             () -> this.database.connect().jooq()
                 .select()
-                .from(SLF_PROJECTS_XDSD)
+                .from(jooq.select()
+                    .from(SLF_PROJECTS_XDSD)
+                    .limit(page.getSize())
+                    .offset((page.getNumber() - 1) * page.getSize())
+                    .asTable("projects_page"))
                 .join(SLF_USERS_XDSD)
-                .on(
-                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
-                        .and(
-                            SLF_USERS_XDSD.PROVIDER.eq(
-                                SLF_PROJECTS_XDSD.PROVIDER
-                            )
-                        )
-                ).join(SLF_PMS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                )
-                .where(
-                    SLF_PROJECTS_XDSD.PMID.eq(projectManagerId)
-                )
+                .on(SLF_USERS_XDSD.USERNAME
+                    .eq(DSL.field("projects_page.username")
+                        .cast(String.class))
+                    .and(SLF_USERS_XDSD.PROVIDER
+                        .eq(DSL.field("projects_page.provider")
+                            .cast(String.class))))
+                .join(SLF_PMS_XDSD)
+                .on(DSL.field("projects_page.pmid").eq(SLF_PMS_XDSD.ID))
+                .where(DSL.field("projects_page.pmid").eq(projectManagerId))
                 .stream()
-                .map(this::projectFromRecord));
+                .map(rec -> projectFromRecord(rec, true)));
     }
 
     @Override
     public Projects ownedBy(final User user) {
+        final Page page = super.current();
+        final DSLContext jooq = this.database.connect().jooq();
+
+        Result<Record> fetch =  jooq
+            .select()
+            .from(jooq.select()
+                .from(SLF_PROJECTS_XDSD)
+                .limit(page.getSize())
+                .offset((page.getNumber() - 1) * page.getSize())
+                .asTable("projects_page"))
+            .join(SLF_USERS_XDSD)
+            .on(SLF_USERS_XDSD.USERNAME
+                .eq(DSL.field("projects_page.username")
+                    .cast(String.class))
+                .and(SLF_USERS_XDSD.PROVIDER
+                    .eq(DSL.field("projects_page.provider")
+                        .cast(String.class))))
+            .join(SLF_PMS_XDSD)
+            .on(DSL.field("projects_page.pmid").eq(SLF_PMS_XDSD.ID))
+            .where(DSL.field("projects_page.username")
+                .eq(user.username())
+                .and(DSL.field("projects_page.provider")
+                    .eq(user.provider().name())))
+            .fetch();
+
         return new UserProjects(
             user,
-            () -> this.database.connect().jooq()
+            () -> jooq
                 .select()
-                .from(SLF_PROJECTS_XDSD)
+                .from(jooq.select()
+                    .from(SLF_PROJECTS_XDSD)
+                    .limit(page.getSize())
+                    .offset((page.getNumber() - 1) * page.getSize())
+                    .asTable("projects_page"))
                 .join(SLF_USERS_XDSD)
-                .on(
-                    SLF_USERS_XDSD.USERNAME.eq(SLF_PROJECTS_XDSD.USERNAME)
-                        .and(
-                            SLF_USERS_XDSD.PROVIDER.eq(
-                                SLF_PROJECTS_XDSD.PROVIDER
-                            )
-                        )
-                ).join(SLF_PMS_XDSD)
-                .on(
-                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-                )
-                .where(
-                    SLF_PROJECTS_XDSD.USERNAME.eq(user.username()).and(
-                        SLF_PROJECTS_XDSD.PROVIDER.eq(
-                            user.provider().name()
-                        )
-                    )
-                )
+                .on(SLF_USERS_XDSD.USERNAME
+                    .eq(DSL.field("projects_page.username")
+                        .cast(String.class))
+                    .and(SLF_USERS_XDSD.PROVIDER
+                        .eq(DSL.field("projects_page.provider")
+                            .cast(String.class))))
+                .join(SLF_PMS_XDSD)
+                .on(DSL.field("projects_page.pmid").eq(SLF_PMS_XDSD.ID))
+                .where(DSL.field("projects_page.username")
+                    .eq(user.username())
+                    .and(DSL.field("projects_page.provider")
+                        .eq(user.provider().name())))
                 .stream()
-                .map(this::projectFromRecord));
+                .map(rec -> projectFromRecord(rec, true)));
     }
 
     @Override
@@ -185,29 +210,44 @@ public final class SelfProjects extends BasePaged implements Projects {
         final String repoFullName,
         final String repoProvider
     ) {
-        final Result<Record> result = this.database.jooq()
-            .select()
-            .from(SLF_PROJECTS_XDSD)
-            .join(SLF_USERS_XDSD)
-            .on(
-                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+        final Page page = super.current();
+        final SelectOnConditionStep<Record> select = this.database.jooq()
+                .select()
+                .from(SLF_PROJECTS_XDSD)
+                .join(SLF_USERS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                        SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                    )
                 )
-            )
-            .join(SLF_PMS_XDSD)
-            .on(
-                SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
-            )
-            .where(
-                SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
-                    SLF_PROJECTS_XDSD.PROVIDER.eq(repoProvider)
+                .join(SLF_PMS_XDSD)
+                .on(
+                    SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
+                );
+        final Project project;
+        if (page.getSize() == Integer.MAX_VALUE) {
+            project = select
+                .where(
+                    SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                        SLF_PROJECTS_XDSD.PROVIDER.eq(repoProvider)
+                    )
                 )
-            )
-            .fetch();
-        if(!result.isEmpty()) {
-            return this.projectFromRecord(result.get(0));
+                .stream()
+                .map(rec -> projectFromRecord(rec, false))
+                .findFirst()
+                .orElse(null);
+        } else {
+            project = select
+                .stream()
+                .filter(r -> r.getValue(SLF_PROJECTS_XDSD.REPO_FULLNAME)
+                    .equals(repoFullName)
+                    && r.getValue(SLF_PROJECTS_XDSD.PROVIDER)
+                    .equals(repoProvider))
+                .map(rec -> projectFromRecord(rec, false))
+                .findFirst()
+                .orElse(null);
         }
-        return null;
+        return project;
     }
 
     @Override
@@ -235,43 +275,57 @@ public final class SelfProjects extends BasePaged implements Projects {
             .on(
                 SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID)
             )
-            .limit(page.getSize())
-            .offset((page.getNumber()  - 1) * page.getSize())
+//            .limit(page.getSize())
+//            .offset((page.getNumber() - 1) * page.getSize())
             .stream()
-            .map(this::projectFromRecord)
+            .map((Record rec) -> projectFromRecord(rec, false))
             .iterator();
     }
 
     /**
      * Build a Project from a JOOQ Record.
      * @param rec Record representing the Project's data.
+     * @param isFromPagedTable Marks that record is from projects paged table.
      * @return Project.
      */
-    private Project projectFromRecord(final Record rec) {
+    private Project projectFromRecord(final Record rec,
+                                      final boolean isFromPagedTable){
+        final Field<?> webhookField;
+        final Field<?> repoFullNameField;
+        if (isFromPagedTable) {
+            webhookField = DSL.field(DSL
+                .name("projects_page", "webhook_token"));
+            repoFullNameField = DSL.field(DSL
+                .name("projects_page", "repo_fullname"));
+        } else {
+            webhookField = SLF_PROJECTS_XDSD.WEBHOOK_TOKEN;
+            repoFullNameField = SLF_PROJECTS_XDSD.REPO_FULLNAME;
+        }
         final User owner = new StoredUser(
-            rec.getValue(SLF_USERS_XDSD.USERNAME),
-            rec.getValue(SLF_USERS_XDSD.EMAIL),
-            rec.getValue(SLF_USERS_XDSD.ROLE),
-            rec.getValue(SLF_USERS_XDSD.PROVIDER),
+            rec.get(SLF_USERS_XDSD.USERNAME),
+            rec.get(SLF_USERS_XDSD.EMAIL),
+            rec.get(SLF_USERS_XDSD.ROLE),
+            rec.get(SLF_USERS_XDSD.PROVIDER),
             this.storage
         );
-        final Project built = new StoredProject(
+        return new StoredProject(
             owner,
-            rec.getValue(SLF_PROJECTS_XDSD.REPO_FULLNAME),
-            rec.getValue(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN),
+            rec.get(repoFullNameField).toString(),
+            rec.get(webhookField).toString(),
             new StoredProjectManager(
-                rec.getValue(SLF_PMS_XDSD.ID),
-                rec.getValue(SLF_PMS_XDSD.USERID),
-                rec.getValue(SLF_PMS_XDSD.USERNAME),
-                rec.getValue(SLF_PMS_XDSD.PROVIDER),
-                rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
+                rec.get(SLF_PMS_XDSD.ID),
+                rec.get(SLF_PMS_XDSD.USERID),
+                rec.get(SLF_PMS_XDSD.USERNAME),
+                rec.get(SLF_PMS_XDSD.PROVIDER),
+                rec.get(SLF_PMS_XDSD.ACCESS_TOKEN),
                 BigDecimal.valueOf(
-                    rec.getValue(SLF_PMS_XDSD.COMMISSION).longValue()
+                    rec.get(SLF_PMS_XDSD.COMMISSION).longValue()
                 ),
                 this.storage
             ),
             this.storage
         );
-        return built;
     }
+
+
 }

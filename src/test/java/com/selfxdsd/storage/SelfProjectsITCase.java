@@ -171,7 +171,8 @@ public final class SelfProjectsITCase {
      */
     @Test
     public void registersNewProject() {
-        final Projects all = new SelfJooq(new H2Database()).projects();
+        final H2Database database = new H2Database();
+        final Projects all = new SelfJooq(database).projects();
         MatcherAssert.assertThat(
             all.getProjectById(
                 "amihaiemil/eo-jsonp-impl",
@@ -201,6 +202,12 @@ public final class SelfProjectsITCase {
             ),
             Matchers.notNullValue()
         );
+
+        //cleanup
+        database.connect().jooq().delete(SLF_PROJECTS_XDSD)
+            .where(SLF_PROJECTS_XDSD.REPO_FULLNAME
+                .eq("amihaiemil/eo-jsonp-impl"))
+            .execute();
     }
 
     /**
@@ -281,6 +288,46 @@ public final class SelfProjectsITCase {
             .totalPages(), Matchers.is(5));
         MatcherAssert.assertThat(projects
             .totalPages(), Matchers.is(2));
+    }
+
+    /**
+     * SelfProjects can return the Projects owned by a certain User in pages
+     * of Projects.
+     */
+    @Test
+    public void returnsOwnedByUserInPage() {
+        final Projects all = new SelfJooq(new H2Database()).projects();
+        final Projects pageOne = all.page(new Paged.Page(1, 2));
+       // MatcherAssert.assertThat(pageOne, Matchers.iterableWithSize(2));
+        for (Project p : all){
+            System.out.println(p.repoFullName() + " : " + p.owner().username());
+        }
+//        MatcherAssert.assertThat(
+//            "`amihaiemil` should own to projects on page 1",
+//            pageOne.ownedBy(mockUser("amihaiemil", "github")),
+//            Matchers.iterableWithSize(2)
+//        );
+//        Projects actual = pageOne.ownedBy(mockUser("vlad", "github"));
+//        for (Project p : actual){
+//            System.out.println(p.repoFullName() + " : " + p.owner().username());
+//        }
+//        MatcherAssert.assertThat(
+//            "`vlad` should own no projects project on page 1",
+//            actual,
+//            Matchers.emptyIterable()
+//        );
+//
+//        final Projects pageTwo = all.page(new Paged.Page(1, 2));
+//        MatcherAssert.assertThat(
+//            "`amihaiemil` should own no projects on page 2",
+//            pageTwo.ownedBy(mockUser("amihaiemil", "github")),
+//            Matchers.emptyIterable()
+//        );
+//        MatcherAssert.assertThat(
+//            "`vlad` should own 1 project on page 2",
+//            pageTwo.ownedBy(mockUser("vlad", "github")),
+//            Matchers.emptyIterable()
+//        );
     }
 
 
