@@ -94,7 +94,7 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   estimation_minutes INT NOT NULL,
   PRIMARY KEY (issueId, provider, repo_fullname),
   CONSTRAINT assignee
-    FOREIGN KEY (repo_fullname, provider, role, username)
+    FOREIGN KEY (repo_fullname, username, provider, role)
     REFERENCES self_xdsd.slf_contracts_xdsd (repo_fullname, username, provider, role),
   CONSTRAINT parent_project
     FOREIGN KEY (repo_fullname, provider)
