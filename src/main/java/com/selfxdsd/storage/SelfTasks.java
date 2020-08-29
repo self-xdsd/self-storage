@@ -192,7 +192,6 @@ public final class SelfTasks implements Tasks {
     public Task unassign(final Task task) {
         final Project proj = task.project();
         final String issueId = task.issueId();
-        final LocalDateTime assigned = LocalDateTime.now();
         final int updated = this.database.jooq().update(SLF_TASKS_XDSD)
             .set(SLF_TASKS_XDSD.USERNAME, (String) null)
             .set(SLF_TASKS_XDSD.ASSIGNED, (LocalDateTime) null)
