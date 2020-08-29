@@ -275,6 +275,78 @@ public final class SelfTasksITCase {
     }
 
     /**
+     * SelfTasks can remove an assigned Task.
+     */
+    @Test
+    public void removesAssignedTask() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        final Task assigned = all.getById(
+            "900",
+            "vlad/test",
+            Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            assigned.role(),
+            Matchers.equalTo("QA")
+        );
+        MatcherAssert.assertThat(
+            assigned.assignee().username(),
+            Matchers.equalTo("maria")
+        );
+        MatcherAssert.assertThat(
+            assigned.assignmentDate(),
+            Matchers.equalTo(LocalDateTime.of(2020, 8, 25, 0, 0, 0))
+        );
+        MatcherAssert.assertThat(
+            assigned.deadline(),
+            Matchers.equalTo(LocalDateTime.of(2020, 9, 4, 0, 0, 0))
+        );
+
+        final boolean removed = all.remove(assigned);
+        MatcherAssert.assertThat(removed, Matchers.is(Boolean.TRUE));
+        final Task selected = all.getById(
+            "900", "vlad/test", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(selected, Matchers.nullValue());
+    }
+
+    /**
+     * SelfTasks can remove an unassinged Task.
+     */
+    @Test
+    public void removesUnassignedTask() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        final Task unassigned = all.getById(
+            "901",
+            "vlad/test",
+            Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            unassigned.role(),
+            Matchers.equalTo("DEV")
+        );
+        MatcherAssert.assertThat(
+            unassigned.assignee(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            unassigned.assignmentDate(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            unassigned.deadline(),
+            Matchers.nullValue()
+        );
+
+        final boolean removed = all.remove(unassigned);
+        MatcherAssert.assertThat(removed, Matchers.is(Boolean.TRUE));
+        final Task selected = all.getById(
+            "901", "vlad/test", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(selected, Matchers.nullValue());
+    }
+
+    /**
      * SelfTasks can be iterated.
      */
     @Test

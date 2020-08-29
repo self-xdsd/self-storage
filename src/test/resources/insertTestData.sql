@@ -114,6 +114,15 @@ INSERT INTO self_xdsd.slf_tasks_xdsd
 VALUES
 ('vlad/test', '887', 'github', 'QA', 'maria', '2020-08-25', '2020-09-04', 60);
 
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes)
+VALUES
+('vlad/test', '900', 'github', 'QA', 'maria', '2020-08-25', '2020-09-04', 60);
+
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, estimation_minutes)
+VALUES
+('vlad/test', '901', 'github', 'DEV', 60);
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
