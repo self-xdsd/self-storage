@@ -30,6 +30,8 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
+
 /**
  * Integration tests for {@link SelfTasks}.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -224,6 +226,51 @@ public final class SelfTasksITCase {
         MatcherAssert.assertThat(
             all.getById("234", "mihai/test", Provider.Names.GITLAB),
             Matchers.notNullValue()
+        );
+    }
+
+    /**
+     * SelfTasks can unassign a Task.
+     */
+    @Test
+    public void unassignsTask() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        final Task assigned = all.getById(
+            "887",
+            "vlad/test",
+            Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            assigned.role(),
+            Matchers.equalTo("QA")
+        );
+        MatcherAssert.assertThat(
+            assigned.assignee().username(),
+            Matchers.equalTo("maria")
+        );
+        MatcherAssert.assertThat(
+            assigned.assignmentDate(),
+            Matchers.equalTo(LocalDateTime.of(2020, 8, 25, 0, 0, 0))
+        );
+        MatcherAssert.assertThat(
+            assigned.deadline(),
+            Matchers.equalTo(LocalDateTime.of(2020, 9, 4, 0, 0, 0))
+        );
+
+        final Task unassigned = all.unassign(assigned);
+        MatcherAssert.assertThat(unassigned, Matchers.notNullValue());
+        MatcherAssert.assertThat(unassigned.assignee(), Matchers.nullValue());
+        final Task selected = all.getById(
+            "887", "vlad/test", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(selected.assignee(), Matchers.nullValue());
+        MatcherAssert.assertThat(
+            selected.assignmentDate(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            selected.deadline(),
+            Matchers.nullValue()
         );
     }
 

@@ -53,7 +53,7 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #113:30min Implement methods unassign and remove here.
+ * @todo #115:30min Implement method remove here.
  *  Don't forget about integration tests.
  */
 public final class SelfTasks implements Tasks {
@@ -190,7 +190,30 @@ public final class SelfTasks implements Tasks {
 
     @Override
     public Task unassign(final Task task) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Project proj = task.project();
+        final String issueId = task.issueId();
+        final LocalDateTime assigned = LocalDateTime.now();
+        final int updated = this.database.jooq().update(SLF_TASKS_XDSD)
+            .set(SLF_TASKS_XDSD.USERNAME, (String) null)
+            .set(SLF_TASKS_XDSD.ASSIGNED, (LocalDateTime) null)
+            .set(SLF_TASKS_XDSD.DEADLINE, (LocalDateTime) null)
+            .where(
+                SLF_TASKS_XDSD.ISSUEID.eq(issueId).and(
+                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(proj.repoFullName()).and(
+                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider())
+                    )
+                )
+            ).execute();
+        if(updated == 1) {
+            return new StoredTask(
+                proj,
+                issueId,
+                task.role(),
+                task.estimation(),
+                this.storage
+            );
+        }
+        return null;
     }
 
     @Override
