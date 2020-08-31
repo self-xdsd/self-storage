@@ -30,6 +30,10 @@ import com.selfxdsd.api.storage.Storage;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #127:30min Implement SelfResignations and write
+ *  integration tests for it.
+ * @todo #127:30min Implement SelfWallets and write
+ *  integration tests for it.
  */
 public final class SelfJooq implements Storage {
 
@@ -75,6 +79,11 @@ public final class SelfJooq implements Storage {
     }
 
     @Override
+    public Wallets wallets() {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
     public Contracts contracts() {
         return new SelfContracts(this, this.database);
     }
@@ -97,6 +106,11 @@ public final class SelfJooq implements Storage {
     @Override
     public Tasks tasks() {
         return new SelfTasks(this, this.database);
+    }
+
+    @Override
+    public Resignations resignations() {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
