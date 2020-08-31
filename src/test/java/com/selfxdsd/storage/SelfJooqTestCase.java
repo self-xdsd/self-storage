@@ -157,4 +157,19 @@ public final class SelfJooqTestCase {
             )
         );
     }
+
+    /**
+     * SelfJooq can return the Resignations.
+     */
+    @Test
+    public void returnsResignations() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.resignations(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfResignations.class)
+            )
+        );
+    }
 }

@@ -139,3 +139,21 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
   CONSTRAINT `invoiceContractFk`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
     REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`));
+
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_resignations_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`slf_resignations_xdsd` (
+  `repo_fullname` VARCHAR(256) NOT NULL,
+  `username` VARCHAR(100) NOT NULL,
+  `provider` VARCHAR(50) NOT NULL,
+  `issueId` VARCHAR(50) NOT NULL,
+  `timestamp` DATETIME NOT NULL,
+  `reason` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`repo_fullname`, `username`, `provider`, `issueId`),
+  CONSTRAINT `task`
+    FOREIGN KEY (`repo_fullname` , `provider` , `issueId`)
+    REFERENCES `self_xdsd`.`slf_tasks_xdsd` (`repo_fullname` , `provider` , `issueId`),
+  CONSTRAINT `resignee`
+    FOREIGN KEY (`username` , `provider`)
+    REFERENCES `self_xdsd`.`slf_contributors_xdsd` (`username` , `provider`));

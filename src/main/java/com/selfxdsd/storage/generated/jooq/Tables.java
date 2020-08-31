@@ -10,6 +10,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfResignationsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfTasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd;
 
@@ -49,6 +50,11 @@ public class Tables {
      * The table <code>self_xdsd.slf_projects_xdsd</code>.
      */
     public static final SlfProjectsXdsd SLF_PROJECTS_XDSD = SlfProjectsXdsd.SLF_PROJECTS_XDSD;
+
+    /**
+     * The table <code>self_xdsd.slf_resignations_xdsd</code>.
+     */
+    public static final SlfResignationsXdsd SLF_RESIGNATIONS_XDSD = SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_tasks_xdsd</code>.
