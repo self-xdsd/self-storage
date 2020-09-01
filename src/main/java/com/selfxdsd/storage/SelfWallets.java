@@ -35,7 +35,7 @@ import java.util.Iterator;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.21
- * @todo #130:30min Implement the methods of this class using
+ * @todo #130:30min Implement the methods of SelfWallets class using
  *  JOOQ and write integration tests for them.
  */
 public final class SelfWallets implements Wallets {

@@ -159,7 +159,7 @@ CREATE TABLE `self_xdsd`.`slf_resignations_xdsd` (
     REFERENCES `self_xdsd`.`slf_contributors_xdsd` (`username` , `provider`));
 
 -- -----------------------------------------------------
--- Table `self_xdsd`.`slf_resignations_xdsd`
+-- Table `self_xdsd`.`slf_wallets_xdsd`
 -- -----------------------------------------------------
 CREATE TABLE `self_xdsd`.`slf_wallets_xdsd` (
   `repo_fullname` VARCHAR(256) NOT NULL,
