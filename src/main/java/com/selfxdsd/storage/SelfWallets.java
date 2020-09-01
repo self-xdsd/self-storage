@@ -25,6 +25,7 @@ package com.selfxdsd.storage;
 import com.selfxdsd.api.Project;
 import com.selfxdsd.api.Wallet;
 import com.selfxdsd.api.Wallets;
+import com.selfxdsd.api.storage.Storage;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -38,6 +39,30 @@ import java.util.Iterator;
  *  JOOQ and write integration tests for them.
  */
 public final class SelfWallets implements Wallets {
+
+    /**
+     * Parent Storage.
+     */
+    private final Storage storage;
+
+    /**
+     * Database.
+     */
+    private final Database database;
+
+    /**
+     * Ctor.
+     * @param storage Parent Storage.
+     * @param database Database.
+     */
+    public SelfWallets(
+        final Storage storage,
+        final Database database
+    ) {
+        this.storage = storage;
+        this.database = database;
+    }
+
     @Override
     public Wallet register(
         final Project project,

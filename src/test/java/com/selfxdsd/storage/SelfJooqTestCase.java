@@ -172,4 +172,19 @@ public final class SelfJooqTestCase {
             )
         );
     }
+
+    /**
+     * SelfJooq can return the Wallets.
+     */
+    @Test
+    public void returnsWallets() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.wallets(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfWallets.class)
+            )
+        );
+    }
 }
