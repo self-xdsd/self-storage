@@ -13,6 +13,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfResignationsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfTasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfWalletsXdsd;
 
 
 /**
@@ -65,4 +66,9 @@ public class Tables {
      * The table <code>self_xdsd.slf_users_xdsd</code>.
      */
     public static final SlfUsersXdsd SLF_USERS_XDSD = SlfUsersXdsd.SLF_USERS_XDSD;
+
+    /**
+     * The table <code>self_xdsd.slf_wallets_xdsd</code>.
+     */
+    public static final SlfWalletsXdsd SLF_WALLETS_XDSD = SlfWalletsXdsd.SLF_WALLETS_XDSD;
 }

@@ -157,3 +157,18 @@ CREATE TABLE `self_xdsd`.`slf_resignations_xdsd` (
   CONSTRAINT `resignee`
     FOREIGN KEY (`username` , `provider`)
     REFERENCES `self_xdsd`.`slf_contributors_xdsd` (`username` , `provider`));
+
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_resignations_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`slf_wallets_xdsd` (
+  `repo_fullname` VARCHAR(256) NOT NULL,
+  `provider` VARCHAR(50) NOT NULL,
+  `type` VARCHAR(50) NOT NULL,
+  `cash` DECIMAL(20,0) NOT NULL,
+  `active` TINYINT(1) NOT NULL,
+  `identifier` VARCHAR(256) NOT NULL,
+  PRIMARY KEY (`repo_fullname`, `provider`, `type`),
+  CONSTRAINT `ownerProject`
+    FOREIGN KEY (`repo_fullname` , `provider`)
+    REFERENCES `self_xdsd`.`slf_projects_xdsd` (`repo_fullname` , `provider`));

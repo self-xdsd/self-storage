@@ -13,6 +13,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfResignationsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfTasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfWalletsXdsd;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfXdsd extends SchemaImpl {
 
-    private static final long serialVersionUID = -440687052;
+    private static final long serialVersionUID = -1525841851;
 
     /**
      * The reference instance of <code>self_xdsd</code>
@@ -81,6 +82,11 @@ public class SelfXdsd extends SchemaImpl {
     public final SlfUsersXdsd SLF_USERS_XDSD = SlfUsersXdsd.SLF_USERS_XDSD;
 
     /**
+     * The table <code>self_xdsd.slf_wallets_xdsd</code>.
+     */
+    public final SlfWalletsXdsd SLF_WALLETS_XDSD = SlfWalletsXdsd.SLF_WALLETS_XDSD;
+
+    /**
      * No further instances allowed
      */
     private SelfXdsd() {
@@ -104,6 +110,7 @@ public class SelfXdsd extends SchemaImpl {
             SlfProjectsXdsd.SLF_PROJECTS_XDSD,
             SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD,
             SlfTasksXdsd.SLF_TASKS_XDSD,
-            SlfUsersXdsd.SLF_USERS_XDSD);
+            SlfUsersXdsd.SLF_USERS_XDSD,
+            SlfWalletsXdsd.SLF_WALLETS_XDSD);
     }
 }

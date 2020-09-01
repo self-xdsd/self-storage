@@ -13,6 +13,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfResignationsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfTasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfWalletsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfContractsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfContributorsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfInvoicedtasksXdsdRecord;
@@ -22,6 +23,7 @@ import com.selfxdsd.storage.generated.jooq.tables.records.SlfProjectsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfResignationsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfTasksXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfUsersXdsdRecord;
+import com.selfxdsd.storage.generated.jooq.tables.records.SlfWalletsXdsdRecord;
 
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -58,6 +60,7 @@ public class Keys {
     public static final UniqueKey<SlfResignationsXdsdRecord> KEY_SLF_RESIGNATIONS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_RESIGNATIONS_XDSD_PRIMARY;
     public static final UniqueKey<SlfTasksXdsdRecord> KEY_SLF_TASKS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_TASKS_XDSD_PRIMARY;
     public static final UniqueKey<SlfUsersXdsdRecord> KEY_SLF_USERS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_USERS_XDSD_PRIMARY;
+    public static final UniqueKey<SlfWalletsXdsdRecord> KEY_SLF_WALLETS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_WALLETS_XDSD_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -70,6 +73,7 @@ public class Keys {
     public static final ForeignKey<SlfProjectsXdsdRecord, SlfPmsXdsdRecord> PM = ForeignKeys0.PM;
     public static final ForeignKey<SlfResignationsXdsdRecord, SlfContributorsXdsdRecord> RESIGNEE = ForeignKeys0.RESIGNEE;
     public static final ForeignKey<SlfTasksXdsdRecord, SlfProjectsXdsdRecord> PARENT_PROJECT = ForeignKeys0.PARENT_PROJECT;
+    public static final ForeignKey<SlfWalletsXdsdRecord, SlfProjectsXdsdRecord> OWNERPROJECT = ForeignKeys0.OWNERPROJECT;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -91,6 +95,7 @@ public class Keys {
         public static final UniqueKey<SlfResignationsXdsdRecord> KEY_SLF_RESIGNATIONS_XDSD_PRIMARY = Internal.createUniqueKey(SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, "KEY_slf_resignations_xdsd_PRIMARY", new TableField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.REPO_FULLNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.USERNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.ISSUEID }, true);
         public static final UniqueKey<SlfTasksXdsdRecord> KEY_SLF_TASKS_XDSD_PRIMARY = Internal.createUniqueKey(SlfTasksXdsd.SLF_TASKS_XDSD, "KEY_slf_tasks_xdsd_PRIMARY", new TableField[] { SlfTasksXdsd.SLF_TASKS_XDSD.ISSUEID, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER, SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME }, true);
         public static final UniqueKey<SlfUsersXdsdRecord> KEY_SLF_USERS_XDSD_PRIMARY = Internal.createUniqueKey(SlfUsersXdsd.SLF_USERS_XDSD, "KEY_slf_users_xdsd_PRIMARY", new TableField[] { SlfUsersXdsd.SLF_USERS_XDSD.USERNAME, SlfUsersXdsd.SLF_USERS_XDSD.PROVIDER }, true);
+        public static final UniqueKey<SlfWalletsXdsdRecord> KEY_SLF_WALLETS_XDSD_PRIMARY = Internal.createUniqueKey(SlfWalletsXdsd.SLF_WALLETS_XDSD, "KEY_slf_wallets_xdsd_PRIMARY", new TableField[] { SlfWalletsXdsd.SLF_WALLETS_XDSD.REPO_FULLNAME, SlfWalletsXdsd.SLF_WALLETS_XDSD.PROVIDER, SlfWalletsXdsd.SLF_WALLETS_XDSD.TYPE }, true);
     }
 
     private static class ForeignKeys0 {
@@ -101,5 +106,6 @@ public class Keys {
         public static final ForeignKey<SlfProjectsXdsdRecord, SlfPmsXdsdRecord> PM = Internal.createForeignKey(Keys.KEY_SLF_PMS_XDSD_PRIMARY, SlfProjectsXdsd.SLF_PROJECTS_XDSD, "pm", new TableField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.PMID }, true);
         public static final ForeignKey<SlfResignationsXdsdRecord, SlfContributorsXdsdRecord> RESIGNEE = Internal.createForeignKey(Keys.KEY_SLF_CONTRIBUTORS_XDSD_PRIMARY, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, "resignee", new TableField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.USERNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER }, true);
         public static final ForeignKey<SlfTasksXdsdRecord, SlfProjectsXdsdRecord> PARENT_PROJECT = Internal.createForeignKey(Keys.KEY_SLF_PROJECTS_XDSD_PRIMARY, SlfTasksXdsd.SLF_TASKS_XDSD, "parent_project", new TableField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, true);
+        public static final ForeignKey<SlfWalletsXdsdRecord, SlfProjectsXdsdRecord> OWNERPROJECT = Internal.createForeignKey(Keys.KEY_SLF_PROJECTS_XDSD_PRIMARY, SlfWalletsXdsd.SLF_WALLETS_XDSD, "ownerProject", new TableField[] { SlfWalletsXdsd.SLF_WALLETS_XDSD.REPO_FULLNAME, SlfWalletsXdsd.SLF_WALLETS_XDSD.PROVIDER }, true);
     }
 }
