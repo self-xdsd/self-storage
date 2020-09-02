@@ -39,6 +39,52 @@ import java.math.BigDecimal;
 public final class SelfWalletsITCase {
 
     /**
+     * SelfWallets can register a new Wallet in a Project.
+     */
+    @Test
+    public void registersWallet() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects projects = storage.projects();
+        final Wallets all = storage.wallets();
+
+        final Project project = projects.getProjectById(
+            "amihaiemil/amihaiemil.github.io", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            project,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            all.ofProject(project),
+            Matchers.emptyIterable()
+        );
+
+        final Wallet registered = all.register(
+            project,
+            Wallet.Type.FAKE,
+            BigDecimal.valueOf(2_000_000),
+            "fakew_123_am"
+        );
+        MatcherAssert.assertThat(
+            registered.project(),
+            Matchers.is(project)
+        );
+        MatcherAssert.assertThat(
+            registered.active(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
+            registered.cash(),
+            Matchers.equalTo(BigDecimal.valueOf(2_000_000))
+        );
+
+        MatcherAssert.assertThat(
+            all.ofProject(project),
+            Matchers.iterableWithSize(1)
+        );
+    }
+
+    /**
      * Method ofProject can return empty if
      * the project has no wallets registered.
      */

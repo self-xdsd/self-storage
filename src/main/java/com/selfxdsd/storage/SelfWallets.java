@@ -46,6 +46,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
  *  JOOQ and write integration tests for them.
  * @todo #135:30min Once we have other types of Wallet (e.g. StripeWallet),
  *  modify the method walletFromRecord to build the wallet accordingly.
+ *  Method register(...) should then also be adapted to support other wallet
+ *  types.
  */
 public final class SelfWallets implements Wallets {
 
@@ -79,7 +81,42 @@ public final class SelfWallets implements Wallets {
         final BigDecimal cash,
         final String identifier
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        if(Wallet.Type.FAKE.equals(type)) {
+            final int inserted = this.database.jooq().insertInto(
+                SLF_WALLETS_XDSD,
+                SLF_WALLETS_XDSD.REPO_FULLNAME,
+                SLF_WALLETS_XDSD.PROVIDER,
+                SLF_WALLETS_XDSD.TYPE,
+                SLF_WALLETS_XDSD.CASH
+                    .cast(BigDecimal.class).as("cash"),
+                SLF_WALLETS_XDSD.ACTIVE,
+                SLF_WALLETS_XDSD.IDENTIFIER
+            ).values(
+                project.repoFullName(),
+                project.provider(),
+                type,
+                cash,
+                Boolean.FALSE,
+                identifier
+            ).execute();
+            if(inserted != 1) {
+                throw new IllegalStateException(
+                    "Something went wrong while trying to register "
+                    + "a new wallet."
+                );
+            } else {
+                return new Wallet.Missing(
+                    project,
+                    cash,
+                    Boolean.FALSE,
+                    identifier
+                );
+            }
+        } else {
+            throw new UnsupportedOperationException(
+                "Only fake wallets are supported at the moment."
+            );
+        }
     }
 
     @Override
