@@ -115,6 +115,12 @@
                                     <includes>.*</includes>
                                     <excludes></excludes>
                                     <inputSchema>self_xdsd</inputSchema>
+                                    <forcedTypes>
+                                        <forcedType>
+                                            <name>BOOLEAN</name>
+                                            <includeTypes>(?i:TINYINT\(1\))</includeTypes>
+                                        </forcedType>
+                                    </forcedTypes>
                                 </database>
                                 <target>
                                     <packageName>com.selfxdsd.storage.generated.jooq</packageName>

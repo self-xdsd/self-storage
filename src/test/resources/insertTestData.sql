@@ -189,4 +189,9 @@ VALUES
     60
 );
 
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+('amihaiemil/docker-java-api', 'github', 'FAKE', 1000000000, 1, 'fakew-1232');
+
 

@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfWalletsXdsd extends TableImpl<SlfWalletsXdsdRecord> {
 
-    private static final long serialVersionUID = 24877798;
+    private static final long serialVersionUID = -2017457143;
 
     /**
      * The reference instance of <code>self_xdsd.slf_wallets_xdsd</code>
@@ -70,7 +70,7 @@ public class SlfWalletsXdsd extends TableImpl<SlfWalletsXdsdRecord> {
     /**
      * The column <code>self_xdsd.slf_wallets_xdsd.active</code>.
      */
-    public final TableField<SlfWalletsXdsdRecord, Byte> ACTIVE = createField(DSL.name("active"), org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<SlfWalletsXdsdRecord, Boolean> ACTIVE = createField(DSL.name("active"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_wallets_xdsd.identifier</code>.
@@ -165,7 +165,7 @@ public class SlfWalletsXdsd extends TableImpl<SlfWalletsXdsdRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, BigInteger, Byte, String> fieldsRow() {
+    public Row6<String, String, String, BigInteger, Boolean, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }
