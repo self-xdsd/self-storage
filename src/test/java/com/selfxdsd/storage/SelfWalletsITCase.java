@@ -85,6 +85,45 @@ public final class SelfWalletsITCase {
     }
 
     /**
+     * A wallet can be activated.
+     */
+    @Test
+    public void activatesWallet() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects projects = storage.projects();
+        final Wallets all = storage.wallets();
+
+        final Project project = projects.getProjectById(
+            "vlad/test", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            project,
+            Matchers.notNullValue()
+        );
+        all.register(
+            project,
+            Wallet.Type.FAKE,
+            BigDecimal.valueOf(3_000_000),
+            "fakew_123_vlad"
+        );
+        final Wallet inactive = all.ofProject(project).iterator().next();
+        MatcherAssert.assertThat(
+            inactive.active(),
+            Matchers.is(Boolean.FALSE)
+        );
+        final Wallet activated = all.activate(inactive);
+        MatcherAssert.assertThat(
+            activated.active(),
+            Matchers.is(Boolean.TRUE)
+        );
+        final Wallet selectedActive = all.ofProject(project).iterator().next();
+        MatcherAssert.assertThat(
+            selectedActive.active(),
+            Matchers.is(Boolean.TRUE)
+        );
+    }
+
+    /**
      * Method ofProject can return empty if
      * the project has no wallets registered.
      */

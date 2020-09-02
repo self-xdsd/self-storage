@@ -22,13 +22,10 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Project;
-import com.selfxdsd.api.Wallet;
-import com.selfxdsd.api.Wallets;
+import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.projects.ProjectWallets;
-import org.jooq.Record;
-import org.jooq.Result;
+import org.jooq.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,8 +39,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.21
- * @todo #130:30min Implement the methods of SelfWallets class using
- *  JOOQ and write integration tests for them.
  * @todo #135:30min Once we have other types of Wallet (e.g. StripeWallet),
  *  modify the method walletFromRecord to build the wallet accordingly.
  *  Method register(...) should then also be adapted to support other wallet
@@ -147,7 +142,58 @@ public final class SelfWallets implements Wallets {
 
     @Override
     public Wallet activate(final Wallet wallet) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Project project = wallet.project();
+        final DSLContext jooq = this.database.jooq();
+        jooq.transaction(
+            (configuration) -> {
+                jooq.update(SLF_WALLETS_XDSD)
+                    .set(SLF_WALLETS_XDSD.ACTIVE, Boolean.FALSE)
+                    .where(
+                        SLF_WALLETS_XDSD.PROVIDER.eq(project.provider()).and(
+                            SLF_WALLETS_XDSD.REPO_FULLNAME.eq(
+                                project.repoFullName()
+                            ).and(
+                                SLF_WALLETS_XDSD.TYPE.notEqual(wallet.type())
+                            )
+                        )
+                    ).execute();
+                jooq.update(SLF_WALLETS_XDSD)
+                    .set(SLF_WALLETS_XDSD.ACTIVE, Boolean.TRUE)
+                    .where(
+                        SLF_WALLETS_XDSD.PROVIDER.eq(project.provider()).and(
+                            SLF_WALLETS_XDSD.REPO_FULLNAME.eq(
+                                project.repoFullName()
+                            ).and(SLF_WALLETS_XDSD.TYPE.eq(wallet.type()))
+                        )
+                    ).execute();
+            }
+        );
+        return new Wallet() {
+            @Override
+            public BigDecimal cash() {
+                return wallet.cash();
+            }
+
+            @Override
+            public Invoice pay(final Invoice invoice) {
+                return wallet.pay(invoice);
+            }
+
+            @Override
+            public String type() {
+                return wallet.type();
+            }
+
+            @Override
+            public boolean active() {
+                return Boolean.TRUE;
+            }
+
+            @Override
+            public Project project() {
+                return wallet.project();
+            }
+        };
     }
 
     @Override
