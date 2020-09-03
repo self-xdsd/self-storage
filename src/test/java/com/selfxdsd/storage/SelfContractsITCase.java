@@ -191,7 +191,7 @@ public final class SelfContractsITCase {
         Mockito.when(contributor.provider()).thenReturn(Provider.Names.GITHUB);
         final Contracts ofProject = new SelfJooq(new H2Database()).contracts()
             .ofContributor(contributor);
-        MatcherAssert.assertThat(ofProject, Matchers.iterableWithSize(2));
+        MatcherAssert.assertThat(ofProject, Matchers.iterableWithSize(3));
     }
 
 }

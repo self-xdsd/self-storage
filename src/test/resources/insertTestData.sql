@@ -66,6 +66,14 @@ VALUES ('vlad/test', 'maria', 'github', 'DEV', 16000);
 
 INSERT INTO self_xdsd.slf_contracts_xdsd
 (repo_fullname, username, provider, role, hourly_rate)
+VALUES ('vlad/test', 'john', 'github', 'DEV', 16000);
+
+INSERT INTO self_xdsd.slf_contracts_xdsd
+(repo_fullname, username, provider, role, hourly_rate)
+VALUES ('vlad/test', 'bob', 'github', 'DEV', 16000);
+
+INSERT INTO self_xdsd.slf_contracts_xdsd
+(repo_fullname, username, provider, role, hourly_rate)
 VALUES ('vlad/test', 'maria', 'github', 'REV', 8000);
 
 INSERT INTO self_xdsd.slf_contracts_xdsd
@@ -123,6 +131,11 @@ INSERT INTO self_xdsd.slf_tasks_xdsd
 (repo_fullname, issueId, provider, role, estimation_minutes)
 VALUES
 ('vlad/test', '901', 'github', 'DEV', 60);
+
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, estimation_minutes)
+VALUES
+('vlad/test', '999', 'github', 'DEV', 60);
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
@@ -194,4 +207,12 @@ INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 VALUES
 ('amihaiemil/docker-java-api', 'github', 'FAKE', 1000000000, 1, 'fakew-1232');
 
+INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
+(`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`)
+VALUES
+('vlad/test', 'maria', 'github', '999', '2020-09-03', 'DEADLINE' );
 
+INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
+(`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`)
+VALUES
+('vlad/test', 'john', 'github', '999', '2020-09-01', 'ASKED' );

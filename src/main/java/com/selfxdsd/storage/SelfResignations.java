@@ -22,12 +22,19 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Resignation;
-import com.selfxdsd.api.Resignations;
-import com.selfxdsd.api.Task;
+import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contributors.StoredContributor;
+import com.selfxdsd.core.tasks.StoredResignation;
+import com.selfxdsd.core.tasks.TaskResignations;
+import org.jooq.Record;
+import org.jooq.Result;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import static com.selfxdsd.storage.generated.jooq.Tables.*;
 
 /**
  * All the Resignations in Self.
@@ -64,7 +71,39 @@ public final class SelfResignations implements Resignations {
 
     @Override
     public Resignations ofTask(final Task task) {
-        return null;
+        final Project project = task.project();
+        final List<Resignation> ofTask = new ArrayList<>();
+        final Result<Record> result = this.database
+            .jooq()
+            .select()
+            .from(SLF_RESIGNATIONS_XDSD)
+            .where(
+                SLF_RESIGNATIONS_XDSD.REPO_FULLNAME.eq(
+                    project.repoFullName()
+                ).and(
+                    SLF_RESIGNATIONS_XDSD.PROVIDER.eq(project.provider())
+                        .and(SLF_RESIGNATIONS_XDSD.ISSUEID.eq(task.issueId()))
+                )
+            ).fetch();
+        for(final Record rec : result) {
+            ofTask.add(
+                new StoredResignation(
+                    task,
+                    new StoredContributor(
+                        rec.getValue(SLF_RESIGNATIONS_XDSD.USERNAME),
+                        rec.getValue(SLF_RESIGNATIONS_XDSD.PROVIDER),
+                        this.storage
+                    ),
+                    rec.getValue(SLF_RESIGNATIONS_XDSD.TIMESTAMP),
+                    rec.getValue(SLF_RESIGNATIONS_XDSD.REASON)
+                )
+            );
+        }
+        return new TaskResignations(
+            task,
+            () -> ofTask.stream(),
+            this.storage
+        );
     }
 
     @Override
