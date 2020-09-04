@@ -104,4 +104,82 @@ public final class SelfResignationsITCase {
         MatcherAssert.assertThat(resignations, Matchers.emptyIterable());
     }
 
+    /**
+     * SelfResignations.register(...) throws ISE if the Task has no assignee.
+     */
+    @Test (expected = IllegalStateException.class)
+    public void registerComplainsOnNoAssignee() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Project project = storage
+            .projects()
+            .getProjectById(
+                "vlad/test",
+                Provider.Names.GITHUB
+            );
+        MatcherAssert.assertThat(
+            project,
+            Matchers.notNullValue()
+        );
+        final Task task = project
+            .tasks().getById(
+                "124",
+                "vlad/test",
+                Provider.Names.GITHUB
+            );
+        MatcherAssert.assertThat(task, Matchers.notNullValue());
+        storage.resignations().register(task, Resignations.Reason.ASKED);
+    }
+
+    /**
+     * SelfResignations.register(...) works.
+     */
+    @Test
+    public void registerWorks() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Project project = storage
+            .projects()
+            .getProjectById(
+                "amihaiemil/docker-java-api",
+                Provider.Names.GITHUB
+            );
+        MatcherAssert.assertThat(
+            project,
+            Matchers.notNullValue()
+        );
+        final Task task = project
+            .tasks().getById(
+                "124",
+                "amihaiemil/docker-java-api",
+                Provider.Names.GITHUB
+            );
+        MatcherAssert.assertThat(task, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            task.resignations(),
+            Matchers.emptyIterable()
+        );
+        final Resignation res = storage
+            .resignations()
+            .register(task, Resignations.Reason.DEADLINE);
+        final Resignations resignations = task.resignations();
+        MatcherAssert.assertThat(
+            resignations,
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            res.task(),
+            Matchers.is(task)
+        );
+        MatcherAssert.assertThat(
+            res.contributor().username(),
+            Matchers.equalTo("alexandra")
+        );
+        MatcherAssert.assertThat(
+            res.reason(),
+            Matchers.equalTo(Resignations.Reason.DEADLINE)
+        );
+        MatcherAssert.assertThat(
+            res.timestamp(),
+            Matchers.notNullValue()
+        );
+    }
 }

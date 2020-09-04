@@ -30,6 +30,7 @@ import com.selfxdsd.core.tasks.TaskResignations;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -110,7 +111,46 @@ public final class SelfResignations implements Resignations {
     public Resignation register(
         final Task task, final String reason
     ) {
-        return null;
+        final Contributor assignee = task.assignee();
+        if(assignee == null) {
+            throw new IllegalStateException(
+                "Task is not assigned, cannot register a resignation."
+            );
+        }
+        final Project project = task.project();
+        final LocalDateTime timestamp = LocalDateTime.now();
+        final int inserted = this.database.jooq().insertInto(
+            SLF_RESIGNATIONS_XDSD,
+            SLF_RESIGNATIONS_XDSD.REPO_FULLNAME,
+            SLF_RESIGNATIONS_XDSD.PROVIDER,
+            SLF_RESIGNATIONS_XDSD.USERNAME,
+            SLF_RESIGNATIONS_XDSD.ISSUEID,
+            SLF_RESIGNATIONS_XDSD.TIMESTAMP,
+            SLF_RESIGNATIONS_XDSD.REASON
+        ).values(
+            project.repoFullName(),
+            project.provider(),
+            assignee.username(),
+            task.issueId(),
+            timestamp,
+            reason
+        ).execute();
+        if(inserted != 1) {
+            throw new IllegalStateException(
+                "Something went wrong while trying to register "
+                + "a resignation for Task #" + task.issueId() + " "
+                + "from Project " + project.repoFullName() + " at "
+                + project.provider() + ". "
+                + "Assignee is " + assignee.username() + "."
+            );
+        } else {
+            return new StoredResignation(
+                task,
+                assignee,
+                timestamp,
+                reason
+            );
+        }
     }
 
     @Override
