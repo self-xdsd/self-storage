@@ -42,8 +42,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.8
- * @todo #129:30min Implement the methods of this class using
- *  JOOQ and write integration tests for them.
  */
 public final class SelfResignations implements Resignations {
 
