@@ -51,4 +51,31 @@ public interface Database extends Closeable {
      */
     void close();
 
+
+    /**
+     * Underneath database driver. Could be MySql, H2 etc.
+     * @return Engine.
+     */
+    String dbms();
+
+    /**
+     * Underneath database driver. Could be MySql, H2 etc.
+     */
+    final class Dbms {
+        /**
+         * MySql.
+         */
+        public static final String MY_SQL = "MY_SQL";
+        /**
+         * H2.
+         */
+        public static final String H2 = "H2";
+
+        /**
+         * Private constructor.
+         */
+        private Dbms() {
+            throw new IllegalStateException("Not allowed to construct");
+        }
+    }
 }

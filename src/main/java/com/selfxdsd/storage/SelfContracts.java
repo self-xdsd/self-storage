@@ -34,16 +34,14 @@ import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.StoredContributor;
 import com.selfxdsd.core.managers.StoredProjectManager;
 import com.selfxdsd.core.projects.StoredProject;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectOnConditionStep;
+import org.jooq.*;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
-import static com.selfxdsd.storage.generated.jooq.Tables.*;
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
@@ -142,7 +140,7 @@ public final class SelfContracts implements Contracts {
                 + contributorUsername + " and " + provider
                 + " was not found.");
         }
-        final int execute = jooq
+        final InsertOnDuplicateStep<?> insert = jooq
             .insertInto(SLF_CONTRACTS_XDSD,
                 SLF_CONTRACTS_XDSD.REPO_FULLNAME,
                 SLF_CONTRACTS_XDSD.USERNAME,
@@ -150,8 +148,13 @@ public final class SelfContracts implements Contracts {
                 SLF_CONTRACTS_XDSD.HOURLY_RATE,
                 SLF_CONTRACTS_XDSD.ROLE)
             .values(repoFullName, contributorUsername,
-                provider, hourlyRate.longValueExact(), role)
-            .execute();
+                provider, hourlyRate.longValueExact(), role);
+        final int execute;
+        if (database.dbms().equals(Database.Dbms.MY_SQL)) {
+            execute = insert.onDuplicateKeyIgnore().execute();
+        } else {
+            execute = insert.execute();
+        }
         if (execute != 1) {
             throw new IllegalStateException("Something went wrong when "
                 + "inserting Contract into database.");

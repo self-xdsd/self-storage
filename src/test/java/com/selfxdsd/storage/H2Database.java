@@ -133,4 +133,9 @@ public final class H2Database implements Database {
             }
         }
     }
+
+    @Override
+    public String dbms() {
+        return Dbms.H2;
+    }
 }
