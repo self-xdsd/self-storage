@@ -27,6 +27,7 @@ import com.selfxdsd.api.Contracts;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Provider;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -134,15 +135,39 @@ public final class SelfContractsITCase {
     }
 
     /**
-     * Throws IllegalStateException when contributor with key
-     * contributorUsername + provider is not found.
+     * SelfContracts register contributor first if they are not found
+     * and then adds the new Contract.
      */
-    @Test(expected = IllegalStateException.class)
-    public void throwsOnAddContractWhenContributorNotFound(){
-        new SelfJooq(new H2Database()).contracts()
-            .addContract("amihaiemil/docker-java-api", "dan",
+    @Test
+    public void registersContributorFirstIfContributorNotFound(){
+        final H2Database database = new H2Database();
+        final Contracts all = new SelfJooq(database).contracts();
+        final Contract contract = all
+            .addContract("amihaiemil/docker-java-api", "foo",
                 Provider.Names.GITHUB, BigDecimal.TEN,
                 Contract.Roles.DEV);
+        MatcherAssert.assertThat(contract.project().repoFullName(),
+            Matchers.equalTo("amihaiemil/docker-java-api"));
+        MatcherAssert.assertThat(contract.project().provider(),
+            Matchers.equalTo(Provider.Names.GITHUB));
+        MatcherAssert.assertThat(contract.contributor().username(),
+            Matchers.equalTo("foo"));
+        MatcherAssert.assertThat(contract.hourlyRate(),
+            Matchers.equalTo(BigDecimal.TEN));
+        MatcherAssert.assertThat(contract.role(),
+            Matchers.equalTo(Contract.Roles.DEV));
+
+        //cleanup
+        database.connect().jooq()
+            .delete(SlfContractsXdsd.SLF_CONTRACTS_XDSD)
+            .where(SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME.eq("foo"))
+            .execute();
+        database.connect().jooq()
+            .delete(SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD)
+            .where(SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD.USERNAME.eq("foo"))
+            .and(SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD.PROVIDER
+                .eq(Provider.Names.GITHUB))
+            .execute();
     }
 
     /**

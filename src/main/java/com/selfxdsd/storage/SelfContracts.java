@@ -38,6 +38,7 @@ import org.jooq.*;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
@@ -132,35 +133,45 @@ public final class SelfContracts implements Contracts {
                 + " project. The Project with " + repoFullName
                 + " and " + provider + " was not found.");
         }
-        final Contributor contributor = this.storage.contributors()
-            .getById(contributorUsername, provider);
-        if (contributor == null) {
-            throw new IllegalStateException("Can't attach the Contract to"
-                + " contributor. The Contributor with "
-                + contributorUsername + " and " + provider
-                + " was not found.");
-        }
-        final InsertOnDuplicateStep<?> insert = jooq
-            .insertInto(SLF_CONTRACTS_XDSD,
-                SLF_CONTRACTS_XDSD.REPO_FULLNAME,
-                SLF_CONTRACTS_XDSD.USERNAME,
-                SLF_CONTRACTS_XDSD.PROVIDER,
-                SLF_CONTRACTS_XDSD.HOURLY_RATE,
-                SLF_CONTRACTS_XDSD.ROLE)
-            .values(repoFullName, contributorUsername,
-                provider, hourlyRate.longValueExact(), role);
-        final int execute;
-        if (database.dbms().equals(Database.Dbms.MY_SQL)) {
-            execute = insert.onDuplicateKeyIgnore().execute();
-        } else {
-            execute = insert.execute();
-        }
-        if (execute != 1) {
+        final List<Object> txResults;
+        try {
+            txResults = this.transactionResultCompat(jooq, conf -> {
+                Contributor contributor = this.storage.contributors()
+                    .getById(contributorUsername, provider);
+                if (contributor == null) {
+                    contributor = this.storage
+                        .contributors()
+                        .register(contributorUsername, provider);
+                }
+                final InsertOnDuplicateStep<?> insert = jooq
+                    .insertInto(SLF_CONTRACTS_XDSD,
+                        SLF_CONTRACTS_XDSD.REPO_FULLNAME,
+                        SLF_CONTRACTS_XDSD.USERNAME,
+                        SLF_CONTRACTS_XDSD.PROVIDER,
+                        SLF_CONTRACTS_XDSD.HOURLY_RATE,
+                        SLF_CONTRACTS_XDSD.ROLE)
+                    .values(repoFullName, contributorUsername,
+                        provider, hourlyRate.longValueExact(), role);
+                final int execute;
+                if (database.dbms().equals(Database.Dbms.MY_SQL)) {
+                    execute = insert.onDuplicateKeyIgnore().execute();
+                } else {
+                    execute = insert.execute();
+                }
+                return List.of(execute, contributor);
+            });
+            if ((int) txResults.get(0) != 1) {
+                throw new IllegalStateException("Something went wrong when "
+                    + "inserting Contract into database.");
+            }
+
+            //@checkstyle IllegalCatch (10 lines).
+        } catch (final Throwable throwable) {
             throw new IllegalStateException("Something went wrong when "
                 + "inserting Contract into database.");
         }
         return new StoredContract(project,
-            contributor,
+            (Contributor) txResults.get(1),
             hourlyRate,
             role,
             this.storage);
@@ -288,5 +299,29 @@ public final class SelfContracts implements Contracts {
             ),
             rec.getValue(SLF_CONTRACTS_XDSD.ROLE),
             this.storage);
+    }
+
+    /**
+     * Transaction Result compatible.
+     * Transactions apparently are not working well with jooq MySQL dialect on
+     * testing H2.
+     * @param jooq DSLContext.
+     * @param callable TransactionalCallable.
+     * @param <R> Result Type.
+     * @return Result.
+     * @throws Throwable If something went wrong and rollback is triggered.
+     * @checkstyle IllegalThrows (10 lines).
+     */
+    private <R> R transactionResultCompat(
+        final DSLContext jooq,
+        final TransactionalCallable<R> callable
+    ) throws Throwable {
+        final R result;
+        if (this.database.dbms().equals(Database.Dbms.H2)) {
+            result = callable.run(jooq.configuration());
+        } else {
+            result = jooq.transactionResult(callable);
+        }
+        return result;
     }
 }
