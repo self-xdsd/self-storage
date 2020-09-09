@@ -135,7 +135,7 @@ public final class SelfContracts implements Contracts {
         }
         final List<Object> txResults;
         try {
-            txResults = this.transactionResultCompat(jooq, conf -> {
+            txResults = jooq.transactionResult(conf -> {
                 Contributor contributor = this.storage.contributors()
                     .getById(contributorUsername, provider);
                 if (contributor == null) {
@@ -301,27 +301,4 @@ public final class SelfContracts implements Contracts {
             this.storage);
     }
 
-    /**
-     * Transaction Result compatible.
-     * Transactions apparently are not working well with jooq MySQL dialect on
-     * testing H2.
-     * @param jooq DSLContext.
-     * @param callable TransactionalCallable.
-     * @param <R> Result Type.
-     * @return Result.
-     * @throws Throwable If something went wrong and rollback is triggered.
-     * @checkstyle IllegalThrows (10 lines).
-     */
-    private <R> R transactionResultCompat(
-        final DSLContext jooq,
-        final TransactionalCallable<R> callable
-    ) throws Throwable {
-        final R result;
-        if (this.database.dbms().equals(Database.Dbms.H2)) {
-            result = callable.run(jooq.configuration());
-        } else {
-            result = jooq.transactionResult(callable);
-        }
-        return result;
-    }
 }
