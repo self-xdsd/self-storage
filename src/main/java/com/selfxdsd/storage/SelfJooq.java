@@ -30,6 +30,9 @@ import com.selfxdsd.api.storage.Storage;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #144:30min Implement SelfPayoutMethods which will
+ *  represent all the payout methods in Self. Don't forget
+ *  about the integration tests.
  */
 public final class SelfJooq implements Storage {
 
@@ -107,6 +110,11 @@ public final class SelfJooq implements Storage {
     @Override
     public Resignations resignations() {
         return new SelfResignations(this, this.database);
+    }
+
+    @Override
+    public PayoutMethods payoutMethods() {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
