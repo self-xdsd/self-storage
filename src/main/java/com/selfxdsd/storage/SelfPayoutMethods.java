@@ -26,9 +26,12 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contributors.ContributorPayoutMethods;
 import com.selfxdsd.core.contributors.StripePayoutMethod;
+import org.jooq.DSLContext;
 import org.jooq.InsertOnDuplicateStep;
 import org.jooq.Record;
 import org.jooq.Result;
+
+import javax.json.JsonObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -137,7 +140,68 @@ public final class SelfPayoutMethods implements PayoutMethods {
 
     @Override
     public PayoutMethod activate(final PayoutMethod payoutMethod) {
-        return null;
+        final Contributor contributor = payoutMethod.contributor();
+        final DSLContext jooq = this.database.jooq();
+        jooq.transaction(
+            (configuration) -> {
+                jooq.update(SLF_PAYOUTMETHODS_XDSD)
+                    .set(SLF_PAYOUTMETHODS_XDSD.ACTIVE, Boolean.FALSE)
+                    .where(
+                        SLF_PAYOUTMETHODS_XDSD.USERNAME.eq(
+                            contributor.username()
+                        ).and(
+                            SLF_PAYOUTMETHODS_XDSD.PROVIDER.eq(
+                                contributor.username()
+                            ).and(
+                                SLF_PAYOUTMETHODS_XDSD.TYPE.notEqual(
+                                    payoutMethod.type()
+                                )
+                            )
+                        )
+                    ).execute();
+                jooq.update(SLF_PAYOUTMETHODS_XDSD)
+                    .set(SLF_PAYOUTMETHODS_XDSD.ACTIVE, Boolean.TRUE)
+                    .where(
+                        SLF_PAYOUTMETHODS_XDSD.USERNAME.eq(
+                            contributor.username()
+                        ).and(
+                            SLF_PAYOUTMETHODS_XDSD.PROVIDER.eq(
+                                contributor.provider()
+                            ).and(
+                                SLF_PAYOUTMETHODS_XDSD.TYPE.eq(
+                                    payoutMethod.type()
+                                )
+                            )
+                        )
+                    ).execute();
+            }
+        );
+        return new PayoutMethod() {
+            @Override
+            public Contributor contributor() {
+                return payoutMethod.contributor();
+            }
+
+            @Override
+            public String type() {
+                return payoutMethod.type();
+            }
+
+            @Override
+            public boolean active() {
+                return Boolean.TRUE;
+            }
+
+            @Override
+            public String identifier() {
+                return payoutMethod.identifier();
+            }
+
+            @Override
+            public JsonObject json() {
+                return payoutMethod.json();
+            }
+        };
     }
 
     @Override
@@ -152,13 +216,13 @@ public final class SelfPayoutMethods implements PayoutMethods {
      * Build a PayoutMethod from a JOOQ record.
      * @param contributor Contributor owning the PayoutMethod.
      * @param record Record.
-     * @return Wallet.
+     * @return PayoutMethod.
      */
     private PayoutMethod payoutMethodFromRecord(
         final Contributor contributor, final Record record
     ) {
         final String type = record.getValue(SLF_PAYOUTMETHODS_XDSD.TYPE);
-        if(type.equalsIgnoreCase(Wallet.Type.STRIPE)) {
+        if(type.equalsIgnoreCase(PayoutMethod.Type.STRIPE)) {
             return new StripePayoutMethod(
                 contributor,
                 record.getValue(SLF_PAYOUTMETHODS_XDSD.IDENTIFIER),

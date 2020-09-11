@@ -95,6 +95,45 @@ public final class SelfPayoutMethodsITCase {
     }
 
     /**
+     * SelfPayoutMethods can activate a PayoutMethod.
+     */
+    @Test
+    public void activatesPayoutMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final PayoutMethods methods = storage.payoutMethods();
+        final Contributor bob = storage.contributors().getById(
+            "bob", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(bob, Matchers.notNullValue());
+        final PayoutMethod registered = methods.register(
+            bob,
+            PayoutMethod.Type.STRIPE,
+            "acct2_0002"
+        );
+        MatcherAssert.assertThat(
+            registered.active(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
+            methods.ofContributor(bob),
+            Matchers.iterableWithSize(1)
+        );
+        final PayoutMethod activated = methods.activate(registered);
+        MatcherAssert.assertThat(
+            activated.active(),
+            Matchers.is(Boolean.TRUE)
+        );
+        final PayoutMethod selected = methods
+            .ofContributor(bob)
+            .iterator()
+            .next();
+        MatcherAssert.assertThat(
+            selected.active(),
+            Matchers.is(Boolean.TRUE)
+        );
+    }
+
+    /**
      * Method ofContributor can return a Contributor's
      * PayoutMethods.
      */
