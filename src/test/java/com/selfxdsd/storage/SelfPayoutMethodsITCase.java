@@ -29,6 +29,8 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.Iterator;
+
 /**
  * Integration tests for {@link SelfPayoutMethods}.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -146,4 +148,24 @@ public final class SelfPayoutMethodsITCase {
         );
     }
 
+    /**
+     * We shouldn't be able to iterate all of them.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void cannotIterate() {
+        final Iterator<PayoutMethod> iterator = new SelfJooq(new H2Database())
+            .payoutMethods()
+            .iterator();
+    }
+
+    /**
+     * We shouldn't be able to get the active PayoutMethod
+     * out of all of them.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void cannotGetActive() {
+        final PayoutMethod active = new SelfJooq(new H2Database())
+            .payoutMethods()
+            .active();
+    }
 }
