@@ -8,6 +8,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfPayoutmethodsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfResignationsXdsd;
@@ -29,7 +30,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfXdsd extends SchemaImpl {
 
-    private static final long serialVersionUID = -1525841851;
+    private static final long serialVersionUID = -1628465668;
 
     /**
      * The reference instance of <code>self_xdsd</code>
@@ -55,6 +56,11 @@ public class SelfXdsd extends SchemaImpl {
      * The table <code>self_xdsd.slf_invoices_xdsd</code>.
      */
     public final SlfInvoicesXdsd SLF_INVOICES_XDSD = SlfInvoicesXdsd.SLF_INVOICES_XDSD;
+
+    /**
+     * The table <code>self_xdsd.slf_payoutmethods_xdsd</code>.
+     */
+    public final SlfPayoutmethodsXdsd SLF_PAYOUTMETHODS_XDSD = SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_pms_xdsd</code>.
@@ -106,6 +112,7 @@ public class SelfXdsd extends SchemaImpl {
             SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD,
             SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD,
             SlfInvoicesXdsd.SLF_INVOICES_XDSD,
+            SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD,
             SlfPmsXdsd.SLF_PMS_XDSD,
             SlfProjectsXdsd.SLF_PROJECTS_XDSD,
             SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD,

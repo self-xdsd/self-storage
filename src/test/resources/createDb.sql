@@ -172,3 +172,18 @@ CREATE TABLE `self_xdsd`.`slf_wallets_xdsd` (
   CONSTRAINT `ownerProject`
     FOREIGN KEY (`repo_fullname` , `provider`)
     REFERENCES `self_xdsd`.`slf_projects_xdsd` (`repo_fullname` , `provider`));
+
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_payoutmethods_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`slf_payoutmethods_xdsd` (
+  `username` VARCHAR(100) NOT NULL,
+  `provider` VARCHAR(50) NOT NULL,
+  `type` VARCHAR(50) NOT NULL,
+  `active` TINYINT(1) NOT NULL,
+  `identifier` VARCHAR(256) NOT NULL,
+  PRIMARY KEY (`username`, `provider`, `type`),
+  CONSTRAINT `ownerContributor`
+    FOREIGN KEY (`username` , `provider`)
+    REFERENCES `self_xdsd`.`slf_contributors_xdsd` (`username` , `provider`));
+
