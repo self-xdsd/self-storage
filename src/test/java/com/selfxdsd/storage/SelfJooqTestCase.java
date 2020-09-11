@@ -187,4 +187,19 @@ public final class SelfJooqTestCase {
             )
         );
     }
+
+    /**
+     * SelfJooq can return the PayoutMethods.
+     */
+    @Test
+    public void returnsPayoutMethods() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.payoutMethods(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfPayoutMethods.class)
+            )
+        );
+    }
 }

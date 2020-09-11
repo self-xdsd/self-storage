@@ -22,19 +22,49 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.Contributor;
-import com.selfxdsd.api.PayoutMethod;
-import com.selfxdsd.api.PayoutMethods;
+import com.selfxdsd.api.*;
+import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contributors.ContributorPayoutMethods;
+import com.selfxdsd.core.contributors.StripePayoutMethod;
+import org.jooq.Record;
+import org.jooq.Result;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PAYOUTMETHODS_XDSD;
 
 /**
  * All the PayoutMethods in Self.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
- * @since 0.0.22
+ * @since 0.0.9
  */
 public final class SelfPayoutMethods implements PayoutMethods {
+
+    /**
+     * Parent Storage.
+     */
+    private final Storage storage;
+
+    /**
+     * Database.
+     */
+    private final Database database;
+
+    /**
+     * Ctor.
+     * @param storage Parent Storage.
+     * @param database Database.
+     */
+    public SelfPayoutMethods(
+        final Storage storage,
+        final Database database
+    ) {
+        this.storage = storage;
+        this.database = database;
+    }
 
     @Override
     public PayoutMethod register(
@@ -49,12 +79,31 @@ public final class SelfPayoutMethods implements PayoutMethods {
     public PayoutMethods ofContributor(
         final Contributor contributor
     ) {
-        return null;
+        final List<PayoutMethod> ofCountributor = new ArrayList<>();
+        final Result<Record> result = this.database
+            .jooq()
+            .select()
+            .from(SLF_PAYOUTMETHODS_XDSD)
+            .where(
+                SLF_PAYOUTMETHODS_XDSD.USERNAME.eq(contributor.username()).and(
+                    SLF_PAYOUTMETHODS_XDSD.PROVIDER.eq(contributor.provider())
+                )
+            ).fetch();
+        for(final Record rec : result) {
+            ofCountributor.add(this.payoutMethodFromRecord(contributor, rec));
+        }
+        return new ContributorPayoutMethods(
+            contributor, ofCountributor, this.storage
+        );
     }
 
     @Override
     public PayoutMethod active() {
-        return null;
+        throw new UnsupportedOperationException(
+            "You cannot get the active PayoutMethod "
+            + "out of all PayoutMethods in Self. "
+            + "Call #ofContributor(...) first."
+        );
     }
 
     @Override
@@ -64,6 +113,32 @@ public final class SelfPayoutMethods implements PayoutMethods {
 
     @Override
     public Iterator<PayoutMethod> iterator() {
-        return null;
+        throw new UnsupportedOperationException(
+            "You cannot iterate over all PayoutMethods in Self. "
+            + "Call #ofContributor(...) first."
+        );
+    }
+
+    /**
+     * Build a PayoutMethod from a JOOQ record.
+     * @param contributor Contributor owning the PayoutMethod.
+     * @param record Record.
+     * @return Wallet.
+     */
+    private PayoutMethod payoutMethodFromRecord(
+        final Contributor contributor, final Record record
+    ) {
+        final String type = record.getValue(SLF_PAYOUTMETHODS_XDSD.TYPE);
+        if(type.equalsIgnoreCase(Wallet.Type.STRIPE)) {
+            return new StripePayoutMethod(
+                contributor,
+                record.getValue(SLF_PAYOUTMETHODS_XDSD.IDENTIFIER),
+                record.getValue(SLF_PAYOUTMETHODS_XDSD.ACTIVE)
+            );
+        } else {
+            throw new UnsupportedOperationException(
+                "Only Stripe payout methods are supported so far."
+            );
+        }
     }
 }

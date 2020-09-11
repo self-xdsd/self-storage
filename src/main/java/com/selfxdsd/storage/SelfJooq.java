@@ -114,7 +114,7 @@ public final class SelfJooq implements Storage {
 
     @Override
     public PayoutMethods payoutMethods() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        return new SelfPayoutMethods(this, this.database);
     }
 
     @Override

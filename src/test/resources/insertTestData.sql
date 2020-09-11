@@ -216,3 +216,7 @@ INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
 (`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`)
 VALUES
 ('vlad/test', 'john', 'github', '999', '2020-09-01', 'ASKED' );
+
+INSERT INTO `self_xdsd`.`slf_payoutmethods_xdsd`
+(`username`, `provider`, `type`, `active`, `identifier`)
+VALUES ('maria', 'github', 'stripe', 1, 'acct_001');
