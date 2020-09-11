@@ -27,6 +27,7 @@ import com.selfxdsd.api.storage.Storage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Integration tests for {@link SelfPayoutMethods}.
@@ -36,6 +37,60 @@ import org.junit.Test;
  */
 public final class SelfPayoutMethodsITCase {
 
+    /**
+     * SelfPayoutMethods should only register Stripe-type methods for now.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void registersOnlyStripeMethods() {
+        final Storage storage = new SelfJooq(new H2Database());
+        storage.payoutMethods().register(
+            Mockito.mock(Contributor.class),
+            PayoutMethod.Type.PAYPAL,
+            "paypal123Id"
+        );
+    }
+
+    /**
+     * SelfPayoutMethods can register a payout method for a contributor.
+     */
+    @Test
+    public void registersMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final PayoutMethods methods = storage.payoutMethods();
+        final Contributor john = storage.contributors().getById(
+            "john", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(john, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            methods.ofContributor(john),
+            Matchers.emptyIterable()
+        );
+        final PayoutMethod registered = methods.register(
+            john,
+            PayoutMethod.Type.STRIPE,
+            "acct2_0002"
+        );
+        MatcherAssert.assertThat(
+            registered.contributor(),
+            Matchers.equalTo(john)
+        );
+        MatcherAssert.assertThat(
+            registered.identifier(),
+            Matchers.equalTo("acct2_0002")
+        );
+        MatcherAssert.assertThat(
+            registered.active(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
+            registered.type(),
+            Matchers.equalToIgnoringCase(PayoutMethod.Type.STRIPE)
+        );
+        MatcherAssert.assertThat(
+            methods.ofContributor(john),
+            Matchers.iterableWithSize(1)
+        );
+    }
 
     /**
      * Method ofContributor can return a Contributor's
@@ -81,12 +136,12 @@ public final class SelfPayoutMethodsITCase {
     @Test
     public void ofContributorReturnsEmpty() {
         final Storage storage = new SelfJooq(new H2Database());
-        final Contributor maria = storage.contributors().getById(
+        final Contributor dan = storage.contributors().getById(
             "dmarkov", Provider.Names.GITHUB
         );
-        MatcherAssert.assertThat(maria, Matchers.notNullValue());
+        MatcherAssert.assertThat(dan, Matchers.notNullValue());
         MatcherAssert.assertThat(
-            storage.payoutMethods().ofContributor(maria),
+            storage.payoutMethods().ofContributor(dan),
             Matchers.emptyIterable()
         );
     }

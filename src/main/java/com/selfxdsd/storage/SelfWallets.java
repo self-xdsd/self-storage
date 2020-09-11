@@ -76,7 +76,7 @@ public final class SelfWallets implements Wallets {
         final BigDecimal cash,
         final String identifier
     ) {
-        if(Wallet.Type.FAKE.equals(type)) {
+        if(Wallet.Type.FAKE.equalsIgnoreCase(type)) {
             final int inserted = this.database.jooq().insertInto(
                 SLF_WALLETS_XDSD,
                 SLF_WALLETS_XDSD.REPO_FULLNAME,

@@ -26,13 +26,12 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contributors.ContributorPayoutMethods;
 import com.selfxdsd.core.contributors.StripePayoutMethod;
+import org.jooq.InsertOnDuplicateStep;
 import org.jooq.Record;
 import org.jooq.Result;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PAYOUTMETHODS_XDSD;
 
 /**
@@ -72,7 +71,37 @@ public final class SelfPayoutMethods implements PayoutMethods {
         final String type,
         final String identifier
     ) {
-        return null;
+        if(PayoutMethod.Type.STRIPE.equalsIgnoreCase(type)) {
+            final InsertOnDuplicateStep<?> insert = this.database.jooq()
+                .insertInto(
+                    SLF_PAYOUTMETHODS_XDSD,
+                    SLF_PAYOUTMETHODS_XDSD.USERNAME,
+                    SLF_PAYOUTMETHODS_XDSD.PROVIDER,
+                    SLF_PAYOUTMETHODS_XDSD.TYPE,
+                    SLF_PAYOUTMETHODS_XDSD.ACTIVE,
+                    SLF_PAYOUTMETHODS_XDSD.IDENTIFIER
+                ).values(
+                    contributor.username(),
+                    contributor.provider(),
+                    type,
+                    Boolean.FALSE,
+                    identifier
+                );
+            if (this.database.dbms().equals(Database.Dbms.MY_SQL)) {
+                insert.onDuplicateKeyIgnore().execute();
+            } else {
+                insert.execute();
+            }
+            return new StripePayoutMethod(
+                contributor,
+                identifier,
+                Boolean.FALSE
+            );
+        } else {
+            throw new UnsupportedOperationException(
+                "Only Stripe payout methods are supported at the moment."
+            );
+        }
     }
 
     @Override
