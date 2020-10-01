@@ -22,8 +22,7 @@
  */
 package com.selfxdsd.storage;
 
-import com.selfxdsd.api.User;
-import com.selfxdsd.api.Users;
+import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.StoredUser;
 import org.jooq.DSLContext;
@@ -143,7 +142,49 @@ public final class SelfUsers implements Users {
                 rec.getValue(SLF_USERS_XDSD.PROVIDER),
                 this.storage
             );
-            return found;
+            return new User() {
+                @Override
+                public String username() {
+                    return found.username();
+                }
+
+                @Override
+                public String email() {
+                    final String email;
+                    if(found.email() == null) {
+                        email = "";
+                    } else {
+                        email = found.email();
+                    }
+                    return email;
+                }
+
+                @Override
+                public String role() {
+                    final String role;
+                    if(found.role() == null) {
+                        role = "user";
+                    } else {
+                        role = found.role();
+                    }
+                    return role;
+                }
+
+                @Override
+                public Provider provider() {
+                    return found.provider();
+                }
+
+                @Override
+                public Projects projects() {
+                    return found.projects();
+                }
+
+                @Override
+                public Contributor asContributor() {
+                    return found.asContributor();
+                }
+            };
         }
         return null;
     }
