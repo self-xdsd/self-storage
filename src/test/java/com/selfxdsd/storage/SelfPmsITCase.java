@@ -74,6 +74,45 @@ public final class SelfPmsITCase {
     }
 
     /**
+     * SelfPms.getByUsername returns the found PM.
+     */
+    @Test
+    public void returnsPmByUsername() {
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+        final ProjectManager found = pms.getByUsername(
+            "zoeself", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            found.username(),
+            Matchers.equalTo("zoeself")
+        );
+        MatcherAssert.assertThat(
+            found.provider().name(),
+            Matchers.equalTo(Provider.Names.GITHUB)
+        );
+        MatcherAssert.assertThat(
+            found.commission(),
+            Matchers.equalTo(BigDecimal.valueOf(50))
+        );
+    }
+
+    /**
+     * SelfPms.getByUsername returns null if the PM is missing.
+     */
+    @Test
+    public void returnsNullOnMissingPmUsername() {
+        final ProjectManagers pms = new SelfJooq(
+            new H2Database()
+        ).projectManagers();
+        final ProjectManager found = pms.getByUsername(
+            "missing", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(found, Matchers.nullValue());
+    }
+
+    /**
      * Picks a PM by provider name.
      */
     @Test

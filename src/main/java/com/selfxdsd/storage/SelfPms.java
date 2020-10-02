@@ -79,6 +79,25 @@ public final class SelfPms implements ProjectManagers {
     }
 
     @Override
+    public ProjectManager getByUsername(
+        final String username,
+        final String provider
+    ) {
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_PMS_XDSD)
+            .where(
+                SLF_PMS_XDSD.USERNAME.eq(username).and(
+                    SLF_PMS_XDSD.PROVIDER.eq(provider)
+                )
+            ).fetch();
+        if(result.size() > 0) {
+            return buildProjectManager(result.get(0));
+        }
+        return null;
+    }
+
+    @Override
     public ProjectManager pick(final String provider) {
         final Result<Record> result = this.database.jooq()
             .select()

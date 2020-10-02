@@ -43,6 +43,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
  * @version $Id$
  * @since 0.0.1
  * @checkstyle ExecutableStatementCount (500 lines)
+ * @todo #151:60min Implement method #ofProvider(String) from this class
+ *  and write integration tests for it.
  */
 public final class SelfContributors extends BasePaged implements Contributors {
 
@@ -251,6 +253,13 @@ public final class SelfContributors extends BasePaged implements Contributors {
     }
 
     @Override
+    public Contributors ofProvider(final String provider) {
+        throw new UnsupportedOperationException(
+            "Not yet implemented."
+        );
+    }
+
+    @Override
     public Contributors page(final Page page) {
         return new SelfContributors(this.storage, this.database, page);
     }
@@ -325,6 +334,11 @@ public final class SelfContributors extends BasePaged implements Contributors {
         @Override
         public Contributors ofProject(final String repoFullName,
                                       final String repoProvider) {
+            return this;
+        }
+
+        @Override
+        public Contributors ofProvider(final String provider) {
             return this;
         }
 
