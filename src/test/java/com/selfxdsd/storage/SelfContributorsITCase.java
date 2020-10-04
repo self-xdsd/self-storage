@@ -233,7 +233,7 @@ public final class SelfContributorsITCase {
             .rangeClosed(1, 50).mapToObj(i -> "user" + i)
             .forEach(user -> contributors.register(user, "github"));
         MatcherAssert.assertThat(contributors,
-            Matchers.iterableWithSize(50 + 5));
+            Matchers.iterableWithSize(50 + 6));
         MatcherAssert.assertThat(contributors.totalPages(),
             Matchers.is(1));
 
@@ -376,5 +376,22 @@ public final class SelfContributorsITCase {
                     Provider.Names.GITHUB),
             Matchers.emptyIterable());
 
+    }
+
+    /**
+     * SelfContributors can return a Provider's Contributors.
+     */
+    @Test
+    public void returnsContributorsOfProvider(){
+        final Contributors contributors = new SelfJooq(new H2Database())
+            .contributors()
+            .ofProvider(Provider.Names.GITHUB);
+
+        MatcherAssert.assertThat(contributors, Matchers
+            .iterableWithSize(Matchers.greaterThanOrEqualTo(5)));
+
+        MatcherAssert.assertThat(contributors
+            .page(new Paged.Page(1, 3)), Matchers
+            .iterableWithSize(3));
     }
 }

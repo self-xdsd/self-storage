@@ -28,11 +28,14 @@ import com.selfxdsd.core.BasePaged;
 import com.selfxdsd.core.contracts.ContributorContracts;
 import com.selfxdsd.core.contracts.StoredContract;
 import com.selfxdsd.core.contributors.ProjectContributors;
+import com.selfxdsd.core.contributors.ProviderContributors;
 import com.selfxdsd.core.contributors.StoredContributor;
 import org.jooq.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
@@ -43,8 +46,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
  * @version $Id$
  * @since 0.0.1
  * @checkstyle ExecutableStatementCount (500 lines)
- * @todo #151:60min Implement method #ofProvider(String) from this class
- *  and write integration tests for it.
  */
 public final class SelfContributors extends BasePaged implements Contributors {
 
@@ -254,9 +255,21 @@ public final class SelfContributors extends BasePaged implements Contributors {
 
     @Override
     public Contributors ofProvider(final String provider) {
-        throw new UnsupportedOperationException(
-            "Not yet implemented."
-        );
+        final Page page = super.current();
+        final Supplier<Stream<Contributor>> ofProvider = () -> this
+            .database
+            .jooq()
+            .select()
+            .from(SLF_CONTRIBUTORS_XDSD)
+            .where(SLF_CONTRIBUTORS_XDSD.PROVIDER.eq(provider))
+            .offset((page.getNumber() - 1) * page.getSize())
+            .stream()
+            .map(rec -> (Contributor) new StoredContributor(
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.USERNAME),
+                rec.getValue(SLF_CONTRIBUTORS_XDSD.PROVIDER),
+                this.storage
+            ));
+        return new ProviderContributors(provider, ofProvider, this.storage);
     }
 
     @Override

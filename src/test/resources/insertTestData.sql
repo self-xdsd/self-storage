@@ -41,6 +41,7 @@ INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('maria'
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('alexandra', 'github');
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('dmarkov', 'github');
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('bob', 'github');
+INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('john', 'gitlab');
 
 -- INSERT CONTRACTS
 
