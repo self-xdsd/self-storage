@@ -24,6 +24,7 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.projects.StripeWallet;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -39,10 +40,10 @@ import java.math.BigDecimal;
 public final class SelfWalletsITCase {
 
     /**
-     * SelfWallets can register a new Wallet in a Project.
+     * SelfWallets can register a new Fake Wallet for a Project.
      */
     @Test
-    public void registersWallet() {
+    public void registersFakeWallet() {
         final Storage storage = new SelfJooq(new H2Database());
         final Projects projects = storage.projects();
         final Wallets all = storage.wallets();
@@ -54,16 +55,16 @@ public final class SelfWalletsITCase {
             project,
             Matchers.notNullValue()
         );
-        MatcherAssert.assertThat(
-            all.ofProject(project),
-            Matchers.emptyIterable()
-        );
 
         final Wallet registered = all.register(
             project,
             Wallet.Type.FAKE,
             BigDecimal.valueOf(2_000_000),
             "fakew_123_am"
+        );
+        MatcherAssert.assertThat(
+            registered,
+            Matchers.instanceOf(Wallet.Missing.class)
         );
         MatcherAssert.assertThat(
             registered.project(),
@@ -80,7 +81,82 @@ public final class SelfWalletsITCase {
 
         MatcherAssert.assertThat(
             all.ofProject(project),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(1)
+            )
+        );
+    }
+
+    /**
+     * SelfWallets can register a new Stripe Wallet for a Project.
+     */
+    @Test
+    public void registersStripeWallet() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects projects = storage.projects();
+        final Wallets all = storage.wallets();
+
+        final Project project = projects.getProjectById(
+            "amihaiemil/amihaiemil.github.io", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            project,
+            Matchers.notNullValue()
+        );
+
+        final Wallet registered = all.register(
+            project,
+            Wallet.Type.STRIPE,
+            BigDecimal.valueOf(1000),
+            "stripe_123_am"
+        );
+        MatcherAssert.assertThat(
+            registered,
+            Matchers.instanceOf(StripeWallet.class)
+        );
+        MatcherAssert.assertThat(
+            registered.project(),
+            Matchers.is(project)
+        );
+        MatcherAssert.assertThat(
+            registered.active(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
+            registered.cash(),
+            Matchers.equalTo(BigDecimal.valueOf(1000))
+        );
+
+        MatcherAssert.assertThat(
+            all.ofProject(project),
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(1)
+            )
+        );
+    }
+
+    /**
+     * SelfWallets.register(...) rejects a wallet of an unknown type.
+     */
+    @Test (expected = UnsupportedOperationException.class)
+    public void registerRejectsUnknownType() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects projects = storage.projects();
+        final Wallets all = storage.wallets();
+
+        final Project project = projects.getProjectById(
+            "amihaiemil/amihaiemil.github.io", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            project,
+            Matchers.notNullValue()
+        );
+
+        final Wallet registered = all.register(
+            project,
+            "PAYPAL",
+            BigDecimal.valueOf(1000),
+            "stripe_123_am"
         );
     }
 

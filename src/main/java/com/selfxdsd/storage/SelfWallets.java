@@ -25,10 +25,12 @@ package com.selfxdsd.storage;
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.projects.ProjectWallets;
+import com.selfxdsd.core.projects.StripeWallet;
 import org.jooq.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -76,7 +78,11 @@ public final class SelfWallets implements Wallets {
         final BigDecimal cash,
         final String identifier
     ) {
-        if(Wallet.Type.FAKE.equalsIgnoreCase(type)) {
+        final Wallet registered;
+        final List<String> allowed = Arrays.asList(
+            Wallet.Type.FAKE, Wallet.Type.STRIPE
+        );
+        if(allowed.contains(type)) {
             final int inserted = this.database.jooq().insertInto(
                 SLF_WALLETS_XDSD,
                 SLF_WALLETS_XDSD.REPO_FULLNAME,
@@ -100,18 +106,29 @@ public final class SelfWallets implements Wallets {
                     + "a new wallet."
                 );
             } else {
-                return new Wallet.Missing(
-                    project,
-                    cash,
-                    Boolean.FALSE,
-                    identifier
-                );
+                if(Wallet.Type.FAKE.equalsIgnoreCase(type)) {
+                    registered = new Wallet.Missing(
+                        project,
+                        cash,
+                        Boolean.FALSE,
+                        identifier
+                    );
+                } else {
+                    registered = new StripeWallet(
+                        project,
+                        cash,
+                        identifier,
+                        Boolean.FALSE
+                    );
+                }
             }
         } else {
             throw new UnsupportedOperationException(
-                "Only fake wallets are supported at the moment."
+                "Only wallets of type " + allowed
+                + " are supported at the moment."
             );
         }
+        return registered;
     }
 
     @Override
@@ -213,8 +230,10 @@ public final class SelfWallets implements Wallets {
     private Wallet walletFromRecord(
         final Project project, final Record record
     ) {
-        if(record.getValue(SLF_WALLETS_XDSD.TYPE).equals(Wallet.Type.FAKE)) {
-            return new Wallet.Missing(
+        final Wallet wallet;
+        final String type = record.getValue(SLF_WALLETS_XDSD.TYPE);
+        if(Wallet.Type.FAKE.equalsIgnoreCase(type)) {
+            wallet = new Wallet.Missing(
                 project,
                 BigDecimal.valueOf(
                     record.getValue(SLF_WALLETS_XDSD.CASH).longValue()
@@ -222,10 +241,20 @@ public final class SelfWallets implements Wallets {
                 record.getValue(SLF_WALLETS_XDSD.ACTIVE),
                 record.getValue(SLF_WALLETS_XDSD.IDENTIFIER)
             );
+        } else if(Wallet.Type.STRIPE.equalsIgnoreCase(type)) {
+            wallet = new StripeWallet(
+                project,
+                BigDecimal.valueOf(
+                    record.getValue(SLF_WALLETS_XDSD.CASH).longValue()
+                ),
+                record.getValue(SLF_WALLETS_XDSD.IDENTIFIER),
+                record.getValue(SLF_WALLETS_XDSD.ACTIVE)
+            );
         } else {
             throw new UnsupportedOperationException(
-                "Only fake wallets are supported so far."
+                "Only FAKE and STRIPE wallets are supported so far."
             );
         }
+        return wallet;
     }
 }
