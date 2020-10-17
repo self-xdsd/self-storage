@@ -30,6 +30,9 @@ import com.selfxdsd.api.storage.Storage;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #160:60min Implement and write unit tests for
+ *  a wallets' PaymentMethods. It should follow the same
+ *  pattern as other entities (SelfPaymentMethods with IT tests etc).
  */
 public final class SelfJooq implements Storage {
 
@@ -112,6 +115,11 @@ public final class SelfJooq implements Storage {
     @Override
     public PayoutMethods payoutMethods() {
         return new SelfPayoutMethods(this, this.database);
+    }
+
+    @Override
+    public PaymentMethods paymentMethods() {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
