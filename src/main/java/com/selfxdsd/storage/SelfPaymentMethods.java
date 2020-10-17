@@ -80,7 +80,10 @@ public final class SelfPaymentMethods implements PaymentMethods {
 
     @Override
     public PaymentMethod active() {
-        return null;
+        throw new UnsupportedOperationException(
+            "You cannot get the active PaymentMethod out of all of them. "
+            + "Call #ofWallet(...) first."
+        );
     }
 
     @Override
