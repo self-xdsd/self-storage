@@ -44,6 +44,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.13
+ * @todo #163:30min Continue implementing the methods of this class.
+ *  Don't forget about integration tests.
  */
 public final class SelfPaymentMethods implements PaymentMethods {
 
