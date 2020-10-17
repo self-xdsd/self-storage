@@ -45,6 +45,9 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
  *  modify the method walletFromRecord to build the wallet accordingly.
  *  Method register(...) should then also be adapted to support other wallet
  *  types.
+ * @todo #160:30min Implement and test method updateCash(...) here. We should
+ *  only allow cash update for the Stripe wallets. The Fake wallets' cash
+ *  should never be updated.
  */
 public final class SelfWallets implements Wallets {
 
@@ -115,6 +118,7 @@ public final class SelfWallets implements Wallets {
                     );
                 } else {
                     registered = new StripeWallet(
+                        this.storage,
                         project,
                         cash,
                         identifier,
@@ -192,7 +196,7 @@ public final class SelfWallets implements Wallets {
             }
 
             @Override
-            public Invoice pay(final Invoice invoice) {
+            public Wallet pay(final Invoice invoice) {
                 return wallet.pay(invoice);
             }
 
@@ -210,7 +214,25 @@ public final class SelfWallets implements Wallets {
             public Project project() {
                 return wallet.project();
             }
+
+            @Override
+            public Wallet updateCash(final BigDecimal bigDecimal) {
+                return wallet.updateCash(bigDecimal);
+            }
+
+            @Override
+            public PaymentMethods paymentMethods() {
+                return null;
+            }
         };
+    }
+
+    @Override
+    public Wallet updateCash(
+        final Wallet wallet,
+        final BigDecimal bigDecimal
+    ) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
@@ -243,6 +265,7 @@ public final class SelfWallets implements Wallets {
             );
         } else if(Wallet.Type.STRIPE.equalsIgnoreCase(type)) {
             wallet = new StripeWallet(
+                this.storage,
                 project,
                 BigDecimal.valueOf(
                     record.getValue(SLF_WALLETS_XDSD.CASH).longValue()
