@@ -244,9 +244,9 @@ public final class SelfWalletsITCase {
         final Wallets ofProject = all.ofProject(project);
         MatcherAssert.assertThat(
             ofProject,
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(Matchers.greaterThanOrEqualTo(2))
         );
-        final Wallet wallet = ofProject.iterator().next();
+        final Wallet wallet = ofProject.active();
 
         MatcherAssert.assertThat(
             wallet.active(),

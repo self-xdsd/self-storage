@@ -1,13 +1,13 @@
 -- INSERT USERS
 INSERT INTO self_xdsd.slf_users_xdsd
-(username, provider, role, email, access_token)
-VALUES ('vlad', 'github', 'user', 'vlad@example.com', 'vladgh123token');
+(username, provider, role, email)
+VALUES ('vlad', 'github', 'user', 'vlad@example.com');
 INSERT INTO self_xdsd.slf_users_xdsd
-(username, provider, role, email, access_token)
-VALUES ('mihai', 'gitlab', 'user' ,'mihai@example.com', 'mihaigl123token');
+(username, provider, role, email)
+VALUES ('mihai', 'gitlab', 'user' ,'mihai@example.com');
 INSERT INTO self_xdsd.slf_users_xdsd
-(username, provider, role, email, access_token)
-VALUES ('amihaiemil', 'github', 'user', 'amihaiemil@gmail.com.com', 'amihaigh123token');
+(username, provider, role, email)
+VALUES ('amihaiemil', 'github', 'user', 'amihaiemil@gmail.com.com');
 
 -----------------
 -- INSERT PROJECT MANAGERS
@@ -207,6 +207,17 @@ INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
 VALUES
 ('amihaiemil/docker-java-api', 'github', 'FAKE', 1000000000, 1, 'fakew-1232');
+
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+('amihaiemil/docker-java-api', 'github', 'STRIPE', 10000, 0, 'stripewallet-1232');
+
+INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
+VALUES ('amihaiemil/docker-java-api', 'github', 'STRIPE', 'stripe_pm_1', 1);
+
+INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
+VALUES ('amihaiemil/docker-java-api', 'github', 'STRIPE', 'stripe_pm_2', 0);
 
 INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
 (`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`)

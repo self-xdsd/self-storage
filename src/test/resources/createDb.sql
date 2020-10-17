@@ -26,7 +26,7 @@ CREATE TABLE self_xdsd.slf_users_xdsd (
   username VARCHAR(100) NOT NULL,
   role VARCHAR (100) NOT NULL,
   provider VARCHAR(50) NOT NULL,
-  email VARCHAR(150) NULL DEFAULT NULL
+  email VARCHAR(150) NULL DEFAULT NULL,
   PRIMARY KEY (username, provider)
 );
 
@@ -197,7 +197,6 @@ CREATE TABLE `self_xdsd`.`slf_paymentmethods_xdsd` (
   `identifier` VARCHAR(256) NOT NULL,
   `active` TINYINT(1) NOT NULL,
   PRIMARY KEY (`paymentMethodId`),
-  INDEX `walletFK_idx` (`repo_fullname` ASC, `provider` ASC, `type` ASC) VISIBLE,
   CONSTRAINT `walletFK`
     FOREIGN KEY (`repo_fullname` , `provider` , `type`)
     REFERENCES `self_xdsd`.`slf_wallets_xdsd` (`repo_fullname` , `provider` , `type`));

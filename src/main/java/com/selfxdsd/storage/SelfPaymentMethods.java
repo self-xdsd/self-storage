@@ -24,10 +24,20 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.PaymentMethod;
 import com.selfxdsd.api.PaymentMethods;
+import com.selfxdsd.api.Project;
 import com.selfxdsd.api.Wallet;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.projects.StoredPaymentMethod;
+import com.selfxdsd.core.projects.WalletPaymentMethods;
+import org.jooq.Record;
+import org.jooq.Result;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PAYMENTMETHODS_XDSD;
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
 
 /**
  * PaymentMethods (of project Wallets) in Self.
@@ -75,7 +85,34 @@ public final class SelfPaymentMethods implements PaymentMethods {
 
     @Override
     public PaymentMethods ofWallet(final Wallet wallet) {
-        return null;
+        final List<PaymentMethod> ofWallet = new ArrayList<>();
+        final Project project = wallet.project();
+        final Result<Record> result = this.database
+            .jooq()
+            .select()
+            .from(SLF_PAYMENTMETHODS_XDSD)
+            .where(
+                SLF_PAYMENTMETHODS_XDSD.PROVIDER.eq(project.provider()).and(
+                    SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME.eq(
+                        project.repoFullName()
+                    ).and(SLF_PAYMENTMETHODS_XDSD.TYPE.eq(wallet.type()))
+                )
+            ).fetch();
+        for(final Record rec : result) {
+            ofWallet.add(
+                new StoredPaymentMethod(
+                    this.storage,
+                    rec.getValue(SLF_PAYMENTMETHODS_XDSD.IDENTIFIER),
+                    wallet,
+                    rec.getValue(SLF_WALLETS_XDSD.ACTIVE)
+                )
+            );
+        }
+        return new WalletPaymentMethods(
+            wallet,
+            () -> ofWallet.stream(),
+            this.storage
+        );
     }
 
     @Override
