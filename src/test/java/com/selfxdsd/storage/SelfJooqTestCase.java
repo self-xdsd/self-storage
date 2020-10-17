@@ -202,4 +202,19 @@ public final class SelfJooqTestCase {
             )
         );
     }
+
+    /**
+     * SelfJooq can return the PaymentMethods.
+     */
+    @Test
+    public void returnsPaymentMethods() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.paymentMethods(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfPaymentMethods.class)
+            )
+        );
+    }
 }
