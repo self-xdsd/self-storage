@@ -41,10 +41,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.21
- * @todo #135:30min Once we have other types of Wallet (e.g. StripeWallet),
- *  modify the method walletFromRecord to build the wallet accordingly.
- *  Method register(...) should then also be adapted to support other wallet
- *  types.
  * @todo #160:30min Implement and test method updateCash(...) here. We should
  *  only allow cash update for the Stripe wallets. The Fake wallets' cash
  *  should never be updated.
