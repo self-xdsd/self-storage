@@ -262,7 +262,7 @@ public final class SelfWallets implements Wallets {
 
                 @Override
                 public boolean active() {
-                    return Boolean.TRUE;
+                    return wallet.active();
                 }
 
                 @Override
