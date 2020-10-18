@@ -29,6 +29,7 @@ import com.selfxdsd.api.Wallet;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.projects.StoredPaymentMethod;
 import com.selfxdsd.core.projects.WalletPaymentMethods;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -190,7 +191,68 @@ public final class SelfPaymentMethods implements PaymentMethods {
 
     @Override
     public PaymentMethod activate(final PaymentMethod paymentMethod) {
-        return null;
+        final Wallet wallet = paymentMethod.wallet();
+        final Project project = wallet.project();
+        final DSLContext jooq = this.database.jooq();
+        jooq.transaction(
+            (configuration) -> {
+                jooq.update(SLF_PAYMENTMETHODS_XDSD)
+                    .set(SLF_PAYMENTMETHODS_XDSD.ACTIVE, Boolean.FALSE)
+                    .where(
+                        SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME.eq(
+                            project.repoFullName()
+                        ).and(
+                            SLF_PAYMENTMETHODS_XDSD.PROVIDER.eq(
+                                project.provider()
+                            ).and(
+                                SLF_PAYMENTMETHODS_XDSD.TYPE.eq(wallet.type())
+                            )
+                        ).and(
+                            SLF_PAYMENTMETHODS_XDSD.IDENTIFIER.notEqual(
+                                paymentMethod.identifier()
+                            )
+                        )
+                    ).execute();
+                jooq.update(SLF_PAYMENTMETHODS_XDSD)
+                    .set(SLF_PAYMENTMETHODS_XDSD.ACTIVE, Boolean.TRUE)
+                    .where(
+                        SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME.eq(
+                            project.repoFullName()
+                        ).and(
+                            SLF_PAYMENTMETHODS_XDSD.PROVIDER.eq(
+                                project.provider()
+                            ).and(
+                                SLF_PAYMENTMETHODS_XDSD.TYPE.eq(wallet.type())
+                            )
+                        ).and(
+                            SLF_PAYMENTMETHODS_XDSD.IDENTIFIER.eq(
+                                paymentMethod.identifier()
+                            )
+                        )
+                    ).execute();
+            }
+        );
+        return new PaymentMethod() {
+            @Override
+            public String identifier() {
+                return paymentMethod.identifier();
+            }
+
+            @Override
+            public Wallet wallet() {
+                return paymentMethod.wallet();
+            }
+
+            @Override
+            public boolean active() {
+                return Boolean.TRUE;
+            }
+
+            @Override
+            public PaymentMethod activate() {
+                return paymentMethod.activate();
+            }
+        };
     }
 
     @Override

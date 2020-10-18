@@ -236,6 +236,9 @@ INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`t
 VALUES ('johndoe/stripe_repo', 'github', 'STRIPE', 'stripe_pm_active', 1);
 
 INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
+VALUES ('johndoe/stripe_repo', 'github', 'STRIPE', 'stripe_pm_inactive', 0);
+
+INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
 VALUES ('amihaiemil/docker-java-api', 'github', 'STRIPE', 'stripe_pm_1', 1);
 
 INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)

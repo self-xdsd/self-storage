@@ -196,6 +196,55 @@ public final class SelfPaymentMethodsITCase {
         all.remove(active);
     }
 
+    /**
+     * SelfPaymentMethod activates a PaymentMethod while disactivating all
+     * the other PaymentMethods of the Wallet.
+     */
+    @Test
+    public void activatesPaymentMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Project project = storage.projects().getProjectById(
+            "johndoe/stripe_repo", Provider.Names.GITHUB
+        );
+        final Wallet wallet = project.wallets().active();
+        final PaymentMethods all = storage.paymentMethods();
+        final PaymentMethods ofWallet = all.ofWallet(wallet);
+        final PaymentMethod active = ofWallet.active();
+
+        MatcherAssert.assertThat(
+            active.identifier(),
+            Matchers.equalTo("stripe_pm_active")
+        );
+
+        PaymentMethod inactive = null;
+        for(final PaymentMethod method : ofWallet) {
+            if(method.identifier().equalsIgnoreCase("stripe_pm_inactive")) {
+                inactive = method;
+                break;
+            }
+        }
+        if(inactive == null) {
+            Assert.fail(
+                "Inactive payment method 'stripe_pm_inactive' "
+                + "not found"
+            );
+        }
+
+        final PaymentMethod activated = all.activate(inactive);
+        MatcherAssert.assertThat(
+            activated.active(),
+            Matchers.is(Boolean.TRUE)
+        );
+        MatcherAssert.assertThat(
+            activated.identifier(),
+            Matchers.equalTo("stripe_pm_inactive")
+        );
+
+        MatcherAssert.assertThat(
+            all.ofWallet(wallet).active().identifier(),
+            Matchers.equalTo("stripe_pm_inactive")
+        );
+    }
 
     /**
      * Mock a wallet (as an alternative to having to select
