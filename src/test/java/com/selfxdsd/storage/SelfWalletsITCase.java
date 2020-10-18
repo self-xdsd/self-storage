@@ -28,6 +28,7 @@ import com.selfxdsd.core.projects.StripeWallet;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 
@@ -254,7 +255,7 @@ public final class SelfWalletsITCase {
         );
         MatcherAssert.assertThat(
             wallet.cash(),
-            Matchers.equalTo(BigDecimal.valueOf(1_000_000_000))
+            Matchers.equalTo(BigDecimal.valueOf(10000))
         );
         MatcherAssert.assertThat(
             wallet.available().add(wallet.debt()),
@@ -266,8 +267,44 @@ public final class SelfWalletsITCase {
         );
         MatcherAssert.assertThat(
             wallet.type(),
-            Matchers.equalTo(Wallet.Type.FAKE)
+            Matchers.equalTo(Wallet.Type.STRIPE)
         );
     }
 
+    /**
+     * Method updateCash throws when the Wallet is fake.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void throwsWhenUpdateCashOnFakeWallet(){
+        final Storage storage = new SelfJooq(new H2Database());
+        final Wallets all = storage.wallets();
+        final Wallet fake = Mockito.mock(Wallet.class);
+
+        Mockito.when(fake.type()).thenReturn(Wallet.Type.FAKE);
+        all.updateCash(fake, BigDecimal.TEN);
+    }
+
+    /**
+     * Method updateCash for a real Wallet.
+     */
+    @Test
+    public void updatesCash(){
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects projects = storage.projects();
+        final Wallets all = storage.wallets();
+        final Project project = projects.getProjectById(
+            "amihaiemil/docker-java-api", Provider.Names.GITHUB
+        );
+        final Wallet wallet = all.ofProject(project).active();
+
+        MatcherAssert.assertThat(wallet.cash(),
+            Matchers.equalTo(BigDecimal.valueOf(10000)));
+
+        final Wallet updated = wallet.updateCash(BigDecimal.TEN);
+        MatcherAssert.assertThat(updated.cash(),
+            Matchers.equalTo(BigDecimal.TEN));
+
+        //revert
+        wallet.updateCash(BigDecimal.valueOf(10000));
+    }
 }

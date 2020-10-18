@@ -26,7 +26,9 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.projects.ProjectWallets;
 import com.selfxdsd.core.projects.StripeWallet;
-import org.jooq.*;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -41,9 +43,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.21
- * @todo #160:30min Implement and test method updateCash(...) here. We should
- *  only allow cash update for the Stripe wallets. The Fake wallets' cash
- *  should never be updated.
  */
 public final class SelfWallets implements Wallets {
 
@@ -218,7 +217,7 @@ public final class SelfWallets implements Wallets {
 
             @Override
             public PaymentMethods paymentMethods() {
-                return null;
+                return wallet.paymentMethods();
             }
         };
     }
@@ -228,7 +227,64 @@ public final class SelfWallets implements Wallets {
         final Wallet wallet,
         final BigDecimal bigDecimal
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        if(wallet.type().equals(Wallet.Type.FAKE)){
+            throw new UnsupportedOperationException(
+                "Updating cash for fake wallets is not allowed"
+            );
+        }
+        final Project project = wallet.project();
+        int execute = this.database
+            .jooq()
+            .update(SLF_WALLETS_XDSD)
+            .set(SLF_WALLETS_XDSD.CASH, bigDecimal.toBigInteger())
+            .where(SLF_WALLETS_XDSD.PROVIDER
+                .eq(project.provider()).and(SLF_WALLETS_XDSD.REPO_FULLNAME
+                    .eq(project.repoFullName())
+                    .and(SLF_WALLETS_XDSD.TYPE.eq(wallet.type()))))
+            .execute();
+        final Wallet updated;
+        if (execute > 0) {
+            updated = new Wallet() {
+                @Override
+                public BigDecimal cash() {
+                    return bigDecimal;
+                }
+
+                @Override
+                public Wallet pay(final Invoice invoice) {
+                    return wallet.pay(invoice);
+                }
+
+                @Override
+                public String type() {
+                    return wallet.type();
+                }
+
+                @Override
+                public boolean active() {
+                    return wallet.active();
+                }
+
+                @Override
+                public Project project() {
+                    return wallet.project();
+                }
+
+                @Override
+                public Wallet updateCash(final BigDecimal bigDecimal) {
+                    return wallet.updateCash(bigDecimal);
+                }
+
+                @Override
+                public PaymentMethods paymentMethods() {
+                    return wallet.paymentMethods();
+                }
+            };
+        } else {
+            throw new IllegalStateException("Something wrong while updating "
+                + " Wallet's cash.");
+        }
+        return updated;
     }
 
     @Override
