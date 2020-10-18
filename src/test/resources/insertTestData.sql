@@ -206,12 +206,12 @@ VALUES
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
 VALUES
-('amihaiemil/docker-java-api', 'github', 'FAKE', 1000000000, 1, 'fakew-1232');
+('amihaiemil/docker-java-api', 'github', 'FAKE', 1000000000, 0, 'fakew-1232');
 
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
 VALUES
-('amihaiemil/docker-java-api', 'github', 'STRIPE', 10000, 0, 'stripewallet-1232');
+('amihaiemil/docker-java-api', 'github', 'STRIPE', 10000, 1, 'stripewallet-1232');
 
 INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
 VALUES ('amihaiemil/docker-java-api', 'github', 'STRIPE', 'stripe_pm_1', 1);
