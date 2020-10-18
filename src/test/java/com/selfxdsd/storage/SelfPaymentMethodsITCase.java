@@ -82,6 +82,49 @@ public final class SelfPaymentMethodsITCase {
     }
 
     /**
+     * SelfPaymentMethods can register a Stripe PaymentMethod
+     * for a Stripe wallet.
+     */
+    @Test
+    public void registersStripePaymentMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Project project = storage.projects().getProjectById(
+            "johndoe/stripe_repo", Provider.Names.GITHUB
+        );
+        final Wallet wallet = project.wallets().active();
+
+        final PaymentMethods all = storage.paymentMethods();
+
+        final PaymentMethods methods = all.ofWallet(wallet);
+        MatcherAssert.assertThat(
+            methods,
+            Matchers.emptyIterable()
+        );
+
+        final PaymentMethod stripe = all.register(
+            wallet,
+            "stripe_pm_123"
+        );
+
+        MatcherAssert.assertThat(
+            stripe.active(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
+            stripe.identifier(),
+            Matchers.equalTo("stripe_pm_123")
+        );
+        MatcherAssert.assertThat(
+            stripe.wallet(),
+            Matchers.is(wallet)
+        );
+        MatcherAssert.assertThat(
+            wallet.paymentMethods(),
+            Matchers.iterableWithSize(1)
+        );
+    }
+
+    /**
      * Mock a wallet (as an alternative to having to select
      * a real one from the DB).
      * @param repoFullName Project's repo full name.

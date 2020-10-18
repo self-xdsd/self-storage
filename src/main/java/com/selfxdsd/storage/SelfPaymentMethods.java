@@ -33,6 +33,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,7 +78,46 @@ public final class SelfPaymentMethods implements PaymentMethods {
         final Wallet wallet,
         final String identifier
     ) {
-        return null;
+        final PaymentMethod registered;
+        final List<String> allowed = Arrays.asList(
+            Wallet.Type.STRIPE
+        );
+        final Project project = wallet.project();
+        if(allowed.contains(wallet.type())) {
+            final int inserted = this.database.jooq().insertInto(
+                SLF_PAYMENTMETHODS_XDSD,
+                SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME,
+                SLF_PAYMENTMETHODS_XDSD.PROVIDER,
+                SLF_PAYMENTMETHODS_XDSD.TYPE,
+                SLF_PAYMENTMETHODS_XDSD.IDENTIFIER,
+                SLF_PAYMENTMETHODS_XDSD.ACTIVE
+            ).values(
+                project.repoFullName(),
+                project.provider(),
+                wallet.type(),
+                identifier,
+                Boolean.FALSE
+            ).execute();
+            if(inserted != 1) {
+                throw new IllegalStateException(
+                    "Something went wrong while trying to register "
+                    + "a new payment method."
+                );
+            } else {
+                registered = new StoredPaymentMethod(
+                    this.storage,
+                    identifier,
+                    wallet,
+                    Boolean.FALSE
+                );
+            }
+        } else {
+            throw new UnsupportedOperationException(
+                "Only payment methods for Wallets of type "
+                + allowed + " can be registered at the moment!"
+            );
+        }
+        return registered;
     }
 
     @Override

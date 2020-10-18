@@ -277,7 +277,7 @@ public final class SelfProjectsITCase {
         final H2Database database = new H2Database();
         final Projects projects = new SelfJooq(database).projects();
         MatcherAssert.assertThat(projects
-            .page(new Paged.Page(1, 4))
+            .page(new Paged.Page(1, 5))
             .totalPages(), Matchers.is(1));
         for (int i = 0; i < 16; i++) {
             final Repo repo = this.mockRepo("amihaiemil/repo" + i,
@@ -287,7 +287,7 @@ public final class SelfProjectsITCase {
             projects.register(repo, manager, "wbtoken" + i);
         }
         MatcherAssert.assertThat(projects
-            .page(new Paged.Page(1, 4))
+            .page(new Paged.Page(1, 5))
             .totalPages(), Matchers.is(5));
         MatcherAssert.assertThat(projects
             .totalPages(), Matchers.is(1));
@@ -305,7 +305,6 @@ public final class SelfProjectsITCase {
     @Test
     public void returnsOwnedByUserInPage() {
         final Projects all = new SelfJooq(new H2Database()).projects();
-        MatcherAssert.assertThat(all, Matchers.iterableWithSize(4));
 
         final Projects pageOne = all.page(new Paged.Page(1, 2));
         MatcherAssert.assertThat(pageOne, Matchers.iterableWithSize(2));
@@ -382,7 +381,7 @@ public final class SelfProjectsITCase {
             Matchers.iterableWithSize(3));
         MatcherAssert.assertThat(all
                 .page(new Paged.Page(1, 3))
-                .assignedTo(2),
+                .assignedTo(4),
             Matchers.emptyIterable());
 
         MatcherAssert.assertThat(all
