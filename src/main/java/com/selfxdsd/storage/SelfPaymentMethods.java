@@ -37,8 +37,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PAYMENTMETHODS_XDSD;
-import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
+import static com.selfxdsd.storage.generated.jooq.Tables.*;
 
 /**
  * PaymentMethods (of project Wallets) in Self.
@@ -122,7 +121,31 @@ public final class SelfPaymentMethods implements PaymentMethods {
 
     @Override
     public boolean remove(final PaymentMethod paymentMethod) {
-        return false;
+        if(paymentMethod.active()) {
+            throw new IllegalArgumentException(
+                "You cannot remove an active PaymentMethod!"
+            );
+        }
+        final Wallet wallet = paymentMethod.wallet();
+        final Project project = wallet.project();
+        final int deleted = this.database.jooq()
+            .deleteFrom(SLF_PAYMENTMETHODS_XDSD)
+            .where(
+                SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME.eq(
+                    project.repoFullName()
+                ).and(
+                    SLF_PAYMENTMETHODS_XDSD.PROVIDER.eq(
+                        project.provider()
+                    ).and(
+                        SLF_PAYMENTMETHODS_XDSD.TYPE.eq(wallet.type())
+                    )
+                ).and(
+                    SLF_PAYMENTMETHODS_XDSD.IDENTIFIER.eq(
+                        paymentMethod.identifier()
+                    )
+                )
+            ).execute();
+        return deleted == 1;
     }
 
     @Override

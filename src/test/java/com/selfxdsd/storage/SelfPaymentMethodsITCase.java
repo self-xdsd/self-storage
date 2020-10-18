@@ -26,6 +26,7 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -98,7 +99,9 @@ public final class SelfPaymentMethodsITCase {
         final PaymentMethods methods = all.ofWallet(wallet);
         MatcherAssert.assertThat(
             methods,
-            Matchers.emptyIterable()
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(0)
+            )
         );
 
         final PaymentMethod stripe = all.register(
@@ -120,9 +123,79 @@ public final class SelfPaymentMethodsITCase {
         );
         MatcherAssert.assertThat(
             wallet.paymentMethods(),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(1)
+            )
         );
     }
+
+    /**
+     * SelfPaymentMethods can remove a payment method.
+     */
+    @Test
+    public void removesPaymentMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Project project = storage.projects().getProjectById(
+            "johndoe/stripe_repo", Provider.Names.GITHUB
+        );
+        final Wallet wallet = project.wallets().active();
+
+        final PaymentMethods all = storage.paymentMethods();
+
+        final PaymentMethods methods = all.ofWallet(wallet);
+        MatcherAssert.assertThat(
+            methods,
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(1)
+            )
+        );
+
+        PaymentMethod toRemove = null;
+        for(final PaymentMethod method : wallet.paymentMethods()) {
+            if(method.identifier().equalsIgnoreCase("stripe_pm_to_delete")) {
+                toRemove = method;
+                break;
+            }
+        }
+        if(toRemove == null) {
+            Assert.fail(
+                "PaymentMethod 'stripe_pm_to_delete' not found"
+            );
+        }
+
+        MatcherAssert.assertThat(
+            all.remove(toRemove),
+            Matchers.is(Boolean.TRUE)
+        );
+        MatcherAssert.assertThat(
+            wallet.paymentMethods(),
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(0)
+            )
+        );
+    }
+
+    /**
+     * SelfPaymentMethods cannot remove an active PaymentMethod.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void doesNotRemoveActivePaymentMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Project project = storage.projects().getProjectById(
+            "johndoe/stripe_repo", Provider.Names.GITHUB
+        );
+        final Wallet wallet = project.wallets().active();
+
+        final PaymentMethods all = storage.paymentMethods();
+        final PaymentMethod active = all.ofWallet(wallet).active();
+        if(active == null) {
+            Assert.fail(
+                "Active PaymentMethod not found."
+            );
+        }
+        all.remove(active);
+    }
+
 
     /**
      * Mock a wallet (as an alternative to having to select
