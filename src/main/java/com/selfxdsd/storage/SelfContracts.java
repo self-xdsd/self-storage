@@ -37,6 +37,7 @@ import com.selfxdsd.core.projects.StoredProject;
 import org.jooq.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +53,13 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #169:30min Provide implementation and integration tests for
+ *  method update(Contract, hourlyRate) here.
+ * @todo #169:30min Provide implementation and integration tests for
+ *  method markForRemoval(Contract, time) here.
+ * @todo #169:30min Make sure to also read the markedForRemoval timestamp
+ *  when reading a Contract here, in SelfContributors and in SelfTasks. At
+ *  the moment, null is passed for that attribute always.
  */
 public final class SelfContracts implements Contracts {
 
@@ -170,10 +178,12 @@ public final class SelfContracts implements Contracts {
             throw new IllegalStateException("Something went wrong when "
                 + "inserting Contract into database.");
         }
-        return new StoredContract(project,
+        return new StoredContract(
+            project,
             (Contributor) txResults.get(1),
             hourlyRate,
             role,
+            null,
             this.storage);
     }
 
@@ -194,6 +204,22 @@ public final class SelfContracts implements Contracts {
             return this.buildContract(result.get(0));
         }
         return null;
+    }
+
+    @Override
+    public Contract update(
+        final Contract contract,
+        final BigDecimal newHourlyRate
+    ) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
+    public Contract markForRemoval(
+        final Contract contract,
+        final LocalDateTime markedForRemoval
+    ) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
@@ -298,7 +324,9 @@ public final class SelfContracts implements Contracts {
                 rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
             ),
             rec.getValue(SLF_CONTRACTS_XDSD.ROLE),
-            this.storage);
+            null,
+            this.storage
+        );
     }
 
 }

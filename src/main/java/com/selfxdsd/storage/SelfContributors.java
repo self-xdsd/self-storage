@@ -212,6 +212,7 @@ public final class SelfContributors extends BasePaged implements Contributors {
                             BigDecimal.valueOf(
                                 rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
                             ),
+                            null,
                             this.storage
                         )
                     );
@@ -229,8 +230,9 @@ public final class SelfContributors extends BasePaged implements Contributors {
                             rec.getValue(SLF_CONTRACTS_XDSD.ROLE)
                         ),
                         BigDecimal.valueOf(
-                                rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
+                            rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
                         ),
+                        null,
                         this.storage
                     )
                 );
