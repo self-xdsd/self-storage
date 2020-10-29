@@ -324,7 +324,7 @@ public final class SelfContracts implements Contracts {
                 rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
             ),
             rec.getValue(SLF_CONTRACTS_XDSD.ROLE),
-            null,
+            rec.getValue(SLF_CONTRACTS_XDSD.MARKEDFORREMOVAL),
             this.storage
         );
     }

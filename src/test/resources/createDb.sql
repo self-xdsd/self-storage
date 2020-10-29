@@ -70,6 +70,7 @@ CREATE TABLE self_xdsd.slf_contracts_xdsd (
   provider VARCHAR(50) NOT NULL,
   role VARCHAR(32) NOT NULL,
   hourly_rate BIGINT NOT NULL,
+  markedForRemoval DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (repo_fullname, username, provider, role),
   CONSTRAINT contributor
     FOREIGN KEY (username, provider)
@@ -78,8 +79,6 @@ CREATE TABLE self_xdsd.slf_contracts_xdsd (
     FOREIGN KEY (repo_fullname, provider)
     REFERENCES self_xdsd.slf_projects_xdsd (repo_fullname, provider)
 );
-ALTER TABLE `self_xdsd`.`slf_contracts_xdsd`
-ADD COLUMN `markedForRemoval` DATETIME NULL DEFAULT NULL AFTER `hourly_rate`;
 
 -- -----------------------------------------------------
 -- Table self_xdsd.slf_tasks_xdsd

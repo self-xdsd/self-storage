@@ -453,7 +453,7 @@ public final class SelfTasks implements Tasks {
                         rec.getValue(SLF_CONTRACTS_XDSD.HOURLY_RATE)
                     ),
                     rec.getValue(SLF_CONTRACTS_XDSD.ROLE),
-                    null,
+                    rec.getValue(SLF_CONTRACTS_XDSD.MARKEDFORREMOVAL),
                     this.storage
                 ),
                 rec.getValue(SLF_TASKS_XDSD.ISSUEID),
