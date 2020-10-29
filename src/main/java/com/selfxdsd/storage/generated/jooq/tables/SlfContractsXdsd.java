@@ -9,6 +9,7 @@ import com.selfxdsd.storage.generated.jooq.Keys;
 import com.selfxdsd.storage.generated.jooq.SelfXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfContractsXdsdRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfContractsXdsd extends TableImpl<SlfContractsXdsdRecord> {
 
-    private static final long serialVersionUID = -1199711496;
+    private static final long serialVersionUID = 1987554509;
 
     /**
      * The reference instance of <code>self_xdsd.slf_contracts_xdsd</code>
@@ -72,6 +73,11 @@ public class SlfContractsXdsd extends TableImpl<SlfContractsXdsdRecord> {
      * The column <code>self_xdsd.slf_contracts_xdsd.hourly_rate</code>.
      */
     public final TableField<SlfContractsXdsdRecord, Long> HOURLY_RATE = createField(DSL.name("hourly_rate"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_contracts_xdsd.markedForRemoval</code>.
+     */
+    public final TableField<SlfContractsXdsdRecord, LocalDateTime> MARKEDFORREMOVAL = createField(DSL.name("markedForRemoval"), org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
 
     /**
      * Create a <code>self_xdsd.slf_contracts_xdsd</code> table reference
@@ -166,11 +172,11 @@ public class SlfContractsXdsd extends TableImpl<SlfContractsXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, String, Long> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<String, String, String, String, Long, LocalDateTime> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
