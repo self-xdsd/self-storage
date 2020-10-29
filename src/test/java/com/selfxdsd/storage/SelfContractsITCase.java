@@ -127,7 +127,10 @@ public final class SelfContractsITCase {
             Matchers.equalTo(BigDecimal.TEN));
         MatcherAssert.assertThat(contract.role(),
             Matchers.equalTo(Contract.Roles.DEV));
-
+        MatcherAssert.assertThat(
+            contract.markedForRemoval(),
+            Matchers.nullValue()
+        );
         //cleanup
         database.connect().jooq()
             .delete(SlfContractsXdsd.SLF_CONTRACTS_XDSD)
