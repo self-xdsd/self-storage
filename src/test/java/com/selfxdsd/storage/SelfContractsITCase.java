@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * Integration tests for {@link SelfContracts}.
@@ -217,6 +218,92 @@ public final class SelfContractsITCase {
         final Contracts ofProject = new SelfJooq(new H2Database()).contracts()
             .ofContributor(contributor);
         MatcherAssert.assertThat(ofProject, Matchers.iterableWithSize(3));
+    }
+
+    /**
+     * SelfContracts can mark an existing Contract for removal.
+     */
+    @Test
+    public void marksForRemoval() {
+        final H2Database database = new H2Database();
+        final Contracts all = new SelfJooq(database).contracts();
+
+        final Contract maria = all.findById(
+            new Contract.Id(
+                "vlad/test",
+                "maria",
+                Provider.Names.GITHUB,
+                Contract.Roles.QA
+            )
+        );
+
+        MatcherAssert.assertThat(
+            maria.markedForRemoval(),
+            Matchers.nullValue()
+        );
+        final LocalDateTime now = LocalDateTime.now();
+        final Contract marked = all.markForRemoval(maria, now);
+
+        MatcherAssert.assertThat(
+            marked.markedForRemoval(),
+            Matchers.equalTo(now)
+        );
+
+        final Contract mariaSelected = all.findById(
+            new Contract.Id(
+                "vlad/test",
+                "maria",
+                Provider.Names.GITHUB,
+                Contract.Roles.QA
+            )
+        );
+        MatcherAssert.assertThat(
+            mariaSelected.markedForRemoval(),
+            Matchers.equalTo(now)
+        );
+    }
+
+    /**
+     * SelfContracts complains if we try to mark a contract for removal twice.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void doesNotMarkForRemovalTwice() {
+        final H2Database database = new H2Database();
+        final Contracts all = new SelfJooq(database).contracts();
+
+        final Contract alreadyMarked = Mockito.mock(Contract.class);
+        Mockito.when(alreadyMarked.contractId()).thenReturn(
+            new Contract.Id(
+                "vlad/test",
+                "vlad",
+                Provider.Names.GITHUB,
+                Contract.Roles.DEV
+            )
+        );
+        Mockito.when(alreadyMarked.markedForRemoval())
+            .thenReturn(LocalDateTime.now());
+        all.markForRemoval(alreadyMarked, LocalDateTime.now());
+    }
+
+    /**
+     * SelfContracts.markForRemoval(...) throws an exception if
+     * no Contract has been updated (it's most likely missing).
+     */
+    @Test(expected = IllegalStateException.class)
+    public void markForRemovalComplainsOnMissingContract() {
+        final H2Database database = new H2Database();
+        final Contracts all = new SelfJooq(database).contracts();
+
+        final Contract missing = Mockito.mock(Contract.class);
+        Mockito.when(missing.contractId()).thenReturn(
+            new Contract.Id(
+                "george/missing",
+                "mihai",
+                Provider.Names.GITHUB,
+                Contract.Roles.DEV
+            )
+        );
+        all.markForRemoval(missing, LocalDateTime.now());
     }
 
 }

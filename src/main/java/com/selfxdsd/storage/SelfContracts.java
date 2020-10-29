@@ -42,8 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRACTS_XDSD;
-import static com.selfxdsd.storage.generated.jooq.Tables.SLF_CONTRIBUTORS_XDSD;
+import static com.selfxdsd.storage.generated.jooq.Tables.*;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
@@ -55,11 +54,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @since 0.0.1
  * @todo #169:30min Provide implementation and integration tests for
  *  method update(Contract, hourlyRate) here.
- * @todo #169:30min Provide implementation and integration tests for
- *  method markForRemoval(Contract, time) here.
- * @todo #169:30min Make sure to also read the markedForRemoval timestamp
- *  when reading a Contract here, in SelfContributors and in SelfTasks. At
- *  the moment, null is passed for that attribute always.
  */
 public final class SelfContracts implements Contracts {
 
@@ -219,7 +213,41 @@ public final class SelfContracts implements Contracts {
         final Contract contract,
         final LocalDateTime markedForRemoval
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Contract.Id id = contract.contractId();
+        if(contract.markedForRemoval() != null) {
+            throw new IllegalArgumentException(
+                "Contract " + id.toString() + " was "
+              + "already marked for removal on "
+              + contract.markedForRemoval() + "."
+            );
+        }
+        final int updated = this.database.jooq().update(SLF_CONTRACTS_XDSD)
+            .set(
+                SLF_CONTRACTS_XDSD.MARKEDFORREMOVAL,
+                markedForRemoval
+            ).where(
+                SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(id.getRepoFullName()).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(id.getProvider()).and(
+                        SLF_CONTRACTS_XDSD.USERNAME.eq(
+                            id.getContributorUsername()
+                        ).and(SLF_CONTRACTS_XDSD.ROLE.eq(id.getRole()))
+                    )
+                )
+            ).execute();
+        if(updated != 1) {
+            throw new IllegalStateException(
+                "Could not mark for removal Contract " + id.toString() + ". "
+              + "Most likely, it was already removed from the DB."
+            );
+        }
+        return new StoredContract(
+            contract.project(),
+            contract.contributor(),
+            contract.hourlyRate(),
+            contract.role(),
+            markedForRemoval,
+            this.storage
+        );
     }
 
     @Override
