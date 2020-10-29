@@ -52,8 +52,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #169:30min Provide implementation and integration tests for
- *  method update(Contract, hourlyRate) here.
  */
 public final class SelfContracts implements Contracts {
 
@@ -205,7 +203,34 @@ public final class SelfContracts implements Contracts {
         final Contract contract,
         final BigDecimal newHourlyRate
     ) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Contract.Id id = contract.contractId();
+        final int updated = this.database.jooq().update(SLF_CONTRACTS_XDSD)
+            .set(
+                SLF_CONTRACTS_XDSD.HOURLY_RATE,
+                newHourlyRate.longValueExact()
+            ).where(
+                SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(id.getRepoFullName()).and(
+                    SLF_CONTRACTS_XDSD.PROVIDER.eq(id.getProvider()).and(
+                        SLF_CONTRACTS_XDSD.USERNAME.eq(
+                            id.getContributorUsername()
+                        ).and(SLF_CONTRACTS_XDSD.ROLE.eq(id.getRole()))
+                    )
+                )
+            ).execute();
+        if(updated != 1) {
+            throw new IllegalStateException(
+                "Could not update Contract " + id.toString() + ". "
+              + "Most likely, it was already removed from the DB."
+            );
+        }
+        return new StoredContract(
+            contract.project(),
+            contract.contributor(),
+            newHourlyRate,
+            contract.role(),
+            contract.markedForRemoval(),
+            this.storage
+        );
     }
 
     @Override

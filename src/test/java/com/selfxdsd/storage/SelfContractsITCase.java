@@ -309,4 +309,67 @@ public final class SelfContractsITCase {
         all.markForRemoval(missing, LocalDateTime.now());
     }
 
+    /**
+     * SelfContracts can update the hourly rate of
+     * an existing Contract.
+     */
+    @Test
+    public void updatesHourlyRate() {
+        final H2Database database = new H2Database();
+        final Contracts all = new SelfJooq(database).contracts();
+
+        final Contract maria = all.findById(
+            new Contract.Id(
+                "vlad/test",
+                "maria",
+                Provider.Names.GITHUB,
+                Contract.Roles.QA
+            )
+        );
+
+        MatcherAssert.assertThat(
+            maria.hourlyRate(),
+            Matchers.equalTo(BigDecimal.valueOf(8000))
+        );
+        final Contract updated = all.update(maria, BigDecimal.valueOf(15000));
+
+        MatcherAssert.assertThat(
+            updated.hourlyRate(),
+            Matchers.equalTo(BigDecimal.valueOf(15000))
+        );
+
+        final Contract mariaSelected = all.findById(
+            new Contract.Id(
+                "vlad/test",
+                "maria",
+                Provider.Names.GITHUB,
+                Contract.Roles.QA
+            )
+        );
+        MatcherAssert.assertThat(
+            mariaSelected.hourlyRate(),
+            Matchers.equalTo(BigDecimal.valueOf(15000))
+        );
+    }
+
+    /**
+     * SelfContracts.update(...) throws an exception if
+     * no Contract has been updated (it's most likely missing).
+     */
+    @Test(expected = IllegalStateException.class)
+    public void updateComplainsOnMissingContract() {
+        final H2Database database = new H2Database();
+        final Contracts all = new SelfJooq(database).contracts();
+
+        final Contract missing = Mockito.mock(Contract.class);
+        Mockito.when(missing.contractId()).thenReturn(
+            new Contract.Id(
+                "george/missing",
+                "mihai",
+                Provider.Names.GITHUB,
+                Contract.Roles.DEV
+            )
+        );
+        all.update(missing, BigDecimal.valueOf(1000));
+    }
 }
