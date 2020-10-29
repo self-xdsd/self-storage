@@ -202,5 +202,6 @@ CREATE TABLE `self_xdsd`.`slf_paymentmethods_xdsd` (
   PRIMARY KEY (`paymentMethodId`),
   CONSTRAINT `walletFK`
     FOREIGN KEY (`repo_fullname` , `provider` , `type`)
-    REFERENCES `self_xdsd`.`slf_wallets_xdsd` (`repo_fullname` , `provider` , `type`));
+    REFERENCES `self_xdsd`.`slf_wallets_xdsd` (`repo_fullname` , `provider` , `type`)
+    ON DELETE CASCADE);
 
