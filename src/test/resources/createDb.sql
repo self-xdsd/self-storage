@@ -138,7 +138,8 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
   PRIMARY KEY (`id`),
   CONSTRAINT `invoiceContractFk`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
-    REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`));
+    REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
+    ON DELETE CASCADE);
 
 -- -----------------------------------------------------
 -- Table `self_xdsd`.`slf_resignations_xdsd`
@@ -153,7 +154,8 @@ CREATE TABLE `self_xdsd`.`slf_resignations_xdsd` (
   PRIMARY KEY (`repo_fullname`, `username`, `provider`, `issueId`),
   CONSTRAINT `task`
     FOREIGN KEY (`repo_fullname` , `provider` , `issueId`)
-    REFERENCES `self_xdsd`.`slf_tasks_xdsd` (`repo_fullname` , `provider` , `issueId`),
+    REFERENCES `self_xdsd`.`slf_tasks_xdsd` (`repo_fullname` , `provider` , `issueId`)
+    ON DELETE CASCADE,
   CONSTRAINT `resignee`
     FOREIGN KEY (`username` , `provider`)
     REFERENCES `self_xdsd`.`slf_contributors_xdsd` (`username` , `provider`));
