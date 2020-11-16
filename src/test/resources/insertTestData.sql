@@ -92,6 +92,10 @@ INSERT INTO self_xdsd.slf_contracts_xdsd
 (repo_fullname, username, provider, role, hourly_rate)
 VALUES ('vlad/test', 'maria', 'github', 'QA', 8000);
 
+INSERT INTO self_xdsd.slf_contracts_xdsd -- this Contract is for testing SelfContracts.remove(...). Don't use it in other tests.
+(repo_fullname, username, provider, role, hourly_rate, markedForRemoval)
+VALUES ('vlad/test', 'maria', 'github', 'PO', 10000, '2020-10-10');
+
 -- INSERT TASKS
 INSERT INTO self_xdsd.slf_tasks_xdsd
 (repo_fullname, issueId, provider, role, estimation_minutes)
@@ -159,6 +163,11 @@ INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 VALUES
 (2, 'amihaiemil/docker-java-api', 'maria', 'github', 'REV', NOW() , null, null);
 
+INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
+(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+VALUES
+(3, 'vlad/test', 'maria', 'github', 'PO', NOW() , null, null);
+
 INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
 (invoiceId,
  repo_fullname,
@@ -213,6 +222,11 @@ VALUES
     NOW(),
     60
 );
+
+INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
+(invoiceId, repo_fullname, username, provider, role, value, commission, issueId, assigned, deadline, invoiced, estimation_minutes)
+VALUES
+(3, 'vlad/test', 'maria', 'github', 'PO', 10000, 50, '100', '2020-06-01', '2020-06-11', NOW(), 60);
 
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
