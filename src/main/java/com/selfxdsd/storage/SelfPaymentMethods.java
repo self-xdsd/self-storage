@@ -27,12 +27,13 @@ import com.selfxdsd.api.PaymentMethods;
 import com.selfxdsd.api.Project;
 import com.selfxdsd.api.Wallet;
 import com.selfxdsd.api.storage.Storage;
-import com.selfxdsd.core.projects.StoredPaymentMethod;
+import com.selfxdsd.core.projects.StripePaymentMethod;
 import com.selfxdsd.core.projects.WalletPaymentMethods;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import javax.json.JsonObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -102,7 +103,7 @@ public final class SelfPaymentMethods implements PaymentMethods {
                     + "a new payment method."
                 );
             } else {
-                registered = new StoredPaymentMethod(
+                registered = new StripePaymentMethod(
                     this.storage,
                     identifier,
                     wallet,
@@ -164,7 +165,7 @@ public final class SelfPaymentMethods implements PaymentMethods {
             ).fetch();
         for(final Record rec : result) {
             ofWallet.add(
-                new StoredPaymentMethod(
+                new StripePaymentMethod(
                     this.storage,
                     rec.getValue(SLF_PAYMENTMETHODS_XDSD.IDENTIFIER),
                     wallet,
@@ -249,6 +250,11 @@ public final class SelfPaymentMethods implements PaymentMethods {
             @Override
             public PaymentMethod activate() {
                 return paymentMethod.activate();
+            }
+
+            @Override
+            public JsonObject json() {
+                return paymentMethod.json();
             }
         };
     }

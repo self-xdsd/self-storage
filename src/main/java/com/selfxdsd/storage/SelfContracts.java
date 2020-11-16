@@ -180,6 +180,11 @@ public final class SelfContracts implements Contracts {
     }
 
     @Override
+    public void remove(final Contract contract) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
     public Contract findById(final Contract.Id id) {
         final Result<Record> result = this.selectContracts()
             .where(
