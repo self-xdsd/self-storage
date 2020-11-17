@@ -180,6 +180,25 @@ public final class SelfContracts implements Contracts {
     }
 
     @Override
+    public void remove(final Contract contract) {
+        final Contract.Id id = contract.contractId();
+        this.database.jooq().deleteFrom(SLF_CONTRACTS_XDSD)
+            .where(
+                SLF_CONTRACTS_XDSD.USERNAME.eq(
+                    id.getContributorUsername()
+                ).and(
+                    SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(
+                        id.getRepoFullName()
+                    ).and(
+                        SLF_CONTRACTS_XDSD.PROVIDER.eq(id.getProvider()).and(
+                            SLF_CONTRACTS_XDSD.ROLE.eq(id.getRole())
+                        )
+                    )
+                )
+            ).execute();
+    }
+
+    @Override
     public Contract findById(final Contract.Id id) {
         final Result<Record> result = this.selectContracts()
             .where(

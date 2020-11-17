@@ -26,6 +26,7 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.projects.ProjectWallets;
 import com.selfxdsd.core.projects.StripeWallet;
+import com.stripe.model.SetupIntent;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -216,8 +217,18 @@ public final class SelfWallets implements Wallets {
             }
 
             @Override
+            public SetupIntent paymentMethodSetupIntent() {
+                return wallet.paymentMethodSetupIntent();
+            }
+
+            @Override
             public PaymentMethods paymentMethods() {
                 return wallet.paymentMethods();
+            }
+
+            @Override
+            public String identifier() {
+                return wallet.identifier();
             }
         };
     }
@@ -276,8 +287,18 @@ public final class SelfWallets implements Wallets {
                 }
 
                 @Override
+                public SetupIntent paymentMethodSetupIntent() {
+                    return wallet.paymentMethodSetupIntent();
+                }
+
+                @Override
                 public PaymentMethods paymentMethods() {
                     return wallet.paymentMethods();
+                }
+
+                @Override
+                public String identifier() {
+                    return wallet.identifier();
                 }
             };
         } else {

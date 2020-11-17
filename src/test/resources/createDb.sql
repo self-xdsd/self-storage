@@ -116,7 +116,8 @@ CREATE TABLE `self_xdsd`.`slf_invoices_xdsd` (
   PRIMARY KEY (`invoiceId`, `repo_fullname`, `username`, `provider`, `role`),
   CONSTRAINT `fkContract`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role`)
-    REFERENCES `self_xdsd`.`slf_contracts_xdsd` (`repo_fullname` , `username` , `provider` , `role`));
+    REFERENCES `self_xdsd`.`slf_contracts_xdsd` (`repo_fullname` , `username` , `provider` , `role`)
+    ON DELETE CASCADE);
 
 -- -----------------------------------------------------
 -- Table `self_xdsd`.`slf_invoicedtasks_xdsd`

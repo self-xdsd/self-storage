@@ -26,6 +26,7 @@ import com.selfxdsd.api.Contract;
 import com.selfxdsd.api.Contracts;
 import com.selfxdsd.api.Contributor;
 import com.selfxdsd.api.Provider;
+import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
 import org.hamcrest.MatcherAssert;
@@ -371,5 +372,52 @@ public final class SelfContractsITCase {
             )
         );
         all.update(missing, BigDecimal.valueOf(1000));
+    }
+
+    /**
+     * SelfContracts.remove(...) can remove the specified Contract.
+     */
+    @Test
+    public void removesContract() {
+        final H2Database database = new H2Database();
+        final Storage storage = new SelfJooq(database);
+        final Contracts all = storage.contracts();
+
+        final Contract mariaPo = all.findById(
+            new Contract.Id(
+                "vlad/test",
+                "maria",
+                "github",
+                "PO"
+            )
+        );
+        MatcherAssert.assertThat(
+            mariaPo,
+            Matchers.notNullValue()
+        );
+        all.remove(mariaPo);
+
+        MatcherAssert.assertThat(
+            all.findById(
+                new Contract.Id(
+                    "vlad/test",
+                    "maria",
+                    "github",
+                    "PO"
+                )
+            ),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            storage.invoices().ofContract(
+                new Contract.Id(
+                    "vlad/test",
+                    "maria",
+                    "github",
+                    "PO"
+                )
+            ),
+            Matchers.emptyIterable()
+        );
     }
 }
