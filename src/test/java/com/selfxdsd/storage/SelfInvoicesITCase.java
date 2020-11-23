@@ -269,6 +269,11 @@ public final class SelfInvoicesITCase {
             }
 
             @Override
+            public BigDecimal commission() {
+                return unpaid.commission();
+            }
+
+            @Override
             public boolean isPaid() {
                 return true;
             }

@@ -39,7 +39,7 @@ CREATE TABLE self_xdsd.slf_pms_xdsd (
   username VARCHAR(100) NOT NULL,
   provider VARCHAR(50) NOT NULL,
   access_token VARCHAR(256) NOT NULL,
-  commission DECIMAL(20,0) NOT NULL,
+  commission DECIMAL(5,2) NOT NULL,
   PRIMARY KEY (id)
 );
 
