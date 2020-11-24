@@ -236,7 +236,7 @@ public final class SelfWallets implements Wallets {
     @Override
     public Wallet updateCash(
         final Wallet wallet,
-        final BigDecimal bigDecimal
+        final BigDecimal updatedCash
     ) {
         if(wallet.type().equals(Wallet.Type.FAKE)){
             throw new UnsupportedOperationException(
@@ -247,7 +247,7 @@ public final class SelfWallets implements Wallets {
         int execute = this.database
             .jooq()
             .update(SLF_WALLETS_XDSD)
-            .set(SLF_WALLETS_XDSD.CASH, bigDecimal.toBigInteger())
+            .set(SLF_WALLETS_XDSD.CASH, updatedCash)
             .where(SLF_WALLETS_XDSD.PROVIDER
                 .eq(project.provider()).and(SLF_WALLETS_XDSD.REPO_FULLNAME
                     .eq(project.repoFullName())
@@ -258,7 +258,7 @@ public final class SelfWallets implements Wallets {
             updated = new Wallet() {
                 @Override
                 public BigDecimal cash() {
-                    return bigDecimal;
+                    return updatedCash;
                 }
 
                 @Override
@@ -331,7 +331,7 @@ public final class SelfWallets implements Wallets {
             wallet = new Wallet.Missing(
                 project,
                 BigDecimal.valueOf(
-                    record.getValue(SLF_WALLETS_XDSD.CASH).longValue()
+                    record.getValue(SLF_WALLETS_XDSD.CASH).doubleValue()
                 ),
                 record.getValue(SLF_WALLETS_XDSD.ACTIVE),
                 record.getValue(SLF_WALLETS_XDSD.IDENTIFIER)
@@ -341,7 +341,7 @@ public final class SelfWallets implements Wallets {
                 this.storage,
                 project,
                 BigDecimal.valueOf(
-                    record.getValue(SLF_WALLETS_XDSD.CASH).longValue()
+                    record.getValue(SLF_WALLETS_XDSD.CASH).doubleValue()
                 ),
                 record.getValue(SLF_WALLETS_XDSD.IDENTIFIER),
                 record.getValue(SLF_WALLETS_XDSD.ACTIVE)

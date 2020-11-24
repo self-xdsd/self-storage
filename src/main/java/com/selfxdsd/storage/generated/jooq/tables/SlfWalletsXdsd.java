@@ -8,7 +8,7 @@ import com.selfxdsd.storage.generated.jooq.Keys;
 import com.selfxdsd.storage.generated.jooq.SelfXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfWalletsXdsdRecord;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfWalletsXdsd extends TableImpl<SlfWalletsXdsdRecord> {
 
-    private static final long serialVersionUID = -2017457143;
+    private static final long serialVersionUID = -1601028425;
 
     /**
      * The reference instance of <code>self_xdsd.slf_wallets_xdsd</code>
@@ -65,7 +65,7 @@ public class SlfWalletsXdsd extends TableImpl<SlfWalletsXdsdRecord> {
     /**
      * The column <code>self_xdsd.slf_wallets_xdsd.cash</code>.
      */
-    public final TableField<SlfWalletsXdsdRecord, BigInteger> CASH = createField(DSL.name("cash"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
+    public final TableField<SlfWalletsXdsdRecord, BigDecimal> CASH = createField(DSL.name("cash"), org.jooq.impl.SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_wallets_xdsd.active</code>.
@@ -165,7 +165,7 @@ public class SlfWalletsXdsd extends TableImpl<SlfWalletsXdsdRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, BigInteger, Boolean, String> fieldsRow() {
+    public Row6<String, String, String, BigDecimal, Boolean, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }
