@@ -29,7 +29,6 @@ import com.selfxdsd.core.managers.StoredProjectManager;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -117,7 +116,7 @@ public final class SelfPms implements ProjectManagers {
         final String username,
         final String provider,
         final String accessToken,
-        final BigDecimal commission
+        final double commission
     ) {
         final int pmId = this.database.jooq()
             .insertInto(
@@ -126,7 +125,7 @@ public final class SelfPms implements ProjectManagers {
                 SLF_PMS_XDSD.USERNAME,
                 SLF_PMS_XDSD.PROVIDER,
                 SLF_PMS_XDSD.ACCESS_TOKEN,
-                SLF_PMS_XDSD.COMMISSION.cast(BigDecimal.class).as("commission")
+                SLF_PMS_XDSD.COMMISSION.cast(Double.class).as("commission")
             )
             .values(userId, username, provider, accessToken, commission)
             .returning(SLF_PMS_XDSD.ID)
@@ -177,9 +176,7 @@ public final class SelfPms implements ProjectManagers {
             record.getValue(SLF_PMS_XDSD.USERNAME),
             record.getValue(SLF_PMS_XDSD.PROVIDER),
             record.get(SLF_PMS_XDSD.ACCESS_TOKEN),
-            BigDecimal.valueOf(
-                record.getValue(SLF_PMS_XDSD.COMMISSION).longValue()
-            ),
+            record.getValue(SLF_PMS_XDSD.COMMISSION).doubleValue(),
             this.storage
         );
     }

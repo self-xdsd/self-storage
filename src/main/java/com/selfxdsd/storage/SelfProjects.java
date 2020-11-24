@@ -34,7 +34,6 @@ import com.selfxdsd.core.projects.UserProjects;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
@@ -295,9 +294,7 @@ public final class SelfProjects extends BasePaged implements Projects {
                 rec.get(SLF_PMS_XDSD.USERNAME),
                 rec.get(SLF_PMS_XDSD.PROVIDER),
                 rec.get(SLF_PMS_XDSD.ACCESS_TOKEN),
-                BigDecimal.valueOf(
-                    rec.get(SLF_PMS_XDSD.COMMISSION).longValue()
-                ),
+                rec.get(SLF_PMS_XDSD.COMMISSION).doubleValue(),
                 this.storage
             ),
             this.storage

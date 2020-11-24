@@ -17,11 +17,11 @@ VALUES ('johndoe', 'github', 'user', 'johndoe@gmail.com');
 
 INSERT INTO self_xdsd.slf_pms_xdsd
 (userid, username, provider, access_token, commission)
-VALUES ('33162107', 'zoeself', 'github', 'pm1ghtoken123', 50);
+VALUES ('33162107', 'zoeself', 'github', 'pm1ghtoken123', 6.5);
 
 INSERT INTO self_xdsd.slf_pms_xdsd
 (userid, username, provider, access_token, commission)
-VALUES ('33162108', 'otherpm', 'github', 'pm1ghtoken124', 50);
+VALUES ('33162108', 'otherpm', 'github', 'pm1ghtoken124', 6.5);
 
 -- INSERT PROJECTS
 

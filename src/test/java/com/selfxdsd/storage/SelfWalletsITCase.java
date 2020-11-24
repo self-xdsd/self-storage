@@ -259,7 +259,7 @@ public final class SelfWalletsITCase {
         );
         MatcherAssert.assertThat(
             wallet.available().add(wallet.debt()),
-            Matchers.equalTo(wallet.cash())
+            Matchers.equalTo(BigDecimal.valueOf(10000.0))
         );
         MatcherAssert.assertThat(
             wallet.project(),

@@ -8,7 +8,7 @@ import com.selfxdsd.storage.generated.jooq.Keys;
 import com.selfxdsd.storage.generated.jooq.SelfXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfPmsXdsdRecord;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
 
-    private static final long serialVersionUID = -1693535511;
+    private static final long serialVersionUID = 1877088970;
 
     /**
      * The reference instance of <code>self_xdsd.slf_pms_xdsd</code>
@@ -76,7 +76,7 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
     /**
      * The column <code>self_xdsd.slf_pms_xdsd.commission</code>.
      */
-    public final TableField<SlfPmsXdsdRecord, BigInteger> COMMISSION = createField(DSL.name("commission"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
+    public final TableField<SlfPmsXdsdRecord, BigDecimal> COMMISSION = createField(DSL.name("commission"), org.jooq.impl.SQLDataType.DECIMAL(5, 2).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_pms_xdsd</code> table reference
@@ -162,7 +162,7 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, String, BigInteger> fieldsRow() {
+    public Row6<Integer, String, String, String, String, BigDecimal> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

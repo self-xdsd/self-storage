@@ -29,8 +29,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-
 /**
  * Integration tests for {@link SelfPms}.
  * Read the package-info.java if you want to run these tests manually.
@@ -56,8 +54,8 @@ public final class SelfPmsITCase {
             Matchers.equalTo(Provider.Names.GITHUB)
         );
         MatcherAssert.assertThat(
-            found.commission(),
-            Matchers.equalTo(BigDecimal.valueOf(50))
+            found.percentage(),
+            Matchers.equalTo(6.5)
         );
     }
 
@@ -93,8 +91,8 @@ public final class SelfPmsITCase {
             Matchers.equalTo(Provider.Names.GITHUB)
         );
         MatcherAssert.assertThat(
-            found.commission(),
-            Matchers.equalTo(BigDecimal.valueOf(50))
+            found.percentage(),
+            Matchers.equalTo(6.5)
         );
     }
 
@@ -126,8 +124,8 @@ public final class SelfPmsITCase {
 
         MatcherAssert.assertThat(manager, Matchers.notNullValue());
         MatcherAssert.assertThat(
-            manager.commission(),
-            Matchers.equalTo(BigDecimal.valueOf(50))
+            manager.percentage(),
+            Matchers.equalTo(6.5)
         );
     }
 
@@ -161,7 +159,7 @@ public final class SelfPmsITCase {
                 "zoeself",
                 Provider.Names.GITLAB,
                 "123gitlab",
-                BigDecimal.valueOf(50)
+                8
             );
         MatcherAssert.assertThat(registered.id(),
             Matchers.greaterThan(0));
@@ -169,8 +167,8 @@ public final class SelfPmsITCase {
             Matchers.equalTo("123"));
         MatcherAssert.assertThat(registered.provider().name(),
             Matchers.equalTo(Provider.Names.GITLAB));
-        MatcherAssert.assertThat(registered.commission(),
-            Matchers.equalTo(BigDecimal.valueOf(50)));
+        MatcherAssert.assertThat(registered.percentage(),
+            Matchers.equalTo(8.0));
     }
 
     /**
