@@ -300,9 +300,9 @@ public final class SelfWalletsITCase {
         MatcherAssert.assertThat(wallet.cash(),
             Matchers.equalTo(BigDecimal.valueOf(10000.0)));
 
-        final Wallet updated = wallet.updateCash(BigDecimal.TEN);
+        final Wallet updated = wallet.updateCash(BigDecimal.valueOf(8500.98));
         MatcherAssert.assertThat(updated.cash(),
-            Matchers.equalTo(BigDecimal.TEN));
+            Matchers.equalTo(BigDecimal.valueOf(8500.98)));
 
         //revert
         wallet.updateCash(BigDecimal.valueOf(10000));
