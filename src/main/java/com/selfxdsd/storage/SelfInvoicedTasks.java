@@ -169,10 +169,10 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             rec.getValue(SLF_INVOICEDTASKS_XDSD.ID),
             rec.getValue(SLF_INVOICEDTASKS_XDSD.INVOICEID),
             BigDecimal.valueOf(
-                rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).doubleValue()
             ),
             BigDecimal.valueOf(
-                rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).longValue()
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).doubleValue()
             ),
             new StoredTask(
                 invoice.contract(),
