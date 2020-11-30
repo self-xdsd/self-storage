@@ -110,6 +110,7 @@ public final class SelfTasks implements Tasks {
                 "Project not found, can't register Issue."
             );
         } else {
+            final int estimation = issue.estimation().minutes();
             this.database.jooq().insertInto(
                 SLF_TASKS_XDSD,
                 SLF_TASKS_XDSD.REPO_FULLNAME,
@@ -122,13 +123,13 @@ public final class SelfTasks implements Tasks {
                 issue.issueId(),
                 issue.provider(),
                 issue.role(),
-                issue.estimation()
+                estimation
             ).execute();
             return new StoredTask(
                 project,
                 issue.issueId(),
                 issue.role(),
-                issue.estimation(),
+                estimation,
                 this.storage
             );
         }

@@ -210,6 +210,9 @@ public final class SelfTasksITCase {
         Mockito.when(issue.provider()).thenReturn(Provider.Names.GITLAB);
         Mockito.when(issue.issueId()).thenReturn("234");
         Mockito.when(issue.role()).thenReturn(Contract.Roles.DEV);
+        final Estimation estimation = Mockito.mock(Estimation.class);
+        Mockito.when(estimation.minutes()).thenReturn(60);
+        Mockito.when(issue.estimation()).thenReturn(estimation);
         final Tasks all = new SelfJooq(new H2Database()).tasks();
 
         MatcherAssert.assertThat(

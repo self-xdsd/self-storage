@@ -24,6 +24,7 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.projects.FakeWallet;
 import com.selfxdsd.core.projects.ProjectWallets;
 import com.selfxdsd.core.projects.StripeWallet;
 import com.stripe.model.SetupIntent;
@@ -106,11 +107,12 @@ public final class SelfWallets implements Wallets {
                 );
             } else {
                 if(Wallet.Type.FAKE.equalsIgnoreCase(type)) {
-                    registered = new Wallet.Missing(
+                    registered = new FakeWallet(
+                        this.storage,
                         project,
                         cash,
-                        Boolean.FALSE,
-                        identifier
+                        identifier,
+                        Boolean.FALSE
                     );
                 } else {
                     registered = new StripeWallet(
@@ -238,11 +240,6 @@ public final class SelfWallets implements Wallets {
         final Wallet wallet,
         final BigDecimal updatedCash
     ) {
-        if(wallet.type().equals(Wallet.Type.FAKE)){
-            throw new UnsupportedOperationException(
-                "Updating cash for fake wallets is not allowed"
-            );
-        }
         final Project project = wallet.project();
         int execute = this.database
             .jooq()
@@ -328,13 +325,14 @@ public final class SelfWallets implements Wallets {
         final Wallet wallet;
         final String type = record.getValue(SLF_WALLETS_XDSD.TYPE);
         if(Wallet.Type.FAKE.equalsIgnoreCase(type)) {
-            wallet = new Wallet.Missing(
+            wallet = new FakeWallet(
+                this.storage,
                 project,
                 BigDecimal.valueOf(
                     record.getValue(SLF_WALLETS_XDSD.CASH).doubleValue()
                 ),
-                record.getValue(SLF_WALLETS_XDSD.ACTIVE),
-                record.getValue(SLF_WALLETS_XDSD.IDENTIFIER)
+                record.getValue(SLF_WALLETS_XDSD.IDENTIFIER),
+                record.getValue(SLF_WALLETS_XDSD.ACTIVE)
             );
         } else if(Wallet.Type.STRIPE.equalsIgnoreCase(type)) {
             wallet = new StripeWallet(

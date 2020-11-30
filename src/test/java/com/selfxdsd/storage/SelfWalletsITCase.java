@@ -24,11 +24,11 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.projects.FakeWallet;
 import com.selfxdsd.core.projects.StripeWallet;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 
@@ -65,7 +65,7 @@ public final class SelfWalletsITCase {
         );
         MatcherAssert.assertThat(
             registered,
-            Matchers.instanceOf(Wallet.Missing.class)
+            Matchers.instanceOf(FakeWallet.class)
         );
         MatcherAssert.assertThat(
             registered.project(),
@@ -258,10 +258,6 @@ public final class SelfWalletsITCase {
             Matchers.equalTo(BigDecimal.valueOf(10000.0))
         );
         MatcherAssert.assertThat(
-            wallet.available().add(wallet.debt()),
-            Matchers.equalTo(BigDecimal.valueOf(10000.0))
-        );
-        MatcherAssert.assertThat(
             wallet.project(),
             Matchers.is(project)
         );
@@ -269,19 +265,6 @@ public final class SelfWalletsITCase {
             wallet.type(),
             Matchers.equalTo(Wallet.Type.STRIPE)
         );
-    }
-
-    /**
-     * Method updateCash throws when the Wallet is fake.
-     */
-    @Test(expected = UnsupportedOperationException.class)
-    public void throwsWhenUpdateCashOnFakeWallet(){
-        final Storage storage = new SelfJooq(new H2Database());
-        final Wallets all = storage.wallets();
-        final Wallet fake = Mockito.mock(Wallet.class);
-
-        Mockito.when(fake.type()).thenReturn(Wallet.Type.FAKE);
-        all.updateCash(fake, BigDecimal.TEN);
     }
 
     /**
@@ -298,7 +281,7 @@ public final class SelfWalletsITCase {
         final Wallet wallet = all.ofProject(project).active();
 
         MatcherAssert.assertThat(wallet.cash(),
-            Matchers.equalTo(BigDecimal.valueOf(10000.0)));
+            Matchers.equalTo(BigDecimal.valueOf(10000.00)));
 
         final Wallet updated = wallet.updateCash(BigDecimal.valueOf(8500.98));
         MatcherAssert.assertThat(updated.cash(),
