@@ -225,10 +225,11 @@ public final class SelfContractsITCase {
     }
 
     /**
-     * SelfContracts can mark an existing Contract for removal.
+     * SelfContracts can mark an existing Contract for removal and also
+     * restore it (set the removal date to null).
      */
     @Test
-    public void marksForRemoval() {
+    public void marksForRemovalAndRestores() {
         final H2Database database = new H2Database();
         final Contracts all = new SelfJooq(database).contracts();
 
@@ -265,28 +266,26 @@ public final class SelfContractsITCase {
             mariaSelected.markedForRemoval(),
             Matchers.equalTo(now)
         );
-    }
 
-    /**
-     * SelfContracts complains if we try to mark a contract for removal twice.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void doesNotMarkForRemovalTwice() {
-        final H2Database database = new H2Database();
-        final Contracts all = new SelfJooq(database).contracts();
+        final Contract restored = all.markForRemoval(maria, null);
 
-        final Contract alreadyMarked = Mockito.mock(Contract.class);
-        Mockito.when(alreadyMarked.contractId()).thenReturn(
+        MatcherAssert.assertThat(
+            restored.markedForRemoval(),
+            Matchers.nullValue()
+        );
+
+        final Contract restoredSelected = all.findById(
             new Contract.Id(
                 "vlad/test",
-                "vlad",
+                "maria",
                 Provider.Names.GITHUB,
-                Contract.Roles.DEV
+                Contract.Roles.QA
             )
         );
-        Mockito.when(alreadyMarked.markedForRemoval())
-            .thenReturn(LocalDateTime.now());
-        all.markForRemoval(alreadyMarked, LocalDateTime.now());
+        MatcherAssert.assertThat(
+            restoredSelected.markedForRemoval(),
+            Matchers.nullValue()
+        );
     }
 
     /**
