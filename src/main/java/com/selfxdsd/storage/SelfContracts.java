@@ -258,13 +258,6 @@ public final class SelfContracts implements Contracts {
         final LocalDateTime markedForRemoval
     ) {
         final Contract.Id id = contract.contractId();
-        if(contract.markedForRemoval() != null) {
-            throw new IllegalArgumentException(
-                "Contract " + id.toString() + " was "
-              + "already marked for removal on "
-              + contract.markedForRemoval() + "."
-            );
-        }
         final int updated = this.database.jooq().update(SLF_CONTRACTS_XDSD)
             .set(
                 SLF_CONTRACTS_XDSD.MARKEDFORREMOVAL,
