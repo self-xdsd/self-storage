@@ -45,8 +45,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #191:60min Implement method remove(Project) from this class and
- *  write some integration tests for it.
  */
 public final class SelfProjects extends BasePaged implements Projects {
 
@@ -239,9 +237,12 @@ public final class SelfProjects extends BasePaged implements Projects {
 
     @Override
     public void remove(final Project project) {
-        throw new UnsupportedOperationException(
-            "Not yet implemented."
-        );
+        this.database.jooq().deleteFrom(SLF_PROJECTS_XDSD)
+            .where(
+                SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(project.repoFullName()).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(project.provider())
+                )
+            ).execute();
     }
 
     @Override
