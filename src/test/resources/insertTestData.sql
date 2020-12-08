@@ -11,6 +11,10 @@ VALUES ('amihaiemil', 'github', 'user', 'amihaiemil@gmail.com.com');
 INSERT INTO self_xdsd.slf_users_xdsd
 (username, provider, role, email)
 VALUES ('johndoe', 'github', 'user', 'johndoe@gmail.com');
+INSERT INTO self_xdsd.slf_users_xdsd
+(username, provider, role, email)
+VALUES ('maria', 'github', 'user', 'maria@gmail.com');
+
 
 -----------------
 -- INSERT PROJECT MANAGERS
@@ -22,6 +26,11 @@ VALUES ('33162107', 'zoeself', 'github', 'pm1ghtoken123', 6.5);
 INSERT INTO self_xdsd.slf_pms_xdsd
 (userid, username, provider, access_token, commission)
 VALUES ('33162108', 'otherpm', 'github', 'pm1ghtoken124', 6.5);
+
+INSERT INTO self_xdsd.slf_pms_xdsd
+(userid, username, provider, access_token, commission)
+VALUES ('33162999', 'thirdpm', 'github', 'pm1ghtoken125', 8.0);
+
 
 -- INSERT PROJECTS
 
@@ -44,6 +53,10 @@ VALUES ('mihai/test', 'gitlab', 'mihai', 1, 'whtoken126');
 INSERT INTO self_xdsd.slf_projects_xdsd
 (repo_fullname, provider, username, pmid, webhook_token)
 VALUES ('johndoe/stripe_repo', 'github', 'johndoe', 2, 'whtoken124');
+
+INSERT INTO self_xdsd.slf_projects_xdsd
+(repo_fullname, provider, username, pmid, webhook_token)
+VALUES ('maria/to_remove', 'github', 'maria', 3, 'whtoken12888');
 
 -- INSERT CONTRIBUTORS
 
@@ -243,6 +256,16 @@ INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 VALUES
 ('johndoe/stripe_repo', 'github', 'STRIPE', 5000, 1, 'stripewallet-4444');
 
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+('maria/to_remove', 'github', 'FAKE', 10000000, 0, 'fakew-5555555');
+
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+('maria/to_remove', 'github', 'STRIPE', 10000, 1, 'stripewallet-5555555');
+
 INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
 VALUES ('johndoe/stripe_repo', 'github', 'STRIPE', 'stripe_pm_to_delete', 0);
 
@@ -257,6 +280,12 @@ VALUES ('amihaiemil/docker-java-api', 'github', 'STRIPE', 'stripe_pm_1', 1);
 
 INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
 VALUES ('amihaiemil/docker-java-api', 'github', 'STRIPE', 'stripe_pm_2', 0);
+
+INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
+VALUES ('maria/to_remove', 'github', 'STRIPE', 'stripe_mary_card_1', 0);
+
+INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
+VALUES ('maria/to_remove', 'github', 'STRIPE', 'stripe_mary_card_2', 1);
 
 INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
 (`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`)

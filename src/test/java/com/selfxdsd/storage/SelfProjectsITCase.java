@@ -278,7 +278,7 @@ public final class SelfProjectsITCase {
         final Projects projects = new SelfJooq(database).projects();
         MatcherAssert.assertThat(projects
             .page(new Paged.Page(1, 5))
-            .totalPages(), Matchers.is(1));
+            .totalPages(), Matchers.is(2));
         for (int i = 0; i < 16; i++) {
             final Repo repo = this.mockRepo("amihaiemil/repo" + i,
                 "amihaiemil", "github");
