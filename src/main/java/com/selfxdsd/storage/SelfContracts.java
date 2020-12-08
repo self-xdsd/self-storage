@@ -304,6 +304,11 @@ public final class SelfContracts implements Contracts {
         );
     }
 
+    @Override
+    public int count() {
+        return this.database.jooq().fetchCount(SLF_CONTRACTS_XDSD);
+    }
+
     /**
      * Built the jooq SELECT/JOIN clause.
      * A Contract is linked to a Project and to a Contributor, so we select
