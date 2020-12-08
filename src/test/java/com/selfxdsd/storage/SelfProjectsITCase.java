@@ -435,17 +435,22 @@ public final class SelfProjectsITCase {
             toRemove.wallets(),
             Matchers.iterableWithSize(2)
         );
+        final Wallet active = toRemove.wallets().active();
         MatcherAssert.assertThat(
-            toRemove.wallets().active().type(),
+            active.type(),
             Matchers.equalTo("STRIPE")
         );
         MatcherAssert.assertThat(
-            toRemove.wallets().active().paymentMethods(),
+            active.paymentMethods(),
             Matchers.iterableWithSize(2)
         );
         all.remove(toRemove);
         MatcherAssert.assertThat(
             storage.wallets().ofProject(toRemove),
+            Matchers.emptyIterable()
+        );
+        MatcherAssert.assertThat(
+            storage.paymentMethods().ofWallet(active),
             Matchers.emptyIterable()
         );
         MatcherAssert.assertThat(

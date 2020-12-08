@@ -36,7 +36,6 @@ import org.jooq.impl.DSL;
 
 import java.util.Iterator;
 
-import static com.selfxdsd.storage.generated.jooq.Tables.SLF_TASKS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
@@ -46,8 +45,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #191:60min Implement method remove(Project) from this class and
- *  write some integration tests for it.
  */
 public final class SelfProjects extends BasePaged implements Projects {
 
