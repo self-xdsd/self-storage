@@ -24,8 +24,10 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Paged;
+import com.selfxdsd.api.storage.Storage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.jooq.exception.DataAccessException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -278,7 +280,7 @@ public final class SelfProjectsITCase {
         final Projects projects = new SelfJooq(database).projects();
         MatcherAssert.assertThat(projects
             .page(new Paged.Page(1, 5))
-            .totalPages(), Matchers.is(2));
+            .totalPages(), Matchers.greaterThanOrEqualTo(1));
         for (int i = 0; i < 16; i++) {
             final Repo repo = this.mockRepo("amihaiemil/repo" + i,
                 "amihaiemil", "github");
@@ -411,6 +413,72 @@ public final class SelfProjectsITCase {
             .assignedTo(1);
         MatcherAssert.assertThat(ofZoeselfSubpage,
             Matchers.iterableWithSize(2));
+    }
+
+    /**
+     * SelfProjects can remove a Project, together with its Wallets and
+     * PaymentMethods.
+     */
+    @Test
+    public void removesProject() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects all = storage.projects();
+        final Project toRemove = all.getProjectById(
+            "maria/to_remove", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(toRemove, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            toRemove.contracts(),
+            Matchers.emptyIterable()
+        );
+        MatcherAssert.assertThat(
+            toRemove.wallets(),
+            Matchers.iterableWithSize(2)
+        );
+        MatcherAssert.assertThat(
+            toRemove.wallets().active().type(),
+            Matchers.equalTo("STRIPE")
+        );
+        MatcherAssert.assertThat(
+            toRemove.wallets().active().paymentMethods(),
+            Matchers.iterableWithSize(2)
+        );
+        all.remove(toRemove);
+        MatcherAssert.assertThat(
+            storage.wallets().ofProject(toRemove),
+            Matchers.emptyIterable()
+        );
+        MatcherAssert.assertThat(
+            all.getProjectById(
+                "maria/to_remove", Provider.Names.GITHUB
+            ),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            storage.projectManagers().getById(3),
+            Matchers.notNullValue()
+        );
+    }
+
+    /**
+     * We should get an exception if the Project we're trying to remove
+     * still has some Contracts.
+     */
+    @Test (expected = DataAccessException.class)
+    public void doesNotRemoveProjectWithContracts() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects all = storage.projects();
+        final Project toRemove = all.getProjectById(
+            "amihaiemil/docker-java-api", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(toRemove, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            toRemove.contracts(),
+            Matchers.iterableWithSize(
+                Matchers.greaterThan(0)
+            )
+        );
+        all.remove(toRemove);
     }
 
 

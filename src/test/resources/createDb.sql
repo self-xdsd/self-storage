@@ -174,7 +174,8 @@ CREATE TABLE `self_xdsd`.`slf_wallets_xdsd` (
   PRIMARY KEY (`repo_fullname`, `provider`, `type`),
   CONSTRAINT `ownerProject`
     FOREIGN KEY (`repo_fullname` , `provider`)
-    REFERENCES `self_xdsd`.`slf_projects_xdsd` (`repo_fullname` , `provider`));
+    REFERENCES `self_xdsd`.`slf_projects_xdsd` (`repo_fullname` , `provider`)
+    ON DELETE CASCADE);
 
 -- -----------------------------------------------------
 -- Table `self_xdsd`.`slf_payoutmethods_xdsd`

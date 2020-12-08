@@ -36,6 +36,7 @@ import org.jooq.impl.DSL;
 
 import java.util.Iterator;
 
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_TASKS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfProjectsXdsd.SLF_PROJECTS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
@@ -239,9 +240,12 @@ public final class SelfProjects extends BasePaged implements Projects {
 
     @Override
     public void remove(final Project project) {
-        throw new UnsupportedOperationException(
-            "Not yet implemented."
-        );
+        this.database.jooq().deleteFrom(SLF_PROJECTS_XDSD)
+            .where(
+                SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(project.repoFullName()).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(project.provider())
+                )
+            ).execute();
     }
 
     @Override
