@@ -135,7 +135,13 @@ public final class SelfContractsITCase {
         //cleanup
         database.connect().jooq()
             .delete(SlfContractsXdsd.SLF_CONTRACTS_XDSD)
-            .where(SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME.eq("bob"))
+            .where(
+                SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME.eq("bob").and(
+                    SlfContractsXdsd.SLF_CONTRACTS_XDSD.REPO_FULLNAME.eq(
+                        "amihaiemil/docker-java-api"
+                    )
+                )
+            )
             .execute();
     }
 
@@ -371,6 +377,22 @@ public final class SelfContractsITCase {
             )
         );
         all.update(missing, BigDecimal.valueOf(1000));
+    }
+
+    /**
+     * SelfContracts.count() returns the number of Contracts.
+     *
+     * We assert for >= 9 because there are 10 contracts inserted
+     * in the H2 Test DB, but there is also an integration test which
+     * removes a Contract.
+     */
+    @Test
+    public void returnsCount() {
+        final Contracts all = new SelfJooq(new H2Database()).contracts();
+        MatcherAssert.assertThat(
+            all.count(),
+            Matchers.greaterThanOrEqualTo(9)
+        );
     }
 
     /**
