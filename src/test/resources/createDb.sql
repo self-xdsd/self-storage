@@ -99,6 +99,7 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   CONSTRAINT parent_project
     FOREIGN KEY (repo_fullname, provider)
     REFERENCES self_xdsd.slf_projects_xdsd (repo_fullname, provider)
+    ON DELETE CASCADE
 );
 
 -- -----------------------------------------------------

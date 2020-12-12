@@ -113,6 +113,10 @@ VALUES ('vlad/test', 'maria', 'github', 'PO', 10000, '2020-10-10');
 INSERT INTO self_xdsd.slf_tasks_xdsd
 (repo_fullname, issueId, provider, role, estimation_minutes)
 VALUES
+('maria/to_remove', '123', 'github', 'DEV', 60);
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, estimation_minutes)
+VALUES
 ('vlad/test', '123', 'github', 'DEV', 60);
 
 INSERT INTO self_xdsd.slf_tasks_xdsd
