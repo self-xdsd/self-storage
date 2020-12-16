@@ -10,7 +10,7 @@
     <name>Self XDSD Storage Module</name>
     <description>Storage Module for Self XDSD</description>
     <properties>
-        <self.core.version>0.0.42</self.core.version>
+        <self.core.version>0.0.43</self.core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
