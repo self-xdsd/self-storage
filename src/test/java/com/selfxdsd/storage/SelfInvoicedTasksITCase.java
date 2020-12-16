@@ -27,10 +27,8 @@ import com.selfxdsd.api.storage.Storage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * Integration tests for {@link SelfInvoicedTasks}.
@@ -92,50 +90,46 @@ public final class SelfInvoicedTasksITCase {
     /**
      * SelfInvoicedTask can register/Invoice a task.
      * @checkstyle ExecutableStatementCount (100 lines)
-     * @todo #79:30min Modify the test bellow to work solely
-     *  with real data from the test H2 database. It should not
-     *  require any mocking at all.
      */
     @Test
     public void registersTask() {
-        final Project project = Mockito.mock(Project.class);
-        Mockito.when(project.provider()).thenReturn(Provider.Names.GITHUB);
-        Mockito.when(project.repoFullName())
-            .thenReturn("amihaiemil/docker-java-api");
-        final Contributor john = Mockito.mock(Contributor.class);
-        Mockito.when(john.username()).thenReturn("john");
-        final Issue issue = Mockito.mock(Issue.class);
-        Mockito.when(issue.issueId()).thenReturn("456");
-
-        final Task task = Mockito.mock(Task.class);
-        Mockito.when(task.project()).thenReturn(project);
-        Mockito.when(task.assignee()).thenReturn(john);
-        Mockito.when(task.issue()).thenReturn(issue);
-        Mockito.when(task.value()).thenReturn(BigDecimal.valueOf(18500));
-        Mockito.when(task.role()).thenReturn(Contract.Roles.DEV);
-        Mockito.when(task.assignmentDate()).thenReturn(LocalDateTime.now());
-        Mockito.when(task.deadline()).thenReturn(
-            LocalDateTime.now().plusDays(10)
+        final Storage storage = new SelfJooq(new H2Database());
+        final Task toInvoice = storage.tasks().getById(
+            "126", "amihaiemil/docker-java-api", Provider.Names.GITHUB
         );
-        Mockito.when(task.estimation()).thenReturn(45);
-
+        MatcherAssert.assertThat(
+            toInvoice,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            toInvoice.assignee().username(),
+            Matchers.equalTo("alexandra")
+        );
+        MatcherAssert.assertThat(
+            toInvoice.estimation(),
+            Matchers.equalTo(60)
+        );
         final InvoicedTasks tasks = new SelfJooq(
             new H2Database()
         ).invoicedTasks();
-        final Invoice one = Mockito.mock(Invoice.class);
-        Mockito.when(one.invoiceId()).thenReturn(1);
         final InvoicedTask invoiced = tasks.register(
-            one, task, BigDecimal.valueOf(100)
+            toInvoice.contract().invoices().active(),
+            toInvoice,
+            BigDecimal.valueOf(100)
         );
 
-        MatcherAssert.assertThat(invoiced.task(), Matchers.is(task));
+        MatcherAssert.assertThat(invoiced.task(), Matchers.is(toInvoice));
         MatcherAssert.assertThat(
             invoiced.invoicedTaskId(),
-            Matchers.greaterThan(1)
+            Matchers.greaterThanOrEqualTo(1)
         );
         MatcherAssert.assertThat(
             invoiced.value(),
-            Matchers.equalTo(BigDecimal.valueOf(18500))
+            Matchers.equalTo(BigDecimal.valueOf(15000))
+        );
+        MatcherAssert.assertThat(
+            invoiced.value(),
+            Matchers.equalTo(BigDecimal.valueOf(15000))
         );
         MatcherAssert.assertThat(
             invoiced.commission(),
@@ -143,15 +137,22 @@ public final class SelfInvoicedTasksITCase {
         );
         MatcherAssert.assertThat(
             invoiced.totalAmount(),
-            Matchers.equalTo(BigDecimal.valueOf(18600))
+            Matchers.equalTo(BigDecimal.valueOf(15100))
         );
         MatcherAssert.assertThat(
             invoiced.task().estimation(),
-            Matchers.equalTo(45)
+            Matchers.equalTo(60)
         );
         MatcherAssert.assertThat(
             invoiced.invoice().invoiceId(),
-            Matchers.equalTo(1)
+            Matchers.greaterThanOrEqualTo(1)
+        );
+        final Task removed = storage.tasks().getById(
+            "126", "amihaiemil/docker-jaba-api", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(
+            removed,
+            Matchers.nullValue()
         );
     }
 

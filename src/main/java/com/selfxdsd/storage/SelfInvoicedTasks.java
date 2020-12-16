@@ -27,6 +27,7 @@ import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contracts.invoices.InvoiceTasks;
 import com.selfxdsd.core.contracts.invoices.StoredInvoicedTask;
 import com.selfxdsd.core.tasks.StoredTask;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_TASKS_XDSD;
 import static com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD;
 
 /**
@@ -99,47 +101,61 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
         final Task finished,
         final BigDecimal commission
     ) {
-        final Record inserted = this.database.jooq()
-            .insertInto(
-                SLF_INVOICEDTASKS_XDSD,
-                SLF_INVOICEDTASKS_XDSD.INVOICEID,
-                SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME,
-                SLF_INVOICEDTASKS_XDSD.USERNAME,
-                SLF_INVOICEDTASKS_XDSD.PROVIDER,
-                SLF_INVOICEDTASKS_XDSD.ROLE,
-                SLF_INVOICEDTASKS_XDSD.VALUE
-                    .cast(BigDecimal.class).as("value"),
-                SLF_INVOICEDTASKS_XDSD.ISSUEID,
-                SLF_INVOICEDTASKS_XDSD.ASSIGNED,
-                SLF_INVOICEDTASKS_XDSD.DEADLINE,
-                SLF_INVOICEDTASKS_XDSD.INVOICED,
-                SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES,
-                SLF_INVOICEDTASKS_XDSD.COMMISSION
-                    .cast(BigDecimal.class).as("commission")
-            ).values(
-                invoice.invoiceId(),
-                finished.project().repoFullName(),
-                finished.assignee().username(),
-                finished.project().provider(),
-                finished.role(),
-                finished.value(),
-                finished.issue().issueId(),
-                finished.assignmentDate(),
-                finished.deadline(),
-                LocalDateTime.now(),
-                finished.estimation(),
-                commission
-            )
-            .returningResult(
-                SLF_INVOICEDTASKS_XDSD.ID,
-                SLF_INVOICEDTASKS_XDSD.VALUE
-            )
-            .fetchOne();
+        final Project project = finished.project();
+        final DSLContext jooq = this.database.jooq();
+        final Record[] inserted = new Record[1];
+        jooq.transaction(
+            configuration -> {
+                jooq.deleteFrom(SLF_TASKS_XDSD)
+                    .where(
+                        SLF_TASKS_XDSD.ISSUEID.eq(finished.issueId()).and(
+                            SLF_TASKS_XDSD.REPO_FULLNAME.eq(
+                                project.repoFullName()
+                            ).and(
+                                SLF_TASKS_XDSD.PROVIDER.eq(project.provider())
+                            )
+                        )
+                    ).execute();
+                inserted[0] = jooq.insertInto(
+                        SLF_INVOICEDTASKS_XDSD,
+                        SLF_INVOICEDTASKS_XDSD.INVOICEID,
+                        SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME,
+                        SLF_INVOICEDTASKS_XDSD.USERNAME,
+                        SLF_INVOICEDTASKS_XDSD.PROVIDER,
+                        SLF_INVOICEDTASKS_XDSD.ROLE,
+                        SLF_INVOICEDTASKS_XDSD.VALUE
+                            .cast(BigDecimal.class).as("value"),
+                        SLF_INVOICEDTASKS_XDSD.ISSUEID,
+                        SLF_INVOICEDTASKS_XDSD.ASSIGNED,
+                        SLF_INVOICEDTASKS_XDSD.DEADLINE,
+                        SLF_INVOICEDTASKS_XDSD.INVOICED,
+                        SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES,
+                        SLF_INVOICEDTASKS_XDSD.COMMISSION
+                            .cast(BigDecimal.class).as("commission")
+                    ).values(
+                    invoice.invoiceId(),
+                    finished.project().repoFullName(),
+                    finished.assignee().username(),
+                    finished.project().provider(),
+                    finished.role(),
+                    finished.value(),
+                    finished.issueId(),
+                    finished.assignmentDate(),
+                    finished.deadline(),
+                    LocalDateTime.now(),
+                    finished.estimation(),
+                    commission
+                ).returningResult(
+                    SLF_INVOICEDTASKS_XDSD.ID,
+                    SLF_INVOICEDTASKS_XDSD.VALUE
+                ).fetchOne();
+            }
+        );
         return new StoredInvoicedTask(
-            inserted.getValue(SLF_INVOICEDTASKS_XDSD.ID),
+            inserted[0].getValue(SLF_INVOICEDTASKS_XDSD.ID),
             invoice.invoiceId(),
             BigDecimal.valueOf(
-                inserted.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
+                inserted[0].getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
             commission,
             finished,
