@@ -41,8 +41,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #199:30min Implement the DB columns billedBy and billedTo,
- *  then update the methods here to read/write those values.
  */
 public final class SelfInvoices implements Invoices {
 
