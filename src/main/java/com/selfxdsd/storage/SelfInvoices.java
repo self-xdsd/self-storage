@@ -158,6 +158,12 @@ public final class SelfInvoices implements Invoices {
             ).set(
                 SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
                 invoice.paymentTime()
+            ).set(
+                SLF_INVOICES_XDSD.BILLEDBY,
+                invoice.billedBy()
+            ).set(
+                SLF_INVOICES_XDSD.BILLEDTO,
+                invoice.billedTo()
             ).where(
                 SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
             ).execute();
