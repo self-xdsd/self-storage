@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicesXdsd extends TableImpl<SlfInvoicesXdsdRecord> {
 
-    private static final long serialVersionUID = -1025942082;
+    private static final long serialVersionUID = -1646720824;
 
     /**
      * The reference instance of <code>self_xdsd.slf_invoices_xdsd</code>
@@ -89,6 +89,16 @@ public class SlfInvoicesXdsd extends TableImpl<SlfInvoicesXdsdRecord> {
      * The column <code>self_xdsd.slf_invoices_xdsd.transactionId</code>.
      */
     public final TableField<SlfInvoicesXdsdRecord, String> TRANSACTIONID = createField(DSL.name("transactionId"), org.jooq.impl.SQLDataType.VARCHAR(256), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_invoices_xdsd.billedBy</code>.
+     */
+    public final TableField<SlfInvoicesXdsdRecord, String> BILLEDBY = createField(DSL.name("billedBy"), org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_invoices_xdsd.billedTo</code>.
+     */
+    public final TableField<SlfInvoicesXdsdRecord, String> BILLEDTO = createField(DSL.name("billedTo"), org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_invoices_xdsd</code> table reference
@@ -184,11 +194,11 @@ public class SlfInvoicesXdsd extends TableImpl<SlfInvoicesXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, String, String, LocalDateTime, LocalDateTime, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row10<Integer, String, String, String, String, LocalDateTime, LocalDateTime, String, String, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }
