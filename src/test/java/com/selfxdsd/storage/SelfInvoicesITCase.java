@@ -56,6 +56,10 @@ public final class SelfInvoicesITCase {
             Matchers.lessThanOrEqualTo(LocalDateTime.now())
         );
         MatcherAssert.assertThat(
+            found.billedBy(),
+            Matchers.equalTo("Contributor john at github")
+        );
+        MatcherAssert.assertThat(
             found.contract().contractId(),
             Matchers.equalTo(
                 new Contract.Id(

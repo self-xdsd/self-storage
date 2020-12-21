@@ -203,8 +203,8 @@ public final class SelfInvoices implements Invoices {
             record.getValue(SLF_INVOICES_XDSD.CREATEDAT),
             record.getValue(SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP),
             record.getValue(SLF_INVOICES_XDSD.TRANSACTIONID),
-            null,
-            null,
+            record.getValue(SLF_INVOICES_XDSD.BILLEDBY),
+            record.getValue(SLF_INVOICES_XDSD.BILLEDTO),
             this.storage
         );
     }
