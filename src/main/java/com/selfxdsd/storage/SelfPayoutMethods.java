@@ -198,6 +198,11 @@ public final class SelfPayoutMethods implements PayoutMethods {
             }
 
             @Override
+            public BillingInfo billingInfo() {
+                return payoutMethod.billingInfo();
+            }
+
+            @Override
             public JsonObject json() {
                 return payoutMethod.json();
             }
