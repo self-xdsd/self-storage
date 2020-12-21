@@ -56,6 +56,10 @@ public final class SelfInvoicesITCase {
             Matchers.lessThanOrEqualTo(LocalDateTime.now())
         );
         MatcherAssert.assertThat(
+            found.billedBy(),
+            Matchers.equalTo("Contributor john at github")
+        );
+        MatcherAssert.assertThat(
             found.contract().contractId(),
             Matchers.equalTo(
                 new Contract.Id(
@@ -221,7 +225,7 @@ public final class SelfInvoicesITCase {
     @Test
     public void registerAsPaidWorks() {
         final Invoices invoices = new SelfJooq(new H2Database()).invoices();
-        final Invoice unpaid = invoices.getById(2);
+        final Invoice unpaid = invoices.getById(4);
         final Invoice paid = new Invoice() {
             @Override
             public int invoiceId() {
@@ -296,6 +300,16 @@ public final class SelfInvoicesITCase {
         MatcherAssert.assertThat(
             invoices.registerAsPaid(paid),
             Matchers.is(Boolean.TRUE)
+        );
+
+        final Invoice paidSelected = invoices.getById(4);
+        MatcherAssert.assertThat(
+            paidSelected.billedBy(),
+            Matchers.equalTo("Contributor alexandra at github")
+        );
+        MatcherAssert.assertThat(
+            paidSelected.billedTo(),
+            Matchers.equalTo("Project vlad/test at github")
         );
     }
 }

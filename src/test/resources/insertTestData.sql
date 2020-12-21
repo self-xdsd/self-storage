@@ -105,6 +105,10 @@ INSERT INTO self_xdsd.slf_contracts_xdsd
 (repo_fullname, username, provider, role, hourly_rate)
 VALUES ('vlad/test', 'maria', 'github', 'QA', 8000);
 
+INSERT INTO self_xdsd.slf_contracts_xdsd
+(repo_fullname, username, provider, role, hourly_rate)
+VALUES ('vlad/test', 'alexandra', 'github', 'DEV', 8000);
+
 INSERT INTO self_xdsd.slf_contracts_xdsd -- this Contract is for testing SelfContracts.remove(...). Don't use it in other tests.
 (repo_fullname, username, provider, role, hourly_rate, markedForRemoval)
 VALUES ('vlad/test', 'maria', 'github', 'PO', 10000, '2020-10-10');
@@ -189,6 +193,11 @@ INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
 VALUES
 (3, 'vlad/test', 'maria', 'github', 'PO', NOW() , null, null);
+
+INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
+(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+VALUES
+(4, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , null, null);
 
 INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
 (invoiceId,

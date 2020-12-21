@@ -114,6 +114,8 @@ CREATE TABLE `self_xdsd`.`slf_invoices_xdsd` (
   `payment_timestamp` DATETIME NULL DEFAULT NULL,
   `createdAt` DATETIME NOT NULL,
   `transactionId` VARCHAR(256) NULL DEFAULT NULL,
+  `billedBy` VARCHAR(512) NULL DEFAULT NULL,
+  `billedTo` VARCHAR(512) NULL DEFAULT NULL,
   PRIMARY KEY (`invoiceId`, `repo_fullname`, `username`, `provider`, `role`),
   CONSTRAINT `fkContract`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role`)
