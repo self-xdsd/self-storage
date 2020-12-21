@@ -259,6 +259,16 @@ public final class SelfInvoicesITCase {
             }
 
             @Override
+            public String billedBy() {
+                return unpaid.billedBy();
+            }
+
+            @Override
+            public String billedTo() {
+                return unpaid.billedTo();
+            }
+
+            @Override
             public InvoicedTasks tasks() {
                 return unpaid.tasks();
             }

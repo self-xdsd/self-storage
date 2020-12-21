@@ -232,6 +232,11 @@ public final class SelfWallets implements Wallets {
             public String identifier() {
                 return wallet.identifier();
             }
+
+            @Override
+            public BillingInfo billingInfo() {
+                return wallet.billingInfo();
+            }
         };
     }
 
@@ -296,6 +301,11 @@ public final class SelfWallets implements Wallets {
                 @Override
                 public String identifier() {
                     return wallet.identifier();
+                }
+
+                @Override
+                public BillingInfo billingInfo() {
+                    return wallet.billingInfo();
                 }
             };
         } else {
