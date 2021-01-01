@@ -130,7 +130,6 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                         SLF_INVOICEDTASKS_XDSD.INVOICED,
                         SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES,
                         SLF_INVOICEDTASKS_XDSD.COMMISSION
-                            .cast(BigDecimal.class).as("commission")
                     ).values(
                     invoice.invoiceId(),
                     finished.project().repoFullName(),
@@ -143,7 +142,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                     finished.deadline(),
                     LocalDateTime.now(),
                     finished.estimation(),
-                    commission
+                    commission.toBigIntegerExact()
                 ).returningResult(
                     SLF_INVOICEDTASKS_XDSD.ID,
                     SLF_INVOICEDTASKS_XDSD.VALUE
@@ -187,7 +186,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
             BigDecimal.valueOf(
-                rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).doubleValue()
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).longValue()
             ),
             new StoredTask(
                 invoice.contract(),
