@@ -10,6 +10,7 @@ import com.selfxdsd.storage.generated.jooq.SelfXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfInvoicedtasksXdsdRecord;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> {
 
-    private static final long serialVersionUID = -384315611;
+    private static final long serialVersionUID = -557982468;
 
     /**
      * The reference instance of <code>self_xdsd.slf_invoicedtasks_xdsd</code>
@@ -84,7 +85,7 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.value</code>.
      */
-    public final TableField<SlfInvoicedtasksXdsdRecord, BigDecimal> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
+    public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.issueId</code>.
@@ -205,7 +206,7 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, Integer, String, String, String, String, BigDecimal, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer, BigDecimal> fieldsRow() {
+    public Row13<Integer, Integer, String, String, String, String, BigInteger, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer, BigDecimal> fieldsRow() {
         return (Row13) super.fieldsRow();
     }
 }

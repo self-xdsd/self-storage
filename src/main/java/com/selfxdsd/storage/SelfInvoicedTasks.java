@@ -123,8 +123,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                         SLF_INVOICEDTASKS_XDSD.USERNAME,
                         SLF_INVOICEDTASKS_XDSD.PROVIDER,
                         SLF_INVOICEDTASKS_XDSD.ROLE,
-                        SLF_INVOICEDTASKS_XDSD.VALUE
-                            .cast(BigDecimal.class).as("value"),
+                        SLF_INVOICEDTASKS_XDSD.VALUE,
                         SLF_INVOICEDTASKS_XDSD.ISSUEID,
                         SLF_INVOICEDTASKS_XDSD.ASSIGNED,
                         SLF_INVOICEDTASKS_XDSD.DEADLINE,
@@ -138,7 +137,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                     finished.assignee().username(),
                     finished.project().provider(),
                     finished.role(),
-                    finished.value(),
+                    finished.value().toBigIntegerExact(),
                     finished.issueId(),
                     finished.assignmentDate(),
                     finished.deadline(),
@@ -185,7 +184,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             rec.getValue(SLF_INVOICEDTASKS_XDSD.ID),
             rec.getValue(SLF_INVOICEDTASKS_XDSD.INVOICEID),
             BigDecimal.valueOf(
-                rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).doubleValue()
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
             BigDecimal.valueOf(
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).doubleValue()

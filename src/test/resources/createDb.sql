@@ -131,7 +131,7 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
   `username` VARCHAR(100) NOT NULL,
   `provider` VARCHAR(50) NOT NULL,
   `role` VARCHAR(32) NOT NULL,
-  `value` DECIMAL(20,2) NOT NULL,
+  `value` DECIMAL(20,0) NOT NULL,
   `commission` DECIMAL(20,2) NOT NULL,
   `issueId` VARCHAR(50) NOT NULL,
   `assigned` DATETIME NOT NULL,
