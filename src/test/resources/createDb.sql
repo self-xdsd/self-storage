@@ -171,7 +171,7 @@ CREATE TABLE `self_xdsd`.`slf_wallets_xdsd` (
   `repo_fullname` VARCHAR(256) NOT NULL,
   `provider` VARCHAR(50) NOT NULL,
   `type` VARCHAR(50) NOT NULL,
-  `cash` DECIMAL(20,2) NOT NULL,
+  `cash` DECIMAL(20,0) NOT NULL,
   `active` TINYINT(1) NOT NULL,
   `identifier` VARCHAR(256) NOT NULL,
   PRIMARY KEY (`repo_fullname`, `provider`, `type`),

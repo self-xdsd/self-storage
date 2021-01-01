@@ -255,7 +255,7 @@ public final class SelfWalletsITCase {
         );
         MatcherAssert.assertThat(
             wallet.cash(),
-            Matchers.equalTo(BigDecimal.valueOf(10000.0))
+            Matchers.equalTo(BigDecimal.valueOf(10000))
         );
         MatcherAssert.assertThat(
             wallet.project(),
@@ -281,11 +281,11 @@ public final class SelfWalletsITCase {
         final Wallet wallet = all.ofProject(project).active();
 
         MatcherAssert.assertThat(wallet.cash(),
-            Matchers.equalTo(BigDecimal.valueOf(10000.00)));
+            Matchers.equalTo(BigDecimal.valueOf(10000)));
 
-        final Wallet updated = wallet.updateCash(BigDecimal.valueOf(8500.98));
+        final Wallet updated = wallet.updateCash(BigDecimal.valueOf(8500));
         MatcherAssert.assertThat(updated.cash(),
-            Matchers.equalTo(BigDecimal.valueOf(8500.98)));
+            Matchers.equalTo(BigDecimal.valueOf(8500)));
 
         //revert
         wallet.updateCash(BigDecimal.valueOf(10000));

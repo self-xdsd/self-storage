@@ -88,15 +88,14 @@ public final class SelfWallets implements Wallets {
                 SLF_WALLETS_XDSD.REPO_FULLNAME,
                 SLF_WALLETS_XDSD.PROVIDER,
                 SLF_WALLETS_XDSD.TYPE,
-                SLF_WALLETS_XDSD.CASH
-                    .cast(BigDecimal.class).as("cash"),
+                SLF_WALLETS_XDSD.CASH,
                 SLF_WALLETS_XDSD.ACTIVE,
                 SLF_WALLETS_XDSD.IDENTIFIER
             ).values(
                 project.repoFullName(),
                 project.provider(),
                 type,
-                cash,
+                cash.toBigIntegerExact(),
                 Boolean.FALSE,
                 identifier
             ).execute();
@@ -249,7 +248,7 @@ public final class SelfWallets implements Wallets {
         int execute = this.database
             .jooq()
             .update(SLF_WALLETS_XDSD)
-            .set(SLF_WALLETS_XDSD.CASH, updatedCash)
+            .set(SLF_WALLETS_XDSD.CASH, updatedCash.toBigIntegerExact())
             .where(SLF_WALLETS_XDSD.PROVIDER
                 .eq(project.provider()).and(SLF_WALLETS_XDSD.REPO_FULLNAME
                     .eq(project.repoFullName())
@@ -339,7 +338,7 @@ public final class SelfWallets implements Wallets {
                 this.storage,
                 project,
                 BigDecimal.valueOf(
-                    record.getValue(SLF_WALLETS_XDSD.CASH).doubleValue()
+                    record.getValue(SLF_WALLETS_XDSD.CASH).longValue()
                 ),
                 record.getValue(SLF_WALLETS_XDSD.IDENTIFIER),
                 record.getValue(SLF_WALLETS_XDSD.ACTIVE)
@@ -349,7 +348,7 @@ public final class SelfWallets implements Wallets {
                 this.storage,
                 project,
                 BigDecimal.valueOf(
-                    record.getValue(SLF_WALLETS_XDSD.CASH).doubleValue()
+                    record.getValue(SLF_WALLETS_XDSD.CASH).longValue()
                 ),
                 record.getValue(SLF_WALLETS_XDSD.IDENTIFIER),
                 record.getValue(SLF_WALLETS_XDSD.ACTIVE)
