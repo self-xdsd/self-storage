@@ -29,6 +29,7 @@ import com.selfxdsd.core.contracts.invoices.StoredInvoice;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.function.Supplier;
@@ -97,13 +98,15 @@ public final class SelfInvoices implements Invoices {
             SLF_INVOICES_XDSD.USERNAME,
             SLF_INVOICES_XDSD.PROVIDER,
             SLF_INVOICES_XDSD.ROLE,
-            SLF_INVOICES_XDSD.CREATEDAT
+            SLF_INVOICES_XDSD.CREATEDAT,
+            SLF_INVOICES_XDSD.CONTRIBUTORVAT
         ).values(
             contractId.getRepoFullName(),
             contractId.getContributorUsername(),
             contractId.getProvider(),
             contractId.getRole(),
-            createdAt
+            createdAt,
+            BigInteger.valueOf(0)
         ).returning(SLF_INVOICES_XDSD.INVOICEID)
             .fetchOne()
             .getValue(SLF_INVOICES_XDSD.INVOICEID);

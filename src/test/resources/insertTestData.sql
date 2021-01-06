@@ -180,24 +180,24 @@ VALUES
 ('vlad/test', '999', 'github', 'DEV', 60);
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId, contributorVat)
 VALUES
-(1, 'amihaiemil/docker-java-api', 'john', 'github', 'DEV', NOW() , null, null);
+(1, 'amihaiemil/docker-java-api', 'john', 'github', 'DEV', NOW() , null, null, 0);
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId, contributorVat)
 VALUES
-(2, 'amihaiemil/docker-java-api', 'maria', 'github', 'REV', NOW() , null, null);
+(2, 'amihaiemil/docker-java-api', 'maria', 'github', 'REV', NOW() , null, null, 0);
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId, contributorVat)
 VALUES
-(3, 'vlad/test', 'maria', 'github', 'PO', NOW() , null, null);
+(3, 'vlad/test', 'maria', 'github', 'PO', NOW() , null, null, 0);
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId, contributorVat)
 VALUES
-(4, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , null, null);
+(4, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , null, null, 0);
 
 INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
 (invoiceId,
