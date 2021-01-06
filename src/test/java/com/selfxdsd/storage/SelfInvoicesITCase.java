@@ -232,6 +232,10 @@ public final class SelfInvoicesITCase {
     public void registerAsPaidWorks() {
         final Invoices invoices = new SelfJooq(new H2Database()).invoices();
         final Invoice unpaid = invoices.getById(4);
+        MatcherAssert.assertThat(
+            unpaid.contributorVat(),
+            Matchers.equalTo(BigDecimal.valueOf(0))
+        );
         final Invoice paid = new Invoice() {
             @Override
             public int invoiceId() {
@@ -270,7 +274,7 @@ public final class SelfInvoicesITCase {
 
             @Override
             public BigDecimal contributorVat() {
-                return unpaid.contributorVat();
+                return BigDecimal.valueOf(15);
             }
 
             @Override
@@ -319,6 +323,18 @@ public final class SelfInvoicesITCase {
         );
 
         final Invoice paidSelected = invoices.getById(4);
+        MatcherAssert.assertThat(
+            paidSelected.transactionId(),
+            Matchers.equalTo("transaction12345")
+        );
+        MatcherAssert.assertThat(
+            paidSelected.paymentTime(),
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            paidSelected.contributorVat(),
+            Matchers.equalTo(BigDecimal.valueOf(15))
+        );
         MatcherAssert.assertThat(
             paidSelected.billedBy(),
             Matchers.equalTo("Contributor alexandra at github.")

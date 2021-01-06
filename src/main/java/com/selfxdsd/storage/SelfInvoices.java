@@ -162,6 +162,9 @@ public final class SelfInvoices implements Invoices {
                 SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
                 invoice.paymentTime()
             ).set(
+                SLF_INVOICES_XDSD.CONTRIBUTORVAT,
+                invoice.contributorVat().toBigIntegerExact()
+            ).set(
                 SLF_INVOICES_XDSD.BILLEDBY,
                 invoice.billedBy()
             ).set(
