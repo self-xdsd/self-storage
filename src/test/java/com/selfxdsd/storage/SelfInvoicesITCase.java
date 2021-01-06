@@ -27,6 +27,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -57,7 +59,7 @@ public final class SelfInvoicesITCase {
         );
         MatcherAssert.assertThat(
             found.billedBy(),
-            Matchers.equalTo("Contributor john at github")
+            Matchers.equalTo("Contributor john at github.")
         );
         MatcherAssert.assertThat(
             found.contract().contractId(),
@@ -140,6 +142,10 @@ public final class SelfInvoicesITCase {
         MatcherAssert.assertThat(
             created.transactionId(),
             Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            created.contributorVat(),
+            Matchers.equalTo(BigDecimal.valueOf(0))
         );
         MatcherAssert.assertThat(
             created.tasks(),
@@ -263,6 +269,11 @@ public final class SelfInvoicesITCase {
             }
 
             @Override
+            public BigDecimal contributorVat() {
+                return unpaid.contributorVat();
+            }
+
+            @Override
             public String billedBy() {
                 return unpaid.billedBy();
             }
@@ -296,6 +307,11 @@ public final class SelfInvoicesITCase {
             public boolean isPaid() {
                 return true;
             }
+
+            @Override
+            public File toPdf() throws IOException {
+                return unpaid.toPdf();
+            }
         };
         MatcherAssert.assertThat(
             invoices.registerAsPaid(paid),
@@ -305,11 +321,11 @@ public final class SelfInvoicesITCase {
         final Invoice paidSelected = invoices.getById(4);
         MatcherAssert.assertThat(
             paidSelected.billedBy(),
-            Matchers.equalTo("Contributor alexandra at github")
+            Matchers.equalTo("Contributor alexandra at github.")
         );
         MatcherAssert.assertThat(
             paidSelected.billedTo(),
-            Matchers.equalTo("Project vlad/test at github")
+            Matchers.equalTo("Project vlad/test at github.")
         );
     }
 }

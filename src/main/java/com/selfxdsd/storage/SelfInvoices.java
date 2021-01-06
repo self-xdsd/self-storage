@@ -29,6 +29,7 @@ import com.selfxdsd.core.contracts.invoices.StoredInvoice;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Iterator;
@@ -116,6 +117,7 @@ public final class SelfInvoices implements Invoices {
             createdAt,
             null,
             null,
+            BigDecimal.valueOf(0),
             null,
             null,
             this.storage
@@ -210,6 +212,9 @@ public final class SelfInvoices implements Invoices {
             record.getValue(SLF_INVOICES_XDSD.CREATEDAT),
             record.getValue(SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP),
             record.getValue(SLF_INVOICES_XDSD.TRANSACTIONID),
+            BigDecimal.valueOf(
+                record.getValue(SLF_INVOICES_XDSD.CONTRIBUTORVAT).longValue()
+            ),
             record.getValue(SLF_INVOICES_XDSD.BILLEDBY),
             record.getValue(SLF_INVOICES_XDSD.BILLEDTO),
             this.storage
