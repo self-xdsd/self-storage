@@ -121,7 +121,7 @@ public final class SelfJooq implements Storage {
 
     @Override
     public PlatformInvoices platformInvoices() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        return new SelfPlatformInvoices(this, this.database);
     }
 
     @Override

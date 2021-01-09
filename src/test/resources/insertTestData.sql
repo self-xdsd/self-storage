@@ -197,7 +197,12 @@ VALUES
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
 VALUES
-(4, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , null, null);
+(4, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , '2021-01-09', 'transactionIdHere');
+
+INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
+(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+VALUES
+(5, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , null, null);
 
 INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
 (invoiceId,
@@ -259,6 +264,12 @@ INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
 VALUES
 (3, 'vlad/test', 'maria', 'github', 'PO', 10000, 50, '100', '2020-06-01', '2020-06-11', NOW(), 60);
 
+INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
+(invoiceId, repo_fullname, username, provider, role, value, commission, issueId, assigned, deadline, invoiced, estimation_minutes)
+VALUES
+(4, 'vlad/test', 'alexandra', 'github', 'DEV', 10000, 100, '899', '2020-06-01', '2020-06-11', NOW(), 60);
+
+
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
 VALUES
@@ -318,3 +329,11 @@ VALUES
 INSERT INTO `self_xdsd`.`slf_payoutmethods_xdsd`
 (`username`, `provider`, `type`, `active`, `identifier`)
 VALUES ('maria', 'github', 'stripe', 1, 'acct_001');
+
+INSERT INTO `self_xdsd`.`slf_platforminvoices_xdsd`
+(`id`, `createdAt`, `billedTo`, `commission`, `vat`, `transactionId`, `payment_timestamp`)
+VALUES (1, '2021-01-09', 'mihai', 100, 19, 'transaction123', '2021-01-09');
+
+INSERT INTO `self_xdsd`.`slf_platforminvoices_xdsd`
+(`id`, `createdAt`, `billedTo`, `commission`, `vat`, `transactionId`, `payment_timestamp`, `invoiceId`)
+VALUES (2, '2021-01-09', 'vlad', 100, 19, 'transactionIdHere', '2021-01-09', 4);

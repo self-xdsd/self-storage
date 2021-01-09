@@ -217,4 +217,19 @@ public final class SelfJooqTestCase {
             )
         );
     }
+
+    /**
+     * SelfJooq can return the PlatformInvoices.
+     */
+    @Test
+    public void returnsPlatformInvoices() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.platformInvoices(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfPlatformInvoices.class)
+            )
+        );
+    }
 }
