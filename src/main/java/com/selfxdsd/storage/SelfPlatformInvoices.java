@@ -25,6 +25,7 @@ package com.selfxdsd.storage;
 import com.selfxdsd.api.PlatformInvoice;
 import com.selfxdsd.api.PlatformInvoices;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.BasePaged;
 import com.selfxdsd.core.StoredPlatformInvoice;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -40,7 +41,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PLATFORMINVOICES_XD
  * @version $Id$
  * @since 0.0.23
  */
-public final class SelfPlatformInvoices implements PlatformInvoices {
+public final class SelfPlatformInvoices
+    extends BasePaged implements PlatformInvoices {
 
     /**
      * Parent Storage.
@@ -61,6 +63,26 @@ public final class SelfPlatformInvoices implements PlatformInvoices {
         final Storage storage,
         final Database database
     ) {
+        this(
+            storage,
+            database,
+            Page.all()
+        );
+    }
+
+    /**
+     * Ctor for paging.
+     * @param storage Storage.
+     * @param database Database.
+     * @param page Page we're on.
+     * @checkstyle LineLength (20 lines)
+     */
+    private SelfPlatformInvoices(
+        final Storage storage,
+        final Database database,
+        final Page page
+    ) {
+        super(page, () -> database.jooq().fetchCount(SLF_PLATFORMINVOICES_XDSD));
         this.storage = storage;
         this.database = database;
     }
