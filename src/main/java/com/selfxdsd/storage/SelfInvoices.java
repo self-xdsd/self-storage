@@ -42,6 +42,9 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @todo #215:60min Modify method registerAsPaid(...) to also
+ *  insert a new PlatformInvoice if the Invoice has been paid
+ *  with a real wallet.
  */
 public final class SelfInvoices implements Invoices {
 
