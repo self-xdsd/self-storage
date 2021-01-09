@@ -222,12 +222,14 @@ public final class SelfInvoicesITCase {
     }
 
     /**
-     * SelfInvoices can register a paid Invoice.
+     * SelfInvoices can register a paid Invoice (with a real wallet)
+     * and also insert a PlatformInvoice.
      */
     @Test
-    public void registerAsPaidWorks() {
+    public void registerAsPaidWorksForRealWallet() {
         final Invoices invoices = new SelfJooq(new H2Database()).invoices();
-        final Invoice unpaid = invoices.getById(4);
+        final Invoice unpaid = invoices.getById(5);
+        final LocalDateTime paymentTime = LocalDateTime.now();
         final Invoice paid = new Invoice() {
             @Override
             public int invoiceId() {
@@ -256,7 +258,7 @@ public final class SelfInvoicesITCase {
 
             @Override
             public LocalDateTime paymentTime() {
-                return LocalDateTime.now();
+                return paymentTime;
             }
 
             @Override
@@ -310,11 +312,11 @@ public final class SelfInvoicesITCase {
             }
         };
         MatcherAssert.assertThat(
-            invoices.registerAsPaid(paid, BigDecimal.valueOf(0)),
+            invoices.registerAsPaid(paid, BigDecimal.valueOf(15)),
             Matchers.is(Boolean.TRUE)
         );
 
-        final Invoice paidSelected = invoices.getById(4);
+        final Invoice paidSelected = invoices.getById(5);
         MatcherAssert.assertThat(
             paidSelected.billedBy(),
             Matchers.equalTo("Contributor alexandra at github.")
@@ -322,6 +324,19 @@ public final class SelfInvoicesITCase {
         MatcherAssert.assertThat(
             paidSelected.billedTo(),
             Matchers.equalTo("Project vlad/test at github.")
+        );
+        final PlatformInvoice platformInvoice = paidSelected.platformInvoice();
+        MatcherAssert.assertThat(
+            platformInvoice.commission(),
+            Matchers.equalTo(paidSelected.commission())
+        );
+        MatcherAssert.assertThat(
+            platformInvoice.vat(),
+            Matchers.equalTo(BigDecimal.valueOf(15))
+        );
+        MatcherAssert.assertThat(
+            platformInvoice.billedTo(),
+            Matchers.equalTo(paidSelected.billedBy())
         );
     }
 }
