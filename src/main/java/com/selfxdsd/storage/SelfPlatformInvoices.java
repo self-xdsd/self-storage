@@ -27,6 +27,7 @@ import com.selfxdsd.api.PlatformInvoices;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.BasePaged;
 import com.selfxdsd.core.StoredPlatformInvoice;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -127,7 +128,19 @@ public final class SelfPlatformInvoices
 
     @Override
     public Iterator<PlatformInvoice> iterator() {
-        return null;
+        final Page page = super.current();
+        final DSLContext jooq = this.database.jooq();
+        return jooq
+            .select()
+            .from(
+                jooq.select()
+                    .from(SLF_PLATFORMINVOICES_XDSD)
+                    .limit(page.getSize())
+                    .offset((page.getNumber() - 1) * page.getSize())
+                    .asTable("platforminvoices_page")
+            ).stream()
+            .map(rec -> buildFromRecord(rec))
+            .iterator();
     }
 
     /**

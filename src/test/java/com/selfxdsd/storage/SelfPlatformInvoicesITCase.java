@@ -32,6 +32,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Iterator;
 
 /**
  * Integration tests for {@link SelfPlatformInvoices}.
@@ -201,6 +202,31 @@ public final class SelfPlatformInvoicesITCase {
         MatcherAssert.assertThat(
             found.commission(),
             Matchers.equalTo(corresponding.commission())
+        );
+    }
+
+    /**
+     * SelfPlatformInvoices can be iterated.
+     */
+    @Test
+    public void canBeIterated() {
+        final PlatformInvoices invoices = new SelfJooq(
+            new H2Database()
+        ).platformInvoices();
+        MatcherAssert.assertThat(
+            invoices,
+            Matchers.iterableWithSize(2)
+        );
+        final Iterator<PlatformInvoice> iterator = invoices.iterator();
+        final PlatformInvoice first = iterator.next();
+        final PlatformInvoice second = iterator.next();
+        MatcherAssert.assertThat(
+            first.id(),
+            Matchers.equalTo(1)
+        );
+        MatcherAssert.assertThat(
+            second.id(),
+            Matchers.equalTo(2)
         );
     }
 }
