@@ -29,6 +29,7 @@ import com.selfxdsd.core.contracts.invoices.StoredInvoice;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.function.Supplier;
@@ -144,7 +145,10 @@ public final class SelfInvoices implements Invoices {
     }
 
     @Override
-    public boolean registerAsPaid(final Invoice invoice) {
+    public boolean registerAsPaid(
+        final Invoice invoice,
+        final BigDecimal contributorVat
+    ) {
         if(!invoice.isPaid()) {
             throw new IllegalArgumentException(
                 "Invoice #" + invoice.invoiceId() + " is not paid!"

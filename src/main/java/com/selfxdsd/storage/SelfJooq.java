@@ -120,6 +120,11 @@ public final class SelfJooq implements Storage {
     }
 
     @Override
+    public PlatformInvoices platformInvoices() {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
     public void close() {
         this.database.close();
     }
