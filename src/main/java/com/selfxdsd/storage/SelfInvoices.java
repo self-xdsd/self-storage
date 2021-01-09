@@ -26,6 +26,7 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contracts.invoices.ContractInvoices;
 import com.selfxdsd.core.contracts.invoices.StoredInvoice;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -35,16 +36,13 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
+import static com.selfxdsd.storage.generated.jooq.Tables.*;
 
 /**
  * Invoices in Self.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #215:60min Modify method registerAsPaid(...) to also
- *  insert a new PlatformInvoice if the Invoice has been paid
- *  with a real wallet.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -157,7 +155,9 @@ public final class SelfInvoices implements Invoices {
                 "Invoice #" + invoice.invoiceId() + " is not paid!"
             );
         }
-        final int updated = this.database.jooq().update(SLF_INVOICES_XDSD).set(
+        final int[] updated = new int[1];
+        if(invoice.transactionId().startsWith("fake_payment_")) {
+            updated[0] = this.database.jooq().update(SLF_INVOICES_XDSD).set(
                 SLF_INVOICES_XDSD.TRANSACTIONID,
                 invoice.transactionId()
             ).set(
@@ -172,7 +172,48 @@ public final class SelfInvoices implements Invoices {
             ).where(
                 SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
             ).execute();
-        return updated == 1;
+        } else {
+            final DSLContext jooq = this.database.jooq();
+            jooq.transaction(
+                configuration -> {
+                    final String contributorBilling = invoice.billedBy();
+                    updated[0] = jooq.update(SLF_INVOICES_XDSD).set(
+                        SLF_INVOICES_XDSD.TRANSACTIONID,
+                        invoice.transactionId()
+                    ).set(
+                        SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
+                        invoice.paymentTime()
+                    ).set(
+                        SLF_INVOICES_XDSD.BILLEDBY,
+                        contributorBilling
+                    ).set(
+                        SLF_INVOICES_XDSD.BILLEDTO,
+                        invoice.billedTo()
+                    ).where(
+                        SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
+                    ).execute();
+                    jooq.insertInto(
+                        SLF_PLATFORMINVOICES_XDSD,
+                        SLF_PLATFORMINVOICES_XDSD.CREATEDAT,
+                        SLF_PLATFORMINVOICES_XDSD.BILLEDTO,
+                        SLF_PLATFORMINVOICES_XDSD.COMMISSION,
+                        SLF_PLATFORMINVOICES_XDSD.VAT,
+                        SLF_PLATFORMINVOICES_XDSD.TRANSACTIONID,
+                        SLF_PLATFORMINVOICES_XDSD.PAYMENT_TIMESTAMP,
+                        SLF_PLATFORMINVOICES_XDSD.INVOICEID
+                    ).values(
+                        LocalDateTime.now(),
+                        contributorBilling,
+                        invoice.commission().toBigIntegerExact(),
+                        contributorVat.toBigIntegerExact(),
+                        invoice.transactionId(),
+                        invoice.paymentTime(),
+                        invoice.invoiceId()
+                    ).execute();
+                }
+            );
+        }
+        return updated[0] == 1;
     }
 
     @Override

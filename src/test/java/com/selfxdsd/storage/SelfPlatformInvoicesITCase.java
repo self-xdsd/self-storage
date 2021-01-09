@@ -215,7 +215,9 @@ public final class SelfPlatformInvoicesITCase {
         ).platformInvoices();
         MatcherAssert.assertThat(
             invoices,
-            Matchers.iterableWithSize(2)
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(2)
+            )
         );
         final Iterator<PlatformInvoice> iterator = invoices.iterator();
         final PlatformInvoice first = iterator.next();
