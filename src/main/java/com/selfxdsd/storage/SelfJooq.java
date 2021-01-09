@@ -120,6 +120,11 @@ public final class SelfJooq implements Storage {
     }
 
     @Override
+    public PlatformInvoices platformInvoices() {
+        return new SelfPlatformInvoices(this, this.database);
+    }
+
+    @Override
     public void close() {
         this.database.close();
     }

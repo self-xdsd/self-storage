@@ -29,6 +29,7 @@ import com.selfxdsd.core.contracts.invoices.StoredInvoice;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.function.Supplier;
@@ -41,6 +42,9 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_INVOICES_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @todo #215:60min Modify method registerAsPaid(...) to also
+ *  insert a new PlatformInvoice if the Invoice has been paid
+ *  with a real wallet.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -144,7 +148,10 @@ public final class SelfInvoices implements Invoices {
     }
 
     @Override
-    public boolean registerAsPaid(final Invoice invoice) {
+    public boolean registerAsPaid(
+        final Invoice invoice,
+        final BigDecimal contributorVat
+    ) {
         if(!invoice.isPaid()) {
             throw new IllegalArgumentException(
                 "Invoice #" + invoice.invoiceId() + " is not paid!"

@@ -210,3 +210,21 @@ CREATE TABLE `self_xdsd`.`slf_paymentmethods_xdsd` (
     REFERENCES `self_xdsd`.`slf_wallets_xdsd` (`repo_fullname` , `provider` , `type`)
     ON DELETE CASCADE);
 
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_platforminvoices_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`slf_platforminvoices_xdsd` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NOT NULL,
+  `billedTo` VARCHAR(512) NOT NULL,
+  `commission` DECIMAL(20,0) NOT NULL,
+  `vat` DECIMAL(20,0) NOT NULL,
+  `transactionId` VARCHAR(256) NOT NULL,
+  `payment_timestamp` DATETIME NOT NULL,
+  `invoiceId` INT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `invoiceFk`
+    FOREIGN KEY (`invoiceId`)
+    REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`invoiceId`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE);
