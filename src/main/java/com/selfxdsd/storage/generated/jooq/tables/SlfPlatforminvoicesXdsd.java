@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPlatforminvoicesXdsd extends TableImpl<SlfPlatforminvoicesXdsdRecord> {
 
-    private static final long serialVersionUID = -1425342357;
+    private static final long serialVersionUID = 2006640172;
 
     /**
      * The reference instance of <code>self_xdsd.slf_platforminvoices_xdsd</code>
@@ -90,6 +90,11 @@ public class SlfPlatforminvoicesXdsd extends TableImpl<SlfPlatforminvoicesXdsdRe
      * The column <code>self_xdsd.slf_platforminvoices_xdsd.invoiceId</code>.
      */
     public final TableField<SlfPlatforminvoicesXdsdRecord, Integer> INVOICEID = createField(DSL.name("invoiceId"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_platforminvoices_xdsd.eurToRon</code>.
+     */
+    public final TableField<SlfPlatforminvoicesXdsdRecord, BigInteger> EURTORON = createField(DSL.name("eurToRon"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_platforminvoices_xdsd</code> table reference
@@ -185,11 +190,11 @@ public class SlfPlatforminvoicesXdsd extends TableImpl<SlfPlatforminvoicesXdsdRe
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, LocalDateTime, String, BigInteger, BigInteger, String, LocalDateTime, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, LocalDateTime, String, BigInteger, BigInteger, String, LocalDateTime, Integer, BigInteger> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

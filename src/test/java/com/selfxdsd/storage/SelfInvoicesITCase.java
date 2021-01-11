@@ -218,7 +218,11 @@ public final class SelfInvoicesITCase {
     public void registerAsPaidRejectsUnpaidInvoice() {
         final Invoices invoices = new SelfJooq(new H2Database()).invoices();
         final Invoice unpaid = invoices.getById(1);
-        invoices.registerAsPaid(unpaid, BigDecimal.valueOf(0));
+        invoices.registerAsPaid(
+            unpaid,
+            BigDecimal.valueOf(0),
+            BigDecimal.valueOf(0)
+        );
     }
 
     /**
@@ -312,7 +316,11 @@ public final class SelfInvoicesITCase {
             }
         };
         MatcherAssert.assertThat(
-            invoices.registerAsPaid(paid, BigDecimal.valueOf(15)),
+            invoices.registerAsPaid(
+                paid,
+                BigDecimal.valueOf(15),
+                BigDecimal.valueOf(487)
+            ),
             Matchers.is(Boolean.TRUE)
         );
 
