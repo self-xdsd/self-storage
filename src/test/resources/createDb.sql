@@ -222,6 +222,7 @@ CREATE TABLE `self_xdsd`.`slf_platforminvoices_xdsd` (
   `transactionId` VARCHAR(256) NOT NULL,
   `payment_timestamp` DATETIME NOT NULL,
   `invoiceId` INT NULL,
+  `eurToRon` DECIMAL(20,0) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `invoiceFk`
     FOREIGN KEY (`invoiceId`)

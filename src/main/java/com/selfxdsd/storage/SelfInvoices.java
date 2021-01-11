@@ -201,15 +201,17 @@ public final class SelfInvoices implements Invoices {
                         SLF_PLATFORMINVOICES_XDSD.VAT,
                         SLF_PLATFORMINVOICES_XDSD.TRANSACTIONID,
                         SLF_PLATFORMINVOICES_XDSD.PAYMENT_TIMESTAMP,
-                        SLF_PLATFORMINVOICES_XDSD.INVOICEID
-                    ).values(
+                        SLF_PLATFORMINVOICES_XDSD.INVOICEID,
+                        SLF_PLATFORMINVOICES_XDSD.EURTORON
+                        ).values(
                         LocalDateTime.now(),
                         contributorBilling,
                         invoice.commission().toBigIntegerExact(),
                         contributorVat.toBigIntegerExact(),
                         invoice.transactionId(),
                         invoice.paymentTime(),
-                        invoice.invoiceId()
+                        invoice.invoiceId(),
+                        eurToRon.toBigIntegerExact()
                     ).execute();
                 }
             );
