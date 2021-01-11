@@ -148,7 +148,8 @@ public final class SelfInvoices implements Invoices {
     @Override
     public boolean registerAsPaid(
         final Invoice invoice,
-        final BigDecimal contributorVat
+        final BigDecimal contributorVat,
+        final BigDecimal eurToRon
     ) {
         if(!invoice.isPaid()) {
             throw new IllegalArgumentException(

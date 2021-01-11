@@ -173,6 +173,7 @@ public final class SelfPlatformInvoices
             record.getValue(SLF_PLATFORMINVOICES_XDSD.TRANSACTIONID),
             record.getValue(SLF_PLATFORMINVOICES_XDSD.PAYMENT_TIMESTAMP),
             correspondingId,
+            BigDecimal.valueOf(0),
             this.storage
         );
         return found;
