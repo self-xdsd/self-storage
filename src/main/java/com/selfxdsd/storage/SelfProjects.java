@@ -148,7 +148,9 @@ public final class SelfProjects extends BasePaged implements Projects {
                 .on(DSL.field("projects_page.pmid").eq(SLF_PMS_XDSD.ID))
                 .where(DSL.field("projects_page.pmid").eq(projectManagerId))
                 .stream()
-                .map(rec -> projectFromRecord(rec, true)));
+                .map(rec -> projectFromRecord(rec, true)),
+            this.storage
+        );
     }
 
     @Override
@@ -178,7 +180,9 @@ public final class SelfProjects extends BasePaged implements Projects {
                     .and(DSL.field("projects_page.provider")
                         .eq(user.provider().name())))
                 .stream()
-                .map(rec -> projectFromRecord(rec, true)));
+                .map(rec -> projectFromRecord(rec, true)),
+            this.storage
+        );
     }
 
     @Override

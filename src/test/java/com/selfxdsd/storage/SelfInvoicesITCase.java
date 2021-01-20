@@ -27,8 +27,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -311,8 +311,8 @@ public final class SelfInvoicesITCase {
             }
 
             @Override
-            public File toPdf() throws IOException {
-                return unpaid.toPdf();
+            public void toPdf(final OutputStream stream) throws IOException {
+                unpaid.toPdf(stream);
             }
         };
         MatcherAssert.assertThat(
