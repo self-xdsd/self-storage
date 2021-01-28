@@ -81,7 +81,11 @@ public final class SelfResignations implements Resignations {
                     project.repoFullName()
                 ).and(
                     SLF_RESIGNATIONS_XDSD.PROVIDER.eq(project.provider())
-                        .and(SLF_RESIGNATIONS_XDSD.ISSUEID.eq(task.issueId()))
+                        .and(SLF_RESIGNATIONS_XDSD.ISSUEID.eq(task.issueId())
+                            .and(SLF_RESIGNATIONS_XDSD.ISPULLREQUEST.eq(
+                                task.isPullRequest())
+                            )
+                        )
                 )
             ).fetch();
         for(final Record rec : result) {
@@ -123,6 +127,7 @@ public final class SelfResignations implements Resignations {
             SLF_RESIGNATIONS_XDSD.PROVIDER,
             SLF_RESIGNATIONS_XDSD.USERNAME,
             SLF_RESIGNATIONS_XDSD.ISSUEID,
+            SLF_RESIGNATIONS_XDSD.ISPULLREQUEST,
             SLF_RESIGNATIONS_XDSD.TIMESTAMP,
             SLF_RESIGNATIONS_XDSD.REASON
         ).values(
@@ -130,6 +135,7 @@ public final class SelfResignations implements Resignations {
             project.provider(),
             assignee.username(),
             task.issueId(),
+            task.isPullRequest(),
             timestamp,
             reason
         ).execute();

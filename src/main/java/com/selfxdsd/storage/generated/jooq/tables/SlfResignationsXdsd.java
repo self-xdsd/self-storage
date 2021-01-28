@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
 
-    private static final long serialVersionUID = -525857364;
+    private static final long serialVersionUID = 1764603726;
 
     /**
      * The reference instance of <code>self_xdsd.slf_resignations_xdsd</code>
@@ -78,6 +78,11 @@ public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
      * The column <code>self_xdsd.slf_resignations_xdsd.reason</code>.
      */
     public final TableField<SlfResignationsXdsdRecord, String> REASON = createField(DSL.name("reason"), org.jooq.impl.SQLDataType.VARCHAR(45).nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_resignations_xdsd.isPullRequest</code>.
+     */
+    public final TableField<SlfResignationsXdsdRecord, Boolean> ISPULLREQUEST = createField(DSL.name("isPullRequest"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_resignations_xdsd</code> table reference
@@ -168,11 +173,11 @@ public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, String, LocalDateTime, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<String, String, String, String, LocalDateTime, String, Boolean> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

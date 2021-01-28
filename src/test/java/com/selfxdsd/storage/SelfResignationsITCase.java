@@ -173,7 +173,7 @@ public final class SelfResignationsITCase {
         );
         MatcherAssert.assertThat(
             res.task(),
-            Matchers.is(task)
+            Matchers.equalTo(task)
         );
         MatcherAssert.assertThat(
             res.contributor().username(),
