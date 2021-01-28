@@ -326,14 +326,14 @@ INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`t
 VALUES ('maria/to_remove', 'github', 'STRIPE', 'stripe_mary_card_2', 1);
 
 INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
-(`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`)
+(`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`, `isPullRequest`)
 VALUES
-('vlad/test', 'maria', 'github', '999', '2020-09-03', 'DEADLINE' );
+('vlad/test', 'maria', 'github', '999', '2020-09-03', 'DEADLINE', 0);
 
 INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
-(`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`)
+(`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`, `isPullRequest`)
 VALUES
-('vlad/test', 'john', 'github', '999', '2020-09-01', 'ASKED' );
+('vlad/test', 'john', 'github', '999', '2020-09-01', 'ASKED', 0);
 
 INSERT INTO `self_xdsd`.`slf_payoutmethods_xdsd`
 (`username`, `provider`, `type`, `active`, `identifier`)
