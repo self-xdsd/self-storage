@@ -124,6 +124,10 @@ public final class SelfInvoicedTasksITCase {
             Matchers.greaterThanOrEqualTo(1)
         );
         MatcherAssert.assertThat(
+            invoiced.task().isPullRequest(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
             invoiced.value(),
             Matchers.equalTo(BigDecimal.valueOf(15000))
         );

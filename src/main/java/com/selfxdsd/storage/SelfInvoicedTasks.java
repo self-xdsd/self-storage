@@ -117,20 +117,21 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                         )
                     ).execute();
                 inserted[0] = jooq.insertInto(
-                        SLF_INVOICEDTASKS_XDSD,
-                        SLF_INVOICEDTASKS_XDSD.INVOICEID,
-                        SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME,
-                        SLF_INVOICEDTASKS_XDSD.USERNAME,
-                        SLF_INVOICEDTASKS_XDSD.PROVIDER,
-                        SLF_INVOICEDTASKS_XDSD.ROLE,
-                        SLF_INVOICEDTASKS_XDSD.VALUE,
-                        SLF_INVOICEDTASKS_XDSD.ISSUEID,
-                        SLF_INVOICEDTASKS_XDSD.ASSIGNED,
-                        SLF_INVOICEDTASKS_XDSD.DEADLINE,
-                        SLF_INVOICEDTASKS_XDSD.INVOICED,
-                        SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES,
-                        SLF_INVOICEDTASKS_XDSD.COMMISSION
-                    ).values(
+                    SLF_INVOICEDTASKS_XDSD,
+                    SLF_INVOICEDTASKS_XDSD.INVOICEID,
+                    SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME,
+                    SLF_INVOICEDTASKS_XDSD.USERNAME,
+                    SLF_INVOICEDTASKS_XDSD.PROVIDER,
+                    SLF_INVOICEDTASKS_XDSD.ROLE,
+                    SLF_INVOICEDTASKS_XDSD.VALUE,
+                    SLF_INVOICEDTASKS_XDSD.ISSUEID,
+                    SLF_INVOICEDTASKS_XDSD.ASSIGNED,
+                    SLF_INVOICEDTASKS_XDSD.DEADLINE,
+                    SLF_INVOICEDTASKS_XDSD.INVOICED,
+                    SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES,
+                    SLF_INVOICEDTASKS_XDSD.COMMISSION,
+                    SLF_INVOICEDTASKS_XDSD.ISPULLREQUEST
+                ).values(
                     invoice.invoiceId(),
                     finished.project().repoFullName(),
                     finished.assignee().username(),
@@ -142,7 +143,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                     finished.deadline(),
                     LocalDateTime.now(),
                     finished.estimation(),
-                    commission.toBigIntegerExact()
+                    commission.toBigIntegerExact(),
+                    finished.isPullRequest()
                 ).returningResult(
                     SLF_INVOICEDTASKS_XDSD.ID,
                     SLF_INVOICEDTASKS_XDSD.VALUE
@@ -195,7 +197,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ASSIGNED),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.DEADLINE),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES),
-                Boolean.FALSE
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.ISPULLREQUEST)
             ),
             this.storage
         );
