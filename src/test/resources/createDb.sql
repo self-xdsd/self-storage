@@ -155,12 +155,13 @@ CREATE TABLE `self_xdsd`.`slf_resignations_xdsd` (
   `username` VARCHAR(100) NOT NULL,
   `provider` VARCHAR(50) NOT NULL,
   `issueId` VARCHAR(50) NOT NULL,
+  `isPullRequest` TINYINT(1) NOT NULL DEFAULT 0,
   `timestamp` DATETIME NOT NULL,
   `reason` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`repo_fullname`, `username`, `provider`, `issueId`),
+  PRIMARY KEY (`repo_fullname`, `username`, `provider`, `issueId`, `isPullRequest`),
   CONSTRAINT `task`
-    FOREIGN KEY (`repo_fullname` , `provider` , `issueId`)
-    REFERENCES `self_xdsd`.`slf_tasks_xdsd` (`repo_fullname` , `provider` , `issueId`)
+    FOREIGN KEY (`repo_fullname` , `provider` , `issueId`, `isPullRequest`)
+    REFERENCES `self_xdsd`.`slf_tasks_xdsd` (`repo_fullname` , `provider` , `issueId`, `isPullRequest`)
     ON DELETE CASCADE,
   CONSTRAINT `resignee`
     FOREIGN KEY (`username` , `provider`)
