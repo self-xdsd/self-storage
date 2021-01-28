@@ -95,7 +95,8 @@ public final class SelfInvoicedTasksITCase {
     public void registersTask() {
         final Storage storage = new SelfJooq(new H2Database());
         final Task toInvoice = storage.tasks().getById(
-            "126", "amihaiemil/docker-java-api", Provider.Names.GITHUB
+            "126", "amihaiemil/docker-java-api",
+            Provider.Names.GITHUB, Boolean.FALSE
         );
         MatcherAssert.assertThat(
             toInvoice,
@@ -152,7 +153,8 @@ public final class SelfInvoicedTasksITCase {
             Matchers.greaterThanOrEqualTo(1)
         );
         final Task removed = storage.tasks().getById(
-            "126", "amihaiemil/docker-jaba-api", Provider.Names.GITHUB
+            "126", "amihaiemil/docker-jaba-api",
+            Provider.Names.GITHUB, Boolean.FALSE
         );
         MatcherAssert.assertThat(
             removed,

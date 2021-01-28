@@ -50,7 +50,10 @@ public final class SelfResignationsITCase {
             Matchers.notNullValue()
         );
         final Task task = project
-            .tasks().getById("999", "vlad/test", Provider.Names.GITHUB);
+            .tasks().getById(
+                "999", "vlad/test",
+                Provider.Names.GITHUB, Boolean.FALSE
+            );
         MatcherAssert.assertThat(task, Matchers.notNullValue());
         final Resignations resignations = task.resignations();
         MatcherAssert.assertThat(resignations, Matchers.iterableWithSize(2));
@@ -97,7 +100,8 @@ public final class SelfResignationsITCase {
             .tasks().getById(
                 "123",
                 "amihaiemil/docker-java-api",
-                Provider.Names.GITHUB
+                Provider.Names.GITHUB,
+                Boolean.FALSE
             );
         MatcherAssert.assertThat(task, Matchers.notNullValue());
         final Resignations resignations = task.resignations();
@@ -124,7 +128,8 @@ public final class SelfResignationsITCase {
             .tasks().getById(
                 "124",
                 "vlad/test",
-                Provider.Names.GITHUB
+                Provider.Names.GITHUB,
+                Boolean.FALSE
             );
         MatcherAssert.assertThat(task, Matchers.notNullValue());
         storage.resignations().register(task, Resignations.Reason.ASKED);
@@ -150,7 +155,8 @@ public final class SelfResignationsITCase {
             .tasks().getById(
                 "124",
                 "amihaiemil/docker-java-api",
-                Provider.Names.GITHUB
+                Provider.Names.GITHUB,
+                Boolean.FALSE
             );
         MatcherAssert.assertThat(task, Matchers.notNullValue());
         MatcherAssert.assertThat(
