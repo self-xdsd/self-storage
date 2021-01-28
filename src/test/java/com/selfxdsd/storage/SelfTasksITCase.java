@@ -27,6 +27,7 @@ import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.tasks.StoredTask;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -250,6 +251,10 @@ public final class SelfTasksITCase {
         MatcherAssert.assertThat(
             assigned.assignee().username(),
             Matchers.equalTo("maria")
+        );
+        MatcherAssert.assertThat(
+            assigned.isPullRequest(),
+            Matchers.is(Boolean.FALSE)
         );
         MatcherAssert.assertThat(
             assigned.assignmentDate(),
@@ -523,6 +528,19 @@ public final class SelfTasksITCase {
         MatcherAssert.assertThat(
             assignedSelect.deadline(),
             Matchers.equalTo(assignedSelect.assignmentDate().plusDays(10))
+        );
+    }
+
+    /**
+     * We can have a Task which is a Pull Request.
+     */
+    @Test
+    @Ignore
+    public void taskIsPullRequest() {
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+        MatcherAssert.assertThat(
+            all.getById("1000", "vlad/test", "github").isPullRequest(),
+            Matchers.is(Boolean.TRUE)
         );
     }
 }
