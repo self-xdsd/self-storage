@@ -117,12 +117,14 @@ public final class SelfTasks implements Tasks {
                 SLF_TASKS_XDSD.REPO_FULLNAME,
                 SLF_TASKS_XDSD.ISSUEID,
                 SLF_TASKS_XDSD.PROVIDER,
+                SLF_TASKS_XDSD.ISPULLREQUEST,
                 SLF_TASKS_XDSD.ROLE,
                 SLF_TASKS_XDSD.ESTIMATION_MINUTES
             ).values(
                 issue.repoFullName(),
                 issue.issueId(),
                 issue.provider(),
+                isPullRequest,
                 issue.role(),
                 estimation
             ).execute();
@@ -441,7 +443,7 @@ public final class SelfTasks implements Tasks {
                 rec.getValue(SLF_TASKS_XDSD.ISSUEID),
                 rec.getValue(SLF_TASKS_XDSD.ROLE),
                 rec.getValue(SLF_TASKS_XDSD.ESTIMATION_MINUTES),
-                Boolean.FALSE,
+                rec.getValue(SLF_TASKS_XDSD.ISPULLREQUEST),
                 this.storage
             );
         } else {
@@ -465,7 +467,7 @@ public final class SelfTasks implements Tasks {
                 rec.getValue(SLF_TASKS_XDSD.ASSIGNED),
                 rec.getValue(SLF_TASKS_XDSD.DEADLINE),
                 rec.getValue(SLF_TASKS_XDSD.ESTIMATION_MINUTES),
-                Boolean.FALSE
+                rec.getValue(SLF_TASKS_XDSD.ISPULLREQUEST)
             );
         }
         return task;

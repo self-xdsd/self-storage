@@ -27,7 +27,6 @@ import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.tasks.StoredTask;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -211,6 +210,7 @@ public final class SelfTasksITCase {
         Mockito.when(issue.provider()).thenReturn(Provider.Names.GITLAB);
         Mockito.when(issue.issueId()).thenReturn("234");
         Mockito.when(issue.role()).thenReturn(Contract.Roles.DEV);
+        Mockito.when(issue.isPullRequest()).thenReturn(Boolean.FALSE);
         final Estimation estimation = Mockito.mock(Estimation.class);
         Mockito.when(estimation.minutes()).thenReturn(60);
         Mockito.when(issue.estimation()).thenReturn(estimation);
@@ -228,7 +228,48 @@ public final class SelfTasksITCase {
             Matchers.equalTo(Contract.Roles.DEV)
         );
         MatcherAssert.assertThat(
+            registered.isPullRequest(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
             all.getById("234", "mihai/test", Provider.Names.GITLAB),
+            Matchers.notNullValue()
+        );
+    }
+
+    /**
+     * SelfTasks can register a new PR.
+     */
+    @Test
+    public void registersNewPullRequest() {
+        final Issue issue = Mockito.mock(Issue.class);
+        Mockito.when(issue.repoFullName()).thenReturn("mihai/test");
+        Mockito.when(issue.provider()).thenReturn(Provider.Names.GITLAB);
+        Mockito.when(issue.issueId()).thenReturn("567");
+        Mockito.when(issue.role()).thenReturn(Contract.Roles.DEV);
+        Mockito.when(issue.isPullRequest()).thenReturn(Boolean.TRUE);
+        final Estimation estimation = Mockito.mock(Estimation.class);
+        Mockito.when(estimation.minutes()).thenReturn(60);
+        Mockito.when(issue.estimation()).thenReturn(estimation);
+        final Tasks all = new SelfJooq(new H2Database()).tasks();
+
+        MatcherAssert.assertThat(
+            all.getById("567", "mihai/test", Provider.Names.GITLAB),
+            Matchers.nullValue()
+        );
+
+        final Task registered = all.register(issue);
+
+        MatcherAssert.assertThat(
+            registered.role(),
+            Matchers.equalTo(Contract.Roles.DEV)
+        );
+        MatcherAssert.assertThat(
+            registered.isPullRequest(),
+            Matchers.is(Boolean.TRUE)
+        );
+        MatcherAssert.assertThat(
+            all.getById("567", "mihai/test", Provider.Names.GITLAB),
             Matchers.notNullValue()
         );
     }
@@ -535,7 +576,6 @@ public final class SelfTasksITCase {
      * We can have a Task which is a Pull Request.
      */
     @Test
-    @Ignore
     public void taskIsPullRequest() {
         final Tasks all = new SelfJooq(new H2Database()).tasks();
         MatcherAssert.assertThat(
