@@ -83,13 +83,16 @@ public final class SelfTasks implements Tasks {
     public Task getById(
         final String issueId,
         final String repoFullName,
-        final String provider
+        final String provider,
+        final boolean isPullRequest
     ) {
         final Result<Record> result = this.selectTasks(this.database)
             .where(
                 SLF_TASKS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
                     SLF_TASKS_XDSD.PROVIDER.eq(provider).and(
-                        SLF_TASKS_XDSD.ISSUEID.eq(issueId)
+                        SLF_TASKS_XDSD.ISSUEID.eq(issueId).and(
+                            SLF_TASKS_XDSD.ISPULLREQUEST.eq(isPullRequest)
+                        )
                     )
                 )
             )
@@ -174,7 +177,11 @@ public final class SelfTasks implements Tasks {
             ).where(
                 SLF_TASKS_XDSD.ISSUEID.eq(issueId).and(
                     SLF_TASKS_XDSD.REPO_FULLNAME.eq(proj.repoFullName()).and(
-                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider())
+                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider()).and(
+                            SLF_TASKS_XDSD.ISPULLREQUEST.eq(
+                                task.isPullRequest()
+                            )
+                        )
                     )
                 )
             ).execute();
@@ -203,7 +210,11 @@ public final class SelfTasks implements Tasks {
             .where(
                 SLF_TASKS_XDSD.ISSUEID.eq(issueId).and(
                     SLF_TASKS_XDSD.REPO_FULLNAME.eq(proj.repoFullName()).and(
-                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider())
+                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider()).and(
+                            SLF_TASKS_XDSD.ISPULLREQUEST.eq(
+                                task.isPullRequest()
+                            )
+                        )
                     )
                 )
             ).execute();
@@ -339,7 +350,11 @@ public final class SelfTasks implements Tasks {
             .where(
                 SLF_TASKS_XDSD.ISSUEID.eq(issueId).and(
                     SLF_TASKS_XDSD.REPO_FULLNAME.eq(proj.repoFullName()).and(
-                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider())
+                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider()).and(
+                            SLF_TASKS_XDSD.ISPULLREQUEST.eq(
+                                task.isPullRequest()
+                            )
+                        )
                     )
                 )
             ).execute();

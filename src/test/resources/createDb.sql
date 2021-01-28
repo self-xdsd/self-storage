@@ -87,13 +87,13 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   repo_fullname VARCHAR(256) NOT NULL,
   issueId VARCHAR(50) NOT NULL,
   provider VARCHAR(50) NOT NULL,
+  isPullRequest TINYINT(1) NOT NULL DEFAULT 0,
   role VARCHAR(32) NOT NULL,
   username VARCHAR(100) NULL DEFAULT NULL,
   assigned DATETIME NULL DEFAULT NULL,
   deadline DATETIME NULL DEFAULT NULL,
   estimation_minutes INT NOT NULL,
-  isPullRequest TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (issueId, provider, repo_fullname),
+  PRIMARY KEY (issueId, provider, repo_fullname, isPullRequest),
   CONSTRAINT assignee
     FOREIGN KEY (repo_fullname, username, provider, role)
     REFERENCES self_xdsd.slf_contracts_xdsd (repo_fullname, username, provider, role),

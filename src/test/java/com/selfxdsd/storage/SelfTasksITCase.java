@@ -49,7 +49,8 @@ public final class SelfTasksITCase {
         final Task found = all.getById(
             "123",
             "amihaiemil/docker-java-api",
-            Provider.Names.GITHUB
+            Provider.Names.GITHUB,
+            Boolean.FALSE
         );
         MatcherAssert.assertThat(
             found,
@@ -73,7 +74,8 @@ public final class SelfTasksITCase {
         final Task found = all.getById(
             "123",
             "vlad/test",
-            Provider.Names.GITHUB
+            Provider.Names.GITHUB,
+            Boolean.FALSE
         );
         MatcherAssert.assertThat(
             found,
@@ -100,7 +102,8 @@ public final class SelfTasksITCase {
         final Task found = all.getById(
             "123",
             "amihaiemil/missing",
-            Provider.Names.GITHUB
+            Provider.Names.GITHUB,
+            Boolean.FALSE
         );
         MatcherAssert.assertThat(found, Matchers.nullValue());
     }
@@ -217,7 +220,10 @@ public final class SelfTasksITCase {
         final Tasks all = new SelfJooq(new H2Database()).tasks();
 
         MatcherAssert.assertThat(
-            all.getById("234", "mihai/test", Provider.Names.GITLAB),
+            all.getById(
+                "234", "mihai/test",
+                Provider.Names.GITLAB, Boolean.FALSE
+            ),
             Matchers.nullValue()
         );
 
@@ -232,7 +238,10 @@ public final class SelfTasksITCase {
             Matchers.is(Boolean.FALSE)
         );
         MatcherAssert.assertThat(
-            all.getById("234", "mihai/test", Provider.Names.GITLAB),
+            all.getById(
+                "234", "mihai/test",
+                Provider.Names.GITLAB, Boolean.FALSE
+            ),
             Matchers.notNullValue()
         );
     }
@@ -254,7 +263,11 @@ public final class SelfTasksITCase {
         final Tasks all = new SelfJooq(new H2Database()).tasks();
 
         MatcherAssert.assertThat(
-            all.getById("567", "mihai/test", Provider.Names.GITLAB),
+            all.getById(
+                "567", "mihai/test",
+                Provider.Names.GITLAB,
+                Boolean.TRUE
+            ),
             Matchers.nullValue()
         );
 
@@ -269,7 +282,10 @@ public final class SelfTasksITCase {
             Matchers.is(Boolean.TRUE)
         );
         MatcherAssert.assertThat(
-            all.getById("567", "mihai/test", Provider.Names.GITLAB),
+            all.getById(
+                "567", "mihai/test",
+                Provider.Names.GITLAB, Boolean.TRUE
+            ),
             Matchers.notNullValue()
         );
     }
@@ -283,7 +299,8 @@ public final class SelfTasksITCase {
         final Task assigned = all.getById(
             "887",
             "vlad/test",
-            Provider.Names.GITHUB
+            Provider.Names.GITHUB,
+            Boolean.FALSE
         );
         MatcherAssert.assertThat(
             assigned.role(),
@@ -310,7 +327,7 @@ public final class SelfTasksITCase {
         MatcherAssert.assertThat(unassigned, Matchers.notNullValue());
         MatcherAssert.assertThat(unassigned.assignee(), Matchers.nullValue());
         final Task selected = all.getById(
-            "887", "vlad/test", Provider.Names.GITHUB
+            "887", "vlad/test", Provider.Names.GITHUB, Boolean.FALSE
         );
         MatcherAssert.assertThat(selected.assignee(), Matchers.nullValue());
         MatcherAssert.assertThat(
@@ -332,7 +349,8 @@ public final class SelfTasksITCase {
         final Task assigned = all.getById(
             "900",
             "vlad/test",
-            Provider.Names.GITHUB
+            Provider.Names.GITHUB,
+            Boolean.FALSE
         );
         MatcherAssert.assertThat(
             assigned.role(),
@@ -354,7 +372,7 @@ public final class SelfTasksITCase {
         final boolean removed = all.remove(assigned);
         MatcherAssert.assertThat(removed, Matchers.is(Boolean.TRUE));
         final Task selected = all.getById(
-            "900", "vlad/test", Provider.Names.GITHUB
+            "900", "vlad/test", Provider.Names.GITHUB, Boolean.FALSE
         );
         MatcherAssert.assertThat(selected, Matchers.nullValue());
     }
@@ -368,7 +386,8 @@ public final class SelfTasksITCase {
         final Task unassigned = all.getById(
             "901",
             "vlad/test",
-            Provider.Names.GITHUB
+            Provider.Names.GITHUB,
+            Boolean.FALSE
         );
         MatcherAssert.assertThat(
             unassigned.role(),
@@ -390,7 +409,7 @@ public final class SelfTasksITCase {
         final boolean removed = all.remove(unassigned);
         MatcherAssert.assertThat(removed, Matchers.is(Boolean.TRUE));
         final Task selected = all.getById(
-            "901", "vlad/test", Provider.Names.GITHUB
+            "901", "vlad/test", Provider.Names.GITHUB, Boolean.FALSE
         );
         MatcherAssert.assertThat(selected, Matchers.nullValue());
     }
@@ -512,7 +531,7 @@ public final class SelfTasksITCase {
         );
         final Tasks tasks = storage.tasks();
         final Task task = tasks.getById(
-            "123", "vlad/test", "github"
+            "123", "vlad/test", "github", Boolean.FALSE
         );
         tasks.assign(task, contract, 10);
     }
@@ -533,7 +552,7 @@ public final class SelfTasksITCase {
         );
         final Tasks tasks = storage.tasks();
         final Task task = tasks.getById(
-            "123", "vlad/test", "github"
+            "123", "vlad/test", "github", Boolean.FALSE
         );
         MatcherAssert.assertThat(
             task.assignee(),
@@ -556,7 +575,7 @@ public final class SelfTasksITCase {
             )
         );
         final Task assignedSelect = tasks.getById(
-            "123", "vlad/test", "github"
+            "123", "vlad/test", "github", Boolean.FALSE
         );
         MatcherAssert.assertThat(
             assignedSelect.assignee().username(),
@@ -579,7 +598,9 @@ public final class SelfTasksITCase {
     public void taskIsPullRequest() {
         final Tasks all = new SelfJooq(new H2Database()).tasks();
         MatcherAssert.assertThat(
-            all.getById("1000", "vlad/test", "github").isPullRequest(),
+            all.getById(
+                "1000", "vlad/test", "github", Boolean.TRUE
+            ).isPullRequest(),
             Matchers.is(Boolean.TRUE)
         );
     }
