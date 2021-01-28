@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
-    private static final long serialVersionUID = 591222094;
+    private static final long serialVersionUID = -122399106;
 
     /**
      * The reference instance of <code>self_xdsd.slf_tasks_xdsd</code>
@@ -88,6 +88,11 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
      * The column <code>self_xdsd.slf_tasks_xdsd.estimation_minutes</code>.
      */
     public final TableField<SlfTasksXdsdRecord, Integer> ESTIMATION_MINUTES = createField(DSL.name("estimation_minutes"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_tasks_xdsd.isPullRequest</code>.
+     */
+    public final TableField<SlfTasksXdsdRecord, Boolean> ISPULLREQUEST = createField(DSL.name("isPullRequest"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_tasks_xdsd</code> table reference
@@ -178,11 +183,11 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<String, String, String, String, String, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<String, String, String, String, String, LocalDateTime, LocalDateTime, Integer, Boolean> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

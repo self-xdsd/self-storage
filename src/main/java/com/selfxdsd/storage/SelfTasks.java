@@ -110,18 +110,21 @@ public final class SelfTasks implements Tasks {
                 "Project not found, can't register Issue."
             );
         } else {
+            final boolean isPullRequest = issue.isPullRequest();
             final int estimation = issue.estimation().minutes();
             this.database.jooq().insertInto(
                 SLF_TASKS_XDSD,
                 SLF_TASKS_XDSD.REPO_FULLNAME,
                 SLF_TASKS_XDSD.ISSUEID,
                 SLF_TASKS_XDSD.PROVIDER,
+                SLF_TASKS_XDSD.ISPULLREQUEST,
                 SLF_TASKS_XDSD.ROLE,
                 SLF_TASKS_XDSD.ESTIMATION_MINUTES
             ).values(
                 issue.repoFullName(),
                 issue.issueId(),
                 issue.provider(),
+                isPullRequest,
                 issue.role(),
                 estimation
             ).execute();
@@ -130,6 +133,7 @@ public final class SelfTasks implements Tasks {
                 issue.issueId(),
                 issue.role(),
                 estimation,
+                isPullRequest,
                 this.storage
             );
         }
@@ -181,7 +185,8 @@ public final class SelfTasks implements Tasks {
                 this.storage,
                 assigned,
                 assigned.plusDays(days),
-                task.estimation()
+                task.estimation(),
+                task.isPullRequest()
             );
         }
         return null;
@@ -208,6 +213,7 @@ public final class SelfTasks implements Tasks {
                 issueId,
                 task.role(),
                 task.estimation(),
+                task.isPullRequest(),
                 this.storage
             );
         }
@@ -437,6 +443,7 @@ public final class SelfTasks implements Tasks {
                 rec.getValue(SLF_TASKS_XDSD.ISSUEID),
                 rec.getValue(SLF_TASKS_XDSD.ROLE),
                 rec.getValue(SLF_TASKS_XDSD.ESTIMATION_MINUTES),
+                rec.getValue(SLF_TASKS_XDSD.ISPULLREQUEST),
                 this.storage
             );
         } else {
@@ -459,7 +466,8 @@ public final class SelfTasks implements Tasks {
                 this.storage,
                 rec.getValue(SLF_TASKS_XDSD.ASSIGNED),
                 rec.getValue(SLF_TASKS_XDSD.DEADLINE),
-                rec.getValue(SLF_TASKS_XDSD.ESTIMATION_MINUTES)
+                rec.getValue(SLF_TASKS_XDSD.ESTIMATION_MINUTES),
+                rec.getValue(SLF_TASKS_XDSD.ISPULLREQUEST)
             );
         }
         return task;

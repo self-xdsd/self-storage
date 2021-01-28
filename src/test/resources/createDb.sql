@@ -92,6 +92,7 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   assigned DATETIME NULL DEFAULT NULL,
   deadline DATETIME NULL DEFAULT NULL,
   estimation_minutes INT NOT NULL,
+  isPullRequest TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (issueId, provider, repo_fullname),
   CONSTRAINT assignee
     FOREIGN KEY (repo_fullname, username, provider, role)
@@ -139,6 +140,7 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
   `invoiced` DATETIME NOT NULL,
   `invoiceId` INT NOT NULL,
   `estimation_minutes` INT NOT NULL,
+  `isPullRequest` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `invoiceContractFk`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
