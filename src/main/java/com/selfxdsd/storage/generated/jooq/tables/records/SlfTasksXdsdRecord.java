@@ -9,7 +9,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfTasksXdsd;
 import java.time.LocalDateTime;
 
 import org.jooq.Field;
-import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Record9;
 import org.jooq.Row9;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfTasksXdsdRecord extends UpdatableRecordImpl<SlfTasksXdsdRecord> implements Record9<String, String, String, String, String, LocalDateTime, LocalDateTime, Integer, Boolean> {
 
-    private static final long serialVersionUID = -494905123;
+    private static final long serialVersionUID = -1038111358;
 
     /**
      * Setter for <code>self_xdsd.slf_tasks_xdsd.repo_fullname</code>.
@@ -154,8 +154,8 @@ public class SlfTasksXdsdRecord extends UpdatableRecordImpl<SlfTasksXdsdRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Record3<String, String, String> key() {
-        return (Record3) super.key();
+    public Record4<String, String, String, Boolean> key() {
+        return (Record4) super.key();
     }
 
     // -------------------------------------------------------------------------
