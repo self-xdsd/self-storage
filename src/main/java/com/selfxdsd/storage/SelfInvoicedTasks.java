@@ -194,7 +194,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                 this.storage,
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ASSIGNED),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.DEADLINE),
-                rec.getValue(SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES)
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES),
+                Boolean.FALSE
             ),
             this.storage
         );
