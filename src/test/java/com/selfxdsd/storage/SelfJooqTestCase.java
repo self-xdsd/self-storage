@@ -240,4 +240,19 @@ public final class SelfJooqTestCase {
             )
         );
     }
+
+    /**
+     * SelfJooq can return the ApiTokens.
+     */
+    @Test
+    public void returnsApiTokens() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.apiTokens(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfApiTokens.class)
+            )
+        );
+    }
 }
