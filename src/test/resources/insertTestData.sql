@@ -15,6 +15,15 @@ INSERT INTO self_xdsd.slf_users_xdsd
 (username, provider, role, email)
 VALUES ('maria', 'github', 'user', 'maria@gmail.com');
 
+-- INSERT API TOKENS
+
+INSERT INTO `self_xdsd`.`slf_apitokens_xdsd`
+(`token`, `expiresAt`, `name`, `username`, `provider`)
+VALUES ('apiToken123', '2022-01-01', 'Mihai Token 1', 'amihaiemil', 'github');
+INSERT INTO `self_xdsd`.`slf_apitokens_xdsd`
+(`token`, `expiresAt`, `name`, `username`, `provider`)
+VALUES ('apiToken456', '2022-01-01', 'Mihai Token 2', 'amihaiemil', 'github');
+
 
 -----------------
 -- INSERT PROJECT MANAGERS

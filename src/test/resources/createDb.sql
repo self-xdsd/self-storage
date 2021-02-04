@@ -232,3 +232,18 @@ CREATE TABLE `self_xdsd`.`slf_platforminvoices_xdsd` (
     REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`invoiceId`)
     ON DELETE SET NULL
     ON UPDATE CASCADE);
+
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_apitokens_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`slf_apitokens_xdsd` (
+  `token` VARCHAR(512) NOT NULL,
+  `expiresAt` DATETIME NOT NULL,
+  `name` VARCHAR(512) NOT NULL,
+  `username` VARCHAR(100) NOT NULL,
+  `provider` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`token`),
+  CONSTRAINT `ownerUser`
+    FOREIGN KEY (`username` , `provider`)
+    REFERENCES `self_xdsd`.`slf_users_xdsd` (`username` , `provider`)
+    ON DELETE CASCADE);
