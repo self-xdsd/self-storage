@@ -4,6 +4,7 @@
 package com.selfxdsd.storage.generated.jooq;
 
 
+import com.selfxdsd.storage.generated.jooq.tables.SlfApitokensXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
@@ -32,12 +33,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfXdsd extends SchemaImpl {
 
-    private static final long serialVersionUID = -493749200;
+    private static final long serialVersionUID = 2031498135;
 
     /**
      * The reference instance of <code>self_xdsd</code>
      */
     public static final SelfXdsd SELF_XDSD = new SelfXdsd();
+
+    /**
+     * The table <code>self_xdsd.slf_apitokens_xdsd</code>.
+     */
+    public final SlfApitokensXdsd SLF_APITOKENS_XDSD = SlfApitokensXdsd.SLF_APITOKENS_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_contracts_xdsd</code>.
@@ -120,6 +126,7 @@ public class SelfXdsd extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            SlfApitokensXdsd.SLF_APITOKENS_XDSD,
             SlfContractsXdsd.SLF_CONTRACTS_XDSD,
             SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD,
             SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD,

@@ -125,6 +125,11 @@ public final class SelfJooq implements Storage {
     }
 
     @Override
+    public ApiTokens apiTokens() {
+        return new SelfApiTokens(this, this.database);
+    }
+
+    @Override
     public void close() {
         this.database.close();
     }

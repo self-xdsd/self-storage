@@ -184,6 +184,16 @@ public final class SelfUsers implements Users {
                 public Contributor asContributor() {
                     return found.asContributor();
                 }
+
+                @Override
+                public Admin asAdmin() {
+                    return found.asAdmin();
+                }
+
+                @Override
+                public ApiTokens apiTokens() {
+                    return found.apiTokens();
+                }
             };
         }
         return null;
