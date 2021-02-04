@@ -23,11 +23,13 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
+import com.selfxdsd.api.storage.Storage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 
 /**
  * Integration tests for {@link SelfApiTokens}.
@@ -84,6 +86,181 @@ public final class SelfApiTokensITCase {
         final ApiToken found = all.getById("missing123");
         MatcherAssert.assertThat(
             found,
+            Matchers.nullValue()
+        );
+    }
+
+    /**
+     * We shouldn't be able to iterate over all ApiTokens in Self.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void iteratorUnsupported() {
+        new SelfJooq(
+            new H2Database()
+        ).apiTokens().iterator();
+    }
+
+    /**
+     * Method ofUser returns the existing tokens of a User.
+     */
+    @Test
+    public void userTokensFoundCanBeIterated() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final ApiTokens ofMihai = all.ofUser(
+            storage.users().user("amihaiemil", Provider.Names.GITHUB)
+        );
+        MatcherAssert.assertThat(
+            ofMihai,
+            Matchers.iterableWithSize(2)
+        );
+        final Iterator<ApiToken> iterator = ofMihai.iterator();
+        MatcherAssert.assertThat(
+            iterator.next().token(),
+            Matchers.equalTo("apiToken123")
+        );
+        MatcherAssert.assertThat(
+            iterator.next().token(),
+            Matchers.equalTo("apiToken456")
+        );
+    }
+
+    /**
+     * Method ofUser can return an empty iterable.
+     */
+    @Test
+    public void userTokensIsEmpty() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final ApiTokens empty = all.ofUser(
+            storage.users().user("maria", Provider.Names.GITHUB)
+        );
+        MatcherAssert.assertThat(
+            empty,
+            Matchers.emptyIterable()
+        );
+    }
+
+    /**
+     * Method ofUser returns itself for the same user.
+     */
+    @Test
+    public void userTokensReturnsItselfForSameUser() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final User mihai = storage.users().user(
+            "amihaiemil", Provider.Names.GITHUB
+        );
+        final ApiTokens ofMihai = all.ofUser(mihai);
+        MatcherAssert.assertThat(
+            ofMihai.ofUser(mihai),
+            Matchers.is(ofMihai)
+        );
+    }
+
+    /**
+     * A Users' ApiTokens complains if we call #ofUser(...) with another user.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void userTokensComplainsForDifferentUser() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final User mihai = storage.users().user(
+            "amihaiemil", Provider.Names.GITHUB
+        );
+        final User vlad = storage.users().user(
+            "vlad", Provider.Names.GITHUB
+        );
+        final ApiTokens ofMihai = all.ofUser(mihai);
+        ofMihai.ofUser(vlad);
+    }
+
+    /**
+     * A Users' ApiTokens returns a token by its ID, if the token is owned
+     * by the same user.
+     */
+    @Test
+    public void userTokensReturnsTokenById() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final User mihai = storage.users().user(
+            "amihaiemil", Provider.Names.GITHUB
+        );
+        final ApiTokens ofMihai = all.ofUser(mihai);
+        final ApiToken first = ofMihai.getById("apiToken123");
+        MatcherAssert.assertThat(
+            first,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            first.name(),
+            Matchers.equalTo("Mihai Token 1")
+        );
+        MatcherAssert.assertThat(
+            first.token(),
+            Matchers.equalTo("apiToken123")
+        );
+        MatcherAssert.assertThat(
+            first.expiration(),
+            Matchers.equalTo(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
+        );
+        MatcherAssert.assertThat(
+            first.owner().username(),
+            Matchers.equalTo("amihaiemil")
+        );
+        MatcherAssert.assertThat(
+            first.owner().provider().name(),
+            Matchers.equalTo(Provider.Names.GITHUB)
+        );
+    }
+
+    /**
+     * A Users' ApiTokens returns null if getById(...) finds no token.
+     */
+    @Test
+    public void userTokensReturnsNullMissingTokenById() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final User mihai = storage.users().user(
+            "amihaiemil", Provider.Names.GITHUB
+        );
+        final ApiTokens ofMihai = all.ofUser(mihai);
+        final ApiToken missing = ofMihai.getById("missing");
+        MatcherAssert.assertThat(
+            missing,
+            Matchers.nullValue()
+        );
+    }
+
+    /**
+     * A Users' ApiTokens returns null if getById(...) finds a token which
+     * is owned by someone else.
+     */
+    @Test
+    public void userTokensReturnsNullUnknownTokenById() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final User mihai = storage.users().user(
+            "amihaiemil", Provider.Names.GITHUB
+        );
+        final ApiTokens ofMihai = all.ofUser(mihai);
+        final ApiToken johnToken = ofMihai.getById("apiToken789");
+        MatcherAssert.assertThat(
+            johnToken,
             Matchers.nullValue()
         );
     }
