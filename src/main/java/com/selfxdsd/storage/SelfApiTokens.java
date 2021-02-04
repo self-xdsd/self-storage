@@ -26,14 +26,22 @@ import com.selfxdsd.api.ApiToken;
 import com.selfxdsd.api.ApiTokens;
 import com.selfxdsd.api.User;
 import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.StoredApiToken;
+import com.selfxdsd.core.StoredUser;
+import org.jooq.Record;
+import org.jooq.Result;
 
 import java.util.Iterator;
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_APITOKENS_XDSD;
+import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_XDSD;
 
 /**
  * Api tokens in Self.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.27
+ * @todo #232:60min Implement method ofUser(...) and write integration
+ *  tests for it.
  */
 public final class SelfApiTokens implements ApiTokens {
 
@@ -62,6 +70,31 @@ public final class SelfApiTokens implements ApiTokens {
 
     @Override
     public ApiToken getById(final String token) {
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_APITOKENS_XDSD)
+            .join(SLF_USERS_XDSD)
+            .on(
+                SLF_APITOKENS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                    SLF_APITOKENS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                )
+            ).where(SLF_APITOKENS_XDSD.TOKEN.eq(token)).fetch();
+        if(result.size() > 0) {
+            final Record record = result.get(0);
+            return new StoredApiToken(
+                this.storage,
+                record.getValue(SLF_APITOKENS_XDSD.NAME),
+                record.getValue(SLF_APITOKENS_XDSD.TOKEN),
+                record.getValue(SLF_APITOKENS_XDSD.EXPIRESAT),
+                new StoredUser(
+                    record.get(SLF_USERS_XDSD.USERNAME),
+                    record.get(SLF_USERS_XDSD.EMAIL),
+                    record.get(SLF_USERS_XDSD.ROLE),
+                    record.get(SLF_USERS_XDSD.PROVIDER),
+                    this.storage
+                )
+            );
+        }
         return null;
     }
 
