@@ -167,6 +167,10 @@ public final class SelfApiTokens implements ApiTokens {
      * @return ApiToken.
      */
     private ApiToken apiTokenFromRecord(final Record record) {
+        String email = record.get(SLF_USERS_XDSD.EMAIL);
+        if(email == null) {
+            email = "";
+        }
         return new StoredApiToken(
             this.storage,
             record.getValue(SLF_APITOKENS_XDSD.NAME),
@@ -174,7 +178,7 @@ public final class SelfApiTokens implements ApiTokens {
             record.getValue(SLF_APITOKENS_XDSD.EXPIRESAT),
             new StoredUser(
                 record.get(SLF_USERS_XDSD.USERNAME),
-                record.get(SLF_USERS_XDSD.EMAIL),
+                email,
                 record.get(SLF_USERS_XDSD.ROLE),
                 record.get(SLF_USERS_XDSD.PROVIDER),
                 this.storage
