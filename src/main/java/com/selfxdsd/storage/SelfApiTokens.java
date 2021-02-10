@@ -31,6 +31,7 @@ import com.selfxdsd.core.StoredUser;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -43,6 +44,10 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.27
+ * @todo #239:60min Implement and test method register(...) here, which should
+ *  insert and return the newly registered ApiToken.
+ * @todo #239:60min Implement and test method remove(...) here, which should
+ *  remove the specified ApiToken from the DB.
  */
 public final class SelfApiTokens implements ApiTokens {
 
@@ -147,10 +152,46 @@ public final class SelfApiTokens implements ApiTokens {
             }
 
             @Override
+            public boolean remove(final ApiToken token) {
+                throw new UnsupportedOperationException(
+                    "ApiTokens of a User are immutable, you cannot remove "
+                    + "one here."
+                );
+            }
+
+            @Override
+            public ApiToken register(
+                final String name,
+                final String token,
+                final LocalDateTime expiration,
+                final User user
+            ) {
+                throw new UnsupportedOperationException(
+                    "ApiTokens of a User are immutable, you cannot register "
+                    + "one here."
+                );
+            }
+
+            @Override
             public Iterator<ApiToken> iterator() {
                 return this.apiTokens.get().iterator();
             }
         };
+    }
+
+    @Override
+    public boolean remove(final ApiToken apiToken) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+
+    @Override
+    public ApiToken register(
+        final String name,
+        final String token,
+        final LocalDateTime expiration,
+        final User user
+    ){
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
