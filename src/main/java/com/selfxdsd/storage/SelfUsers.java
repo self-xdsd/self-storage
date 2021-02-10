@@ -29,6 +29,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -193,6 +194,12 @@ public final class SelfUsers implements Users {
                 @Override
                 public ApiTokens apiTokens() {
                     return found.apiTokens();
+                }
+
+                @Override
+                public ApiToken register(final String name, final  String token,
+                                         final LocalDateTime expiration) {
+                    return found.register(name, token, expiration);
                 }
             };
         }
