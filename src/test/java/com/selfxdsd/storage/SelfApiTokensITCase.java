@@ -300,4 +300,31 @@ public final class SelfApiTokensITCase {
         );
     }
 
+    /**
+     * An ApiToken can be deleted.
+     */
+    @Test
+    public void removesApiToken() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final User vlad = storage.users().user(
+            "vlad", Provider.Names.GITHUB
+        );
+        final ApiTokens ofVlad = all.ofUser(vlad);
+        MatcherAssert.assertThat(
+            ofVlad,
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            all.remove(ofVlad.iterator().next()),
+            Matchers.is(Boolean.TRUE)
+        );
+        MatcherAssert.assertThat(
+            ofVlad,
+            Matchers.iterableWithSize(0)
+        );
+    }
+
 }

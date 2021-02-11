@@ -26,6 +26,9 @@ VALUES ('apiToken456', '2022-01-01', 'Mihai Token 2', 'amihaiemil', 'github');
 INSERT INTO `self_xdsd`.`slf_apitokens_xdsd`
 (`token`, `expiresAt`, `name`, `username`, `provider`)
 VALUES ('apiToken789', '2022-01-01', 'John Token 1', 'johndoe', 'github');
+INSERT INTO `self_xdsd`.`slf_apitokens_xdsd` -- token to be deleted in a test
+(`token`, `expiresAt`, `name`, `username`, `provider`)
+VALUES ('apiToken001', '2022-01-01', 'Vlad Token 1', 'vlad', 'github');
 
 -----------------
 -- INSERT PROJECT MANAGERS
