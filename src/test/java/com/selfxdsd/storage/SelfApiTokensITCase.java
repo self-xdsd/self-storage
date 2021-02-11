@@ -114,7 +114,9 @@ public final class SelfApiTokensITCase {
         );
         MatcherAssert.assertThat(
             ofMihai,
-            Matchers.iterableWithSize(2)
+            Matchers.iterableWithSize(
+                Matchers.greaterThanOrEqualTo(2)
+            )
         );
         final Iterator<ApiToken> iterator = ofMihai.iterator();
         MatcherAssert.assertThat(
@@ -262,6 +264,39 @@ public final class SelfApiTokensITCase {
         MatcherAssert.assertThat(
             johnToken,
             Matchers.nullValue()
+        );
+    }
+
+    /**
+     * It can register a new ApiToken for a User.
+     */
+    @Test
+    public void registersNewApiTokenForUser() {
+        final Storage storage = new SelfJooq(
+            new H2Database()
+        );
+        final ApiTokens all = storage.apiTokens();
+        final User mihai = storage.users().user(
+            "amihaiemil", Provider.Names.GITHUB
+        );
+        final ApiTokens ofMihai = all.ofUser(mihai);
+        MatcherAssert.assertThat(
+            ofMihai,
+            Matchers.iterableWithSize(2)
+        );
+        final ApiToken registered = all.register(
+            "Mihai Token 3",
+            "apiToken334455",
+            LocalDateTime.of(2022, 2, 1, 0, 0, 0),
+            mihai
+        );
+        MatcherAssert.assertThat(
+            ofMihai,
+            Matchers.iterableWithSize(3)
+        );
+        MatcherAssert.assertThat(
+            registered,
+            Matchers.equalTo(ofMihai.getById("apiToken334455"))
         );
     }
 
