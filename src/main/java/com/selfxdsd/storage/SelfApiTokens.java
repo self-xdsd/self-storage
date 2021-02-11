@@ -44,8 +44,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.27
- * @todo #239:60min Implement and test method remove(...) here, which should
- *  remove the specified ApiToken from the DB.
  */
 public final class SelfApiTokens implements ApiTokens {
 
@@ -179,7 +177,11 @@ public final class SelfApiTokens implements ApiTokens {
 
     @Override
     public boolean remove(final ApiToken apiToken) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final int deleted = this.database.jooq()
+            .deleteFrom(SLF_APITOKENS_XDSD)
+            .where(SLF_APITOKENS_XDSD.TOKEN.eq(apiToken.token()))
+            .execute();
+        return deleted == 1;
     }
 
     @Override
