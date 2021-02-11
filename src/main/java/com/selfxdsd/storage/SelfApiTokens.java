@@ -44,8 +44,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.27
- * @todo #239:60min Implement and test method register(...) here, which should
- *  insert and return the newly registered ApiToken.
  * @todo #239:60min Implement and test method remove(...) here, which should
  *  remove the specified ApiToken from the DB.
  */
@@ -191,7 +189,35 @@ public final class SelfApiTokens implements ApiTokens {
         final LocalDateTime expiration,
         final User user
     ){
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final int inserted = this.database.jooq().insertInto(
+            SLF_APITOKENS_XDSD,
+            SLF_APITOKENS_XDSD.NAME,
+            SLF_APITOKENS_XDSD.TOKEN,
+            SLF_APITOKENS_XDSD.EXPIRESAT,
+            SLF_APITOKENS_XDSD.USERNAME,
+            SLF_APITOKENS_XDSD.PROVIDER
+        ).values(
+            name,
+            token,
+            expiration,
+            user.username(),
+            user.provider().name()
+        ).execute();
+        if(inserted != 1) {
+            throw new IllegalStateException(
+                "Something went wrong while trying to register "
+                + "a new ApiToken for User " + user.username() + " at "
+                + user.provider().name() + ". "
+            );
+        } else {
+            return new StoredApiToken(
+                this.storage,
+                name,
+                token,
+                expiration,
+                user
+            );
+        }
     }
 
     @Override
