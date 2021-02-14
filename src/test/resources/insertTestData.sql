@@ -350,8 +350,8 @@ VALUES
 ('vlad/test', 'john', 'github', '999', '2020-09-01', 'ASKED', 0);
 
 INSERT INTO `self_xdsd`.`slf_payoutmethods_xdsd`
-(`username`, `provider`, `type`, `active`, `identifier`)
-VALUES ('maria', 'github', 'stripe', 1, 'acct_001');
+(`username`, `provider`, `type`, `identifier`)
+VALUES ('maria', 'github', 'stripe', 'acct_001');
 
 INSERT INTO `self_xdsd`.`slf_platforminvoices_xdsd`
 (`id`, `createdAt`, `billedTo`, `commission`, `vat`, `transactionId`, `payment_timestamp`, `eurToRon`)

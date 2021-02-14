@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPayoutmethodsXdsd extends TableImpl<SlfPayoutmethodsXdsdRecord> {
 
-    private static final long serialVersionUID = 988648484;
+    private static final long serialVersionUID = 763912360;
 
     /**
      * The reference instance of <code>self_xdsd.slf_payoutmethods_xdsd</code>
@@ -60,11 +60,6 @@ public class SlfPayoutmethodsXdsd extends TableImpl<SlfPayoutmethodsXdsdRecord> 
      * The column <code>self_xdsd.slf_payoutmethods_xdsd.type</code>.
      */
     public final TableField<SlfPayoutmethodsXdsdRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_payoutmethods_xdsd.active</code>.
-     */
-    public final TableField<SlfPayoutmethodsXdsdRecord, Boolean> ACTIVE = createField(DSL.name("active"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_payoutmethods_xdsd.identifier</code>.
@@ -155,11 +150,11 @@ public class SlfPayoutmethodsXdsd extends TableImpl<SlfPayoutmethodsXdsdRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, Boolean, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row4<String, String, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }
