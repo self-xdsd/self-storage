@@ -59,77 +59,34 @@ public final class SelfPayoutMethodsITCase {
     public void registersMethod() {
         final Storage storage = new SelfJooq(new H2Database());
         final PayoutMethods methods = storage.payoutMethods();
-        final Contributor john = storage.contributors().getById(
-            "john", Provider.Names.GITHUB
-        );
-        MatcherAssert.assertThat(john, Matchers.notNullValue());
-        MatcherAssert.assertThat(
-            methods.ofContributor(john),
-            Matchers.emptyIterable()
-        );
-        final PayoutMethod registered = methods.register(
-            john,
-            PayoutMethod.Type.STRIPE,
-            "acct2_0002"
-        );
-        MatcherAssert.assertThat(
-            registered.contributor(),
-            Matchers.equalTo(john)
-        );
-        MatcherAssert.assertThat(
-            registered.identifier(),
-            Matchers.equalTo("acct2_0002")
-        );
-        MatcherAssert.assertThat(
-            registered.active(),
-            Matchers.is(Boolean.FALSE)
-        );
-        MatcherAssert.assertThat(
-            registered.type(),
-            Matchers.equalToIgnoringCase(PayoutMethod.Type.STRIPE)
-        );
-        MatcherAssert.assertThat(
-            methods.ofContributor(john),
-            Matchers.iterableWithSize(1)
-        );
-    }
-
-    /**
-     * SelfPayoutMethods can activate a PayoutMethod.
-     */
-    @Test
-    public void activatesPayoutMethod() {
-        final Storage storage = new SelfJooq(new H2Database());
-        final PayoutMethods methods = storage.payoutMethods();
         final Contributor bob = storage.contributors().getById(
             "bob", Provider.Names.GITHUB
         );
         MatcherAssert.assertThat(bob, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            methods.ofContributor(bob),
+            Matchers.emptyIterable()
+        );
         final PayoutMethod registered = methods.register(
             bob,
             PayoutMethod.Type.STRIPE,
             "acct2_0002"
         );
         MatcherAssert.assertThat(
-            registered.active(),
-            Matchers.is(Boolean.FALSE)
+            registered.contributor(),
+            Matchers.equalTo(bob)
+        );
+        MatcherAssert.assertThat(
+            registered.identifier(),
+            Matchers.equalTo("acct2_0002")
+        );
+        MatcherAssert.assertThat(
+            registered.type(),
+            Matchers.equalToIgnoringCase(PayoutMethod.Type.STRIPE)
         );
         MatcherAssert.assertThat(
             methods.ofContributor(bob),
             Matchers.iterableWithSize(1)
-        );
-        final PayoutMethod activated = methods.activate(registered);
-        MatcherAssert.assertThat(
-            activated.active(),
-            Matchers.is(Boolean.TRUE)
-        );
-        final PayoutMethod selected = methods
-            .ofContributor(bob)
-            .iterator()
-            .next();
-        MatcherAssert.assertThat(
-            selected.active(),
-            Matchers.is(Boolean.TRUE)
         );
     }
 
@@ -155,10 +112,6 @@ public final class SelfPayoutMethodsITCase {
         MatcherAssert.assertThat(
             method.identifier(),
             Matchers.equalTo("acct_001")
-        );
-        MatcherAssert.assertThat(
-            method.active(),
-            Matchers.is(Boolean.TRUE)
         );
         MatcherAssert.assertThat(
             method.type(),
@@ -198,13 +151,13 @@ public final class SelfPayoutMethodsITCase {
     }
 
     /**
-     * We shouldn't be able to get the active PayoutMethod
-     * out of all of them.
+     * We shouldn't be able to get a PayoutMethod by its type, out of
+     * all of them.
      */
     @Test(expected = UnsupportedOperationException.class)
-    public void cannotGetActive() {
-        final PayoutMethod active = new SelfJooq(new H2Database())
+    public void cannotGetByType() {
+        final PayoutMethod stripe = new SelfJooq(new H2Database())
             .payoutMethods()
-            .active();
+            .getByType("STRIPE");
     }
 }

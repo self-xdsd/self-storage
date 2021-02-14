@@ -26,12 +26,10 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contributors.ContributorPayoutMethods;
 import com.selfxdsd.core.contributors.StripePayoutMethod;
-import org.jooq.DSLContext;
 import org.jooq.InsertOnDuplicateStep;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import javax.json.JsonObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +40,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PAYOUTMETHODS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.9
+ * @todo #247:60min Implement and test method remove(PayoutMethod) which should
+ *  delete the PayoutMethod from the DB.
  */
 public final class SelfPayoutMethods implements PayoutMethods {
 
@@ -81,13 +81,11 @@ public final class SelfPayoutMethods implements PayoutMethods {
                     SLF_PAYOUTMETHODS_XDSD.USERNAME,
                     SLF_PAYOUTMETHODS_XDSD.PROVIDER,
                     SLF_PAYOUTMETHODS_XDSD.TYPE,
-                    SLF_PAYOUTMETHODS_XDSD.ACTIVE,
                     SLF_PAYOUTMETHODS_XDSD.IDENTIFIER
                 ).values(
                     contributor.username(),
                     contributor.provider(),
                     type,
-                    Boolean.FALSE,
                     identifier
                 );
             if (this.database.dbms().equals(Database.Dbms.MY_SQL)) {
@@ -98,13 +96,18 @@ public final class SelfPayoutMethods implements PayoutMethods {
             return new StripePayoutMethod(
                 contributor,
                 identifier,
-                Boolean.FALSE
+                this.storage
             );
         } else {
             throw new UnsupportedOperationException(
                 "Only Stripe payout methods are supported at the moment."
             );
         }
+    }
+
+    @Override
+    public boolean remove(final PayoutMethod payoutMethod) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
@@ -130,83 +133,11 @@ public final class SelfPayoutMethods implements PayoutMethods {
     }
 
     @Override
-    public PayoutMethod active() {
+    public PayoutMethod getByType(final String type) {
         throw new UnsupportedOperationException(
-            "You cannot get the active PayoutMethod "
-            + "out of all PayoutMethods in Self. "
-            + "Call #ofContributor(...) first."
+            "You cannot get a PayoutMethod by type out of all of them. "
+            + "Call #ofCountributor first."
         );
-    }
-
-    @Override
-    public PayoutMethod activate(final PayoutMethod payoutMethod) {
-        final Contributor contributor = payoutMethod.contributor();
-        final DSLContext jooq = this.database.jooq();
-        jooq.transaction(
-            (configuration) -> {
-                jooq.update(SLF_PAYOUTMETHODS_XDSD)
-                    .set(SLF_PAYOUTMETHODS_XDSD.ACTIVE, Boolean.FALSE)
-                    .where(
-                        SLF_PAYOUTMETHODS_XDSD.USERNAME.eq(
-                            contributor.username()
-                        ).and(
-                            SLF_PAYOUTMETHODS_XDSD.PROVIDER.eq(
-                                contributor.username()
-                            ).and(
-                                SLF_PAYOUTMETHODS_XDSD.TYPE.notEqual(
-                                    payoutMethod.type()
-                                )
-                            )
-                        )
-                    ).execute();
-                jooq.update(SLF_PAYOUTMETHODS_XDSD)
-                    .set(SLF_PAYOUTMETHODS_XDSD.ACTIVE, Boolean.TRUE)
-                    .where(
-                        SLF_PAYOUTMETHODS_XDSD.USERNAME.eq(
-                            contributor.username()
-                        ).and(
-                            SLF_PAYOUTMETHODS_XDSD.PROVIDER.eq(
-                                contributor.provider()
-                            ).and(
-                                SLF_PAYOUTMETHODS_XDSD.TYPE.eq(
-                                    payoutMethod.type()
-                                )
-                            )
-                        )
-                    ).execute();
-            }
-        );
-        return new PayoutMethod() {
-            @Override
-            public Contributor contributor() {
-                return payoutMethod.contributor();
-            }
-
-            @Override
-            public String type() {
-                return payoutMethod.type();
-            }
-
-            @Override
-            public boolean active() {
-                return Boolean.TRUE;
-            }
-
-            @Override
-            public String identifier() {
-                return payoutMethod.identifier();
-            }
-
-            @Override
-            public BillingInfo billingInfo() {
-                return payoutMethod.billingInfo();
-            }
-
-            @Override
-            public JsonObject json() {
-                return payoutMethod.json();
-            }
-        };
     }
 
     @Override
@@ -231,7 +162,7 @@ public final class SelfPayoutMethods implements PayoutMethods {
             return new StripePayoutMethod(
                 contributor,
                 record.getValue(SLF_PAYOUTMETHODS_XDSD.IDENTIFIER),
-                record.getValue(SLF_PAYOUTMETHODS_XDSD.ACTIVE)
+                this.storage
             );
         } else {
             throw new UnsupportedOperationException(
