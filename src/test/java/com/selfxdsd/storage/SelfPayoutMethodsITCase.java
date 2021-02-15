@@ -160,4 +160,40 @@ public final class SelfPayoutMethodsITCase {
             .payoutMethods()
             .getByType("STRIPE");
     }
+
+    /**
+     * We can register and then remove a PayoutMethod.
+     */
+    @Test
+    public void registerAndRemovePayoutMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final PayoutMethods all = storage.payoutMethods();
+        final Contributor john = storage.contributors().getById(
+            "john", Provider.Names.GITHUB
+        );
+        MatcherAssert.assertThat(john, Matchers.notNullValue());
+        MatcherAssert.assertThat(
+            all.ofContributor(john),
+            Matchers.emptyIterable()
+        );
+        final PayoutMethod registered = all.register(
+            john, "STRIPE", "STRIPE_PM_ID_123"
+        );
+        MatcherAssert.assertThat(
+            registered,
+            Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            all.ofContributor(john),
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            all.remove(registered),
+            Matchers.is(Boolean.TRUE)
+        );
+        MatcherAssert.assertThat(
+            all.ofContributor(john),
+            Matchers.emptyIterable()
+        );
+    }
 }

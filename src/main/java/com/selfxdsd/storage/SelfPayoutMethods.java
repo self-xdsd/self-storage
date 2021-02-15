@@ -33,6 +33,7 @@ import org.jooq.Result;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PAYOUTMETHODS_XDSD;
 
 /**
@@ -40,8 +41,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_PAYOUTMETHODS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.9
- * @todo #247:60min Implement and test method remove(PayoutMethod) which should
- *  delete the PayoutMethod from the DB.
  */
 public final class SelfPayoutMethods implements PayoutMethods {
 
@@ -107,7 +106,19 @@ public final class SelfPayoutMethods implements PayoutMethods {
 
     @Override
     public boolean remove(final PayoutMethod payoutMethod) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Contributor owner = payoutMethod.contributor();
+        final int deleted = this.database.jooq()
+            .deleteFrom(SLF_PAYOUTMETHODS_XDSD)
+            .where(
+                SLF_PAYOUTMETHODS_XDSD.USERNAME.eq(owner.username()).and(
+                    SLF_PAYOUTMETHODS_XDSD.PROVIDER.eq(owner.provider()).and(
+                        SLF_PAYOUTMETHODS_XDSD.IDENTIFIER.eq(
+                            payoutMethod.identifier()
+                        )
+                    )
+                )
+            ).execute();
+        return deleted == 1;
     }
 
     @Override
