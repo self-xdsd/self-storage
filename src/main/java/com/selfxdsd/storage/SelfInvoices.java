@@ -43,9 +43,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #252:60min Modify and test method registerAsPaid(...) here, to update
- *  the Invoice and set the values billedByCountry, billedToCountry
- *  and eurToRon.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -176,6 +173,15 @@ public final class SelfInvoices implements Invoices {
             ).set(
                 SLF_INVOICES_XDSD.BILLEDTO,
                 invoice.billedTo()
+            ).set(
+                SLF_INVOICES_XDSD.BILLEDBYCOUNTRY,
+                invoice.billedByCountry()
+            ).set(
+                SLF_INVOICES_XDSD.BILLEDTOCOUNTRY,
+                invoice.billedToCountry()
+            ).set(
+                SLF_INVOICES_XDSD.EURTORON,
+                invoice.eurToRon().toBigIntegerExact()
             ).where(
                 SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
             ).execute();
@@ -196,6 +202,15 @@ public final class SelfInvoices implements Invoices {
                     ).set(
                         SLF_INVOICES_XDSD.BILLEDTO,
                         invoice.billedTo()
+                    ).set(
+                        SLF_INVOICES_XDSD.BILLEDBYCOUNTRY,
+                        invoice.billedByCountry()
+                    ).set(
+                        SLF_INVOICES_XDSD.BILLEDTOCOUNTRY,
+                        invoice.billedToCountry()
+                    ).set(
+                        SLF_INVOICES_XDSD.EURTORON,
+                        invoice.eurToRon().toBigIntegerExact()
                     ).where(
                         SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
                     ).execute();
