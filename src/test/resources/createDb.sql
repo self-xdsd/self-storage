@@ -117,6 +117,9 @@ CREATE TABLE `self_xdsd`.`slf_invoices_xdsd` (
   `transactionId` VARCHAR(256) NULL DEFAULT NULL,
   `billedBy` VARCHAR(512) NULL DEFAULT NULL,
   `billedTo` VARCHAR(512) NULL DEFAULT NULL,
+  `billedByCountry` VARCHAR(32) NULL DEFAULT NULL,
+  `billedToCountry` VARCHAR(32) NULL DEFAULT NULL,
+  `eurToRon` DECIMAL(20,0) NULL DEFAULT 0,
   PRIMARY KEY (`invoiceId`, `repo_fullname`, `username`, `provider`, `role`),
   CONSTRAINT `fkContract`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role`)

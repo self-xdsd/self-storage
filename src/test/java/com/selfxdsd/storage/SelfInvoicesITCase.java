@@ -72,6 +72,10 @@ public final class SelfInvoicesITCase {
                 )
             )
         );
+        MatcherAssert.assertThat(
+            found.eurToRon(),
+            Matchers.greaterThanOrEqualTo(BigDecimal.valueOf(450))
+        );
     }
 
     /**
@@ -150,6 +154,10 @@ public final class SelfInvoicesITCase {
         MatcherAssert.assertThat(
             created.totalAmount(),
             Matchers.equalTo(BigDecimal.valueOf(0))
+        );
+        MatcherAssert.assertThat(
+            created.eurToRon(),
+            Matchers.greaterThanOrEqualTo(BigDecimal.valueOf(450))
         );
     }
 
@@ -281,6 +289,16 @@ public final class SelfInvoicesITCase {
             }
 
             @Override
+            public String billedByCountry() {
+                return unpaid.billedByCountry();
+            }
+
+            @Override
+            public String billedToCountry() {
+                return unpaid.billedToCountry();
+            }
+
+            @Override
             public InvoicedTasks tasks() {
                 return unpaid.tasks();
             }
@@ -298,6 +316,11 @@ public final class SelfInvoicesITCase {
             @Override
             public BigDecimal commission() {
                 return unpaid.commission();
+            }
+
+            @Override
+            public BigDecimal eurToRon() {
+                return unpaid.eurToRon();
             }
 
             @Override

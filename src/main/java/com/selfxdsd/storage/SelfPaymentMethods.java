@@ -256,6 +256,11 @@ public final class SelfPaymentMethods implements PaymentMethods {
             public JsonObject json() {
                 return paymentMethod.json();
             }
+
+            @Override
+            public boolean remove() {
+                return paymentMethod.remove();
+            }
         };
     }
 

@@ -43,6 +43,9 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @todo #252:60min Modify and test method registerAsPaid(...) here, to update
+ *  the Invoice and set the values billedByCountry, billedToCountry
+ *  and eurToRon.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -117,6 +120,9 @@ public final class SelfInvoices implements Invoices {
             null,
             null,
             null,
+            null,
+            null,
+            BigDecimal.valueOf(0),
             this.storage
         );
     }
@@ -260,6 +266,11 @@ public final class SelfInvoices implements Invoices {
             record.getValue(SLF_INVOICES_XDSD.TRANSACTIONID),
             record.getValue(SLF_INVOICES_XDSD.BILLEDBY),
             record.getValue(SLF_INVOICES_XDSD.BILLEDTO),
+            record.getValue(SLF_INVOICES_XDSD.BILLEDBYCOUNTRY),
+            record.getValue(SLF_INVOICES_XDSD.BILLEDTOCOUNTRY),
+            BigDecimal.valueOf(
+                record.getValue(SLF_INVOICES_XDSD.EURTORON).longValue()
+            ),
             this.storage
         );
     }
