@@ -37,6 +37,7 @@ import java.time.LocalDateTime;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @checkstyle JavaNCSS (500 lines)
  */
 public final class SelfInvoicesITCase {
 
@@ -355,6 +356,18 @@ public final class SelfInvoicesITCase {
         MatcherAssert.assertThat(
             paidSelected.billedTo(),
             Matchers.equalTo("Project vlad/test at github.")
+        );
+        MatcherAssert.assertThat(
+            paidSelected.billedToCountry(),
+            Matchers.equalTo("")
+        );
+        MatcherAssert.assertThat(
+            paidSelected.billedByCountry(),
+            Matchers.equalTo("")
+        );
+        MatcherAssert.assertThat(
+            paidSelected.eurToRon(),
+            Matchers.greaterThanOrEqualTo(BigDecimal.valueOf(450))
         );
         final PlatformInvoice platformInvoice = paidSelected.platformInvoice();
         MatcherAssert.assertThat(
