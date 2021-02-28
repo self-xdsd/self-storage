@@ -46,6 +46,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.13
+ * @todo #256:60min Implement method deactivate(PaymentMethod) here and write
+ *  integration tests for it.
  */
 public final class SelfPaymentMethods implements PaymentMethods {
 
@@ -253,6 +255,11 @@ public final class SelfPaymentMethods implements PaymentMethods {
             }
 
             @Override
+            public PaymentMethod deactivate() {
+                return paymentMethod.deactivate();
+            }
+
+            @Override
             public JsonObject json() {
                 return paymentMethod.json();
             }
@@ -262,6 +269,11 @@ public final class SelfPaymentMethods implements PaymentMethods {
                 return paymentMethod.remove();
             }
         };
+    }
+
+    @Override
+    public PaymentMethod deactivate(final PaymentMethod paymentMethod) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override
