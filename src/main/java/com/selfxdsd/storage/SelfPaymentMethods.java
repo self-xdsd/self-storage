@@ -46,8 +46,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.13
- * @todo #256:60min Implement method deactivate(PaymentMethod) here and write
- *  integration tests for it.
  */
 public final class SelfPaymentMethods implements PaymentMethods {
 
@@ -273,7 +271,61 @@ public final class SelfPaymentMethods implements PaymentMethods {
 
     @Override
     public PaymentMethod deactivate(final PaymentMethod paymentMethod) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Wallet wallet = paymentMethod.wallet();
+        final Project project = wallet.project();
+        this.database.jooq().update(SLF_PAYMENTMETHODS_XDSD)
+            .set(SLF_PAYMENTMETHODS_XDSD.ACTIVE, Boolean.FALSE)
+            .where(
+                SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME.eq(
+                    project.repoFullName()
+                ).and(
+                    SLF_PAYMENTMETHODS_XDSD.PROVIDER.eq(
+                        project.provider()
+                    ).and(
+                        SLF_PAYMENTMETHODS_XDSD.TYPE.eq(wallet.type())
+                    )
+                ).and(
+                    SLF_PAYMENTMETHODS_XDSD.IDENTIFIER.eq(
+                        paymentMethod.identifier()
+                    )
+                )
+            ).execute();
+        return new PaymentMethod() {
+            @Override
+            public String identifier() {
+                return paymentMethod.identifier();
+            }
+
+            @Override
+            public Wallet wallet() {
+                return paymentMethod.wallet();
+            }
+
+            @Override
+            public boolean active() {
+                return Boolean.FALSE;
+            }
+
+            @Override
+            public PaymentMethod activate() {
+                return paymentMethod.activate();
+            }
+
+            @Override
+            public PaymentMethod deactivate() {
+                return paymentMethod.deactivate();
+            }
+
+            @Override
+            public JsonObject json() {
+                return paymentMethod.json();
+            }
+
+            @Override
+            public boolean remove() {
+                return paymentMethod.remove();
+            }
+        };
     }
 
     @Override

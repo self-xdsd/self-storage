@@ -247,6 +247,48 @@ public final class SelfPaymentMethodsITCase {
     }
 
     /**
+     * SelfPaymentMethods can deactivate a PaymentMethod. It is the only
+     * active PaymentMethod of the Wallet so a second call to ofWallet.active()
+     * should return null.
+     */
+    @Test
+    public void deactivatesPaymentMethod() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Project project = storage.projects().getProjectById(
+            "amihaiemil/docker-java-api", Provider.Names.GITHUB
+        );
+        final Wallet wallet = project.wallets().active();
+        final PaymentMethods all = storage.paymentMethods();
+        final PaymentMethods ofWallet = all.ofWallet(wallet);
+
+        final PaymentMethod active = ofWallet.active();
+
+        MatcherAssert.assertThat(
+            active.identifier(),
+            Matchers.equalTo("stripe_pm_1")
+        );
+        MatcherAssert.assertThat(
+            active.active(),
+            Matchers.equalTo(Boolean.TRUE)
+        );
+
+        final PaymentMethod deactivated = all.deactivate(active);
+        MatcherAssert.assertThat(
+            deactivated.identifier(),
+            Matchers.equalTo("stripe_pm_1")
+        );
+        MatcherAssert.assertThat(
+            deactivated.active(),
+            Matchers.is(Boolean.FALSE)
+        );
+
+        MatcherAssert.assertThat(
+            all.ofWallet(wallet).active(),
+            Matchers.nullValue()
+        );
+    }
+
+    /**
      * Mock a wallet (as an alternative to having to select
      * a real one from the DB).
      * @param repoFullName Project's repo full name.
