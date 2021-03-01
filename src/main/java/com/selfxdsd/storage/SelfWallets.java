@@ -45,8 +45,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.SLF_WALLETS_XDSD;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.21
- * @todo #256:60min Implement method remove(Wallet) here and write integration
- *  tests for it.
  */
 public final class SelfWallets implements Wallets {
 
@@ -328,7 +326,17 @@ public final class SelfWallets implements Wallets {
 
     @Override
     public boolean remove(final Wallet wallet) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        final Project project = wallet.project();
+        final int deleted = this.database.jooq()
+            .deleteFrom(SLF_WALLETS_XDSD)
+            .where(
+                SLF_WALLETS_XDSD.PROVIDER.eq(project.provider()).and(
+                    SLF_WALLETS_XDSD.REPO_FULLNAME.eq(
+                        project.repoFullName()
+                    ).and(SLF_WALLETS_XDSD.TYPE.eq(wallet.type()))
+                )
+            ).execute();
+        return deleted == 1;
     }
 
     @Override

@@ -311,6 +311,11 @@ VALUES
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
 VALUES
+('johndoe/stripe_repo', 'github', 'FAKE', 10000000, 0, 'fakeWallet-5555');
+
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
 ('maria/to_remove', 'github', 'FAKE', 10000000, 0, 'fakew-5555555');
 
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
