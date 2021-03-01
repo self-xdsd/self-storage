@@ -290,4 +290,40 @@ public final class SelfWalletsITCase {
         //revert
         wallet.updateCash(BigDecimal.valueOf(10000));
     }
+
+    /**
+     * It can remove a Wallet.
+     */
+    @Test
+    public void removesWallet() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects projects = storage.projects();
+        final Wallets all = storage.wallets();
+        final Project project = projects.getProjectById(
+            "johndoe/stripe_repo", Provider.Names.GITHUB
+        );
+        final Wallets wallets = all.ofProject(project);
+
+        MatcherAssert.assertThat(
+            wallets,
+            Matchers.iterableWithSize(2)
+        );
+
+        Wallet fakeWallet = null;
+        for(final Wallet wallet : wallets) {
+            if(wallet.type().equalsIgnoreCase("FAKE")) {
+                fakeWallet = wallet;
+                break;
+            }
+        }
+        MatcherAssert.assertThat(
+            all.remove(fakeWallet),
+            Matchers.is(Boolean.TRUE)
+        );
+
+        MatcherAssert.assertThat(
+            all.ofProject(project),
+            Matchers.iterableWithSize(1)
+        );
+    }
 }
