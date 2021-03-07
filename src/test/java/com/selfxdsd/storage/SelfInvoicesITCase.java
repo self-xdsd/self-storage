@@ -335,6 +335,11 @@ public final class SelfInvoicesITCase {
             }
 
             @Override
+            public Payments payments() {
+                return unpaid.payments();
+            }
+
+            @Override
             public void toPdf(final OutputStream stream) throws IOException {
                 unpaid.toPdf(stream);
             }
@@ -345,7 +350,7 @@ public final class SelfInvoicesITCase {
                 BigDecimal.valueOf(15),
                 BigDecimal.valueOf(487)
             ),
-            Matchers.is(Boolean.TRUE)
+            Matchers.nullValue()
         );
 
         final Invoice paidSelected = invoices.getById(5);

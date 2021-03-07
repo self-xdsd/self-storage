@@ -43,6 +43,8 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @todo #264:60min Once we have the Payments table modify method
+ *  registerAsPaid(...) to create and return the successful Payment.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -149,7 +151,7 @@ public final class SelfInvoices implements Invoices {
     }
 
     @Override
-    public boolean registerAsPaid(
+    public Payment registerAsPaid(
         final Invoice invoice,
         final BigDecimal contributorVat,
         final BigDecimal eurToRon
@@ -237,7 +239,7 @@ public final class SelfInvoices implements Invoices {
                 }
             );
         }
-        return updated[0] == 1;
+        return null;
     }
 
     @Override
