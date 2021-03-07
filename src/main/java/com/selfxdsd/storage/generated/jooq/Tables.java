@@ -10,6 +10,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPaymentmethodsXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfPaymentsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPayoutmethodsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPlatforminvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd;
@@ -55,6 +56,11 @@ public class Tables {
      * The table <code>self_xdsd.slf_paymentmethods_xdsd</code>.
      */
     public static final SlfPaymentmethodsXdsd SLF_PAYMENTMETHODS_XDSD = SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD;
+
+    /**
+     * The table <code>self_xdsd.slf_payments_xdsd</code>.
+     */
+    public static final SlfPaymentsXdsd SLF_PAYMENTS_XDSD = SlfPaymentsXdsd.SLF_PAYMENTS_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_payoutmethods_xdsd</code>.

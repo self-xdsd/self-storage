@@ -30,6 +30,7 @@ import com.selfxdsd.api.storage.Storage;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @checkstyle ClassFanOutComplexity (300 lines)
  */
 public final class SelfJooq implements Storage {
 
@@ -127,6 +128,11 @@ public final class SelfJooq implements Storage {
     @Override
     public ApiTokens apiTokens() {
         return new SelfApiTokens(this, this.database);
+    }
+
+    @Override
+    public Payments payments() {
+        return new SelfPayments(this, this.database);
     }
 
     @Override

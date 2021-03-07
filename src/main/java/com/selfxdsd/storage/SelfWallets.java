@@ -193,7 +193,7 @@ public final class SelfWallets implements Wallets {
             }
 
             @Override
-            public Wallet pay(final Invoice invoice) {
+            public Payment pay(final Invoice invoice) {
                 return wallet.pay(invoice);
             }
 
@@ -238,6 +238,11 @@ public final class SelfWallets implements Wallets {
             }
 
             @Override
+            public Wallet activate() {
+                return wallet.activate();
+            }
+
+            @Override
             public boolean remove() {
                 return wallet.remove();
             }
@@ -268,7 +273,7 @@ public final class SelfWallets implements Wallets {
                 }
 
                 @Override
-                public Wallet pay(final Invoice invoice) {
+                public Payment pay(final Invoice invoice) {
                     return wallet.pay(invoice);
                 }
 
@@ -310,6 +315,11 @@ public final class SelfWallets implements Wallets {
                 @Override
                 public BillingInfo billingInfo() {
                     return wallet.billingInfo();
+                }
+
+                @Override
+                public Wallet activate() {
+                    return wallet.activate();
                 }
 
                 @Override

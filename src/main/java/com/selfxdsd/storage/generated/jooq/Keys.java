@@ -10,6 +10,7 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPaymentmethodsXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfPaymentsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPayoutmethodsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPlatforminvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd;
@@ -24,6 +25,7 @@ import com.selfxdsd.storage.generated.jooq.tables.records.SlfContributorsXdsdRec
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfInvoicedtasksXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfInvoicesXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfPaymentmethodsXdsdRecord;
+import com.selfxdsd.storage.generated.jooq.tables.records.SlfPaymentsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfPayoutmethodsXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfPlatforminvoicesXdsdRecord;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfPmsXdsdRecord;
@@ -67,6 +69,7 @@ public class Keys {
     public static final UniqueKey<SlfInvoicedtasksXdsdRecord> KEY_SLF_INVOICEDTASKS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_INVOICEDTASKS_XDSD_PRIMARY;
     public static final UniqueKey<SlfInvoicesXdsdRecord> KEY_SLF_INVOICES_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_INVOICES_XDSD_PRIMARY;
     public static final UniqueKey<SlfPaymentmethodsXdsdRecord> KEY_SLF_PAYMENTMETHODS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_PAYMENTMETHODS_XDSD_PRIMARY;
+    public static final UniqueKey<SlfPaymentsXdsdRecord> KEY_SLF_PAYMENTS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_PAYMENTS_XDSD_PRIMARY;
     public static final UniqueKey<SlfPayoutmethodsXdsdRecord> KEY_SLF_PAYOUTMETHODS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_PAYOUTMETHODS_XDSD_PRIMARY;
     public static final UniqueKey<SlfPlatforminvoicesXdsdRecord> KEY_SLF_PLATFORMINVOICES_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_PLATFORMINVOICES_XDSD_PRIMARY;
     public static final UniqueKey<SlfPmsXdsdRecord> KEY_SLF_PMS_XDSD_PRIMARY = UniqueKeys0.KEY_SLF_PMS_XDSD_PRIMARY;
@@ -85,6 +88,7 @@ public class Keys {
     public static final ForeignKey<SlfContractsXdsdRecord, SlfContributorsXdsdRecord> CONTRIBUTOR = ForeignKeys0.CONTRIBUTOR;
     public static final ForeignKey<SlfInvoicesXdsdRecord, SlfContractsXdsdRecord> FKCONTRACT = ForeignKeys0.FKCONTRACT;
     public static final ForeignKey<SlfPaymentmethodsXdsdRecord, SlfWalletsXdsdRecord> WALLETFK = ForeignKeys0.WALLETFK;
+    public static final ForeignKey<SlfPaymentsXdsdRecord, SlfInvoicesXdsdRecord> PAIDINVOICEFK = ForeignKeys0.PAIDINVOICEFK;
     public static final ForeignKey<SlfPayoutmethodsXdsdRecord, SlfContributorsXdsdRecord> OWNERCONTRIBUTOR = ForeignKeys0.OWNERCONTRIBUTOR;
     public static final ForeignKey<SlfPlatforminvoicesXdsdRecord, SlfInvoicesXdsdRecord> INVOICEFK = ForeignKeys0.INVOICEFK;
     public static final ForeignKey<SlfProjectsXdsdRecord, SlfUsersXdsdRecord> OWNER = ForeignKeys0.OWNER;
@@ -112,6 +116,7 @@ public class Keys {
         public static final UniqueKey<SlfInvoicedtasksXdsdRecord> KEY_SLF_INVOICEDTASKS_XDSD_PRIMARY = Internal.createUniqueKey(SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD, "KEY_slf_invoicedtasks_xdsd_PRIMARY", new TableField[] { SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.ID }, true);
         public static final UniqueKey<SlfInvoicesXdsdRecord> KEY_SLF_INVOICES_XDSD_PRIMARY = Internal.createUniqueKey(SlfInvoicesXdsd.SLF_INVOICES_XDSD, "KEY_slf_invoices_xdsd_PRIMARY", new TableField[] { SlfInvoicesXdsd.SLF_INVOICES_XDSD.INVOICEID, SlfInvoicesXdsd.SLF_INVOICES_XDSD.REPO_FULLNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.USERNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.PROVIDER, SlfInvoicesXdsd.SLF_INVOICES_XDSD.ROLE }, true);
         public static final UniqueKey<SlfPaymentmethodsXdsdRecord> KEY_SLF_PAYMENTMETHODS_XDSD_PRIMARY = Internal.createUniqueKey(SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD, "KEY_slf_paymentmethods_xdsd_PRIMARY", new TableField[] { SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.PAYMENTMETHODID }, true);
+        public static final UniqueKey<SlfPaymentsXdsdRecord> KEY_SLF_PAYMENTS_XDSD_PRIMARY = Internal.createUniqueKey(SlfPaymentsXdsd.SLF_PAYMENTS_XDSD, "KEY_slf_payments_xdsd_PRIMARY", new TableField[] { SlfPaymentsXdsd.SLF_PAYMENTS_XDSD.INVOICEID, SlfPaymentsXdsd.SLF_PAYMENTS_XDSD.TRANSACTIONID, SlfPaymentsXdsd.SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP }, true);
         public static final UniqueKey<SlfPayoutmethodsXdsdRecord> KEY_SLF_PAYOUTMETHODS_XDSD_PRIMARY = Internal.createUniqueKey(SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD, "KEY_slf_payoutmethods_xdsd_PRIMARY", new TableField[] { SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD.USERNAME, SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD.PROVIDER, SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD.TYPE }, true);
         public static final UniqueKey<SlfPlatforminvoicesXdsdRecord> KEY_SLF_PLATFORMINVOICES_XDSD_PRIMARY = Internal.createUniqueKey(SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD, "KEY_slf_platforminvoices_xdsd_PRIMARY", new TableField[] { SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD.ID }, true);
         public static final UniqueKey<SlfPmsXdsdRecord> KEY_SLF_PMS_XDSD_PRIMARY = Internal.createUniqueKey(SlfPmsXdsd.SLF_PMS_XDSD, "KEY_slf_pms_xdsd_PRIMARY", new TableField[] { SlfPmsXdsd.SLF_PMS_XDSD.ID }, true);
@@ -128,6 +133,7 @@ public class Keys {
         public static final ForeignKey<SlfContractsXdsdRecord, SlfContributorsXdsdRecord> CONTRIBUTOR = Internal.createForeignKey(Keys.KEY_SLF_CONTRIBUTORS_XDSD_PRIMARY, SlfContractsXdsd.SLF_CONTRACTS_XDSD, "contributor", new TableField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER }, true);
         public static final ForeignKey<SlfInvoicesXdsdRecord, SlfContractsXdsdRecord> FKCONTRACT = Internal.createForeignKey(Keys.KEY_SLF_CONTRACTS_XDSD_PRIMARY, SlfInvoicesXdsd.SLF_INVOICES_XDSD, "fkContract", new TableField[] { SlfInvoicesXdsd.SLF_INVOICES_XDSD.REPO_FULLNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.USERNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.PROVIDER, SlfInvoicesXdsd.SLF_INVOICES_XDSD.ROLE }, true);
         public static final ForeignKey<SlfPaymentmethodsXdsdRecord, SlfWalletsXdsdRecord> WALLETFK = Internal.createForeignKey(Keys.KEY_SLF_WALLETS_XDSD_PRIMARY, SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD, "walletFK", new TableField[] { SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME, SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.PROVIDER, SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.TYPE }, true);
+        public static final ForeignKey<SlfPaymentsXdsdRecord, SlfInvoicesXdsdRecord> PAIDINVOICEFK = Internal.createForeignKey(Keys.KEY_SLF_INVOICES_XDSD_PRIMARY, SlfPaymentsXdsd.SLF_PAYMENTS_XDSD, "paidInvoiceFk", new TableField[] { SlfPaymentsXdsd.SLF_PAYMENTS_XDSD.INVOICEID }, true);
         public static final ForeignKey<SlfPayoutmethodsXdsdRecord, SlfContributorsXdsdRecord> OWNERCONTRIBUTOR = Internal.createForeignKey(Keys.KEY_SLF_CONTRIBUTORS_XDSD_PRIMARY, SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD, "ownerContributor", new TableField[] { SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD.USERNAME, SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD.PROVIDER }, true);
         public static final ForeignKey<SlfPlatforminvoicesXdsdRecord, SlfInvoicesXdsdRecord> INVOICEFK = Internal.createForeignKey(Keys.KEY_SLF_INVOICES_XDSD_PRIMARY, SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD, "invoiceFk", new TableField[] { SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD.INVOICEID }, true);
         public static final ForeignKey<SlfProjectsXdsdRecord, SlfUsersXdsdRecord> OWNER = Internal.createForeignKey(Keys.KEY_SLF_USERS_XDSD_PRIMARY, SlfProjectsXdsd.SLF_PROJECTS_XDSD, "owner", new TableField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.USERNAME, SlfProjectsXdsd.SLF_PROJECTS_XDSD.PROVIDER }, true);

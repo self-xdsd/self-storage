@@ -223,6 +223,14 @@ INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 VALUES
 (5, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , null, null);
 
+INSERT INTO `self_xdsd`.`slf_payments_xdsd`
+(`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
+VALUES(2, 'transaction123', '2021-03-01', 1000, 'FAILED', 'Failed Payment 1');
+
+INSERT INTO `self_xdsd`.`slf_payments_xdsd`
+(`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
+VALUES(2, 'transaction456', '2021-03-02', 1000, 'FAILED', 'Failed Payment 2');
+
 INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
 (invoiceId,
  repo_fullname,
