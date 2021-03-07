@@ -151,6 +151,22 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
     ON DELETE CASCADE);
 
 -- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_payments_xdsd`
+-- -----------------------------------------------------
+CREATE TABLE `self_xdsd`.`sld_payments_xdsd` (
+  `invoiceId` INT NOT NULL,
+  `transactionId` VARCHAR(256) NOT NULL,
+  `payment_timestamp` DATETIME NOT NULL,
+  `value` DECIMAL(20,0) NOT NULL,
+  `status` VARCHAR(32) NOT NULL,
+  `failReason` VARCHAR(512) NOT NULL,
+  PRIMARY KEY (`invoiceId`, `transactionId`, `payment_timestamp`),
+  CONSTRAINT `paidInvoiceFk`
+    FOREIGN KEY (`invoiceId`)
+    REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`invoiceId`)
+    ON DELETE CASCADE);
+
+-- -----------------------------------------------------
 -- Table `self_xdsd`.`slf_resignations_xdsd`
 -- -----------------------------------------------------
 CREATE TABLE `self_xdsd`.`slf_resignations_xdsd` (

@@ -4,6 +4,7 @@
 package com.selfxdsd.storage.generated.jooq;
 
 
+import com.selfxdsd.storage.generated.jooq.tables.SldPaymentsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfApitokensXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
@@ -25,6 +26,11 @@ import com.selfxdsd.storage.generated.jooq.tables.SlfWalletsXdsd;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>self_xdsd.sld_payments_xdsd</code>.
+     */
+    public static final SldPaymentsXdsd SLD_PAYMENTS_XDSD = SldPaymentsXdsd.SLD_PAYMENTS_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_apitokens_xdsd</code>.

@@ -132,7 +132,7 @@ public final class SelfJooq implements Storage {
 
     @Override
     public Payments payments() {
-        return null;
+        return new SelfPayments(this, this.database);
     }
 
     @Override
