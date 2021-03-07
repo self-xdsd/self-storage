@@ -71,6 +71,9 @@ public final class SelfPayments implements Payments {
         final String status,
         final String failReason
     ) {
+//        this.database.jooq().insertInto(
+//            SLF_PAYMENDS_
+//        );
         return null;
     }
 

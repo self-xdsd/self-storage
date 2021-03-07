@@ -4,13 +4,13 @@
 package com.selfxdsd.storage.generated.jooq;
 
 
-import com.selfxdsd.storage.generated.jooq.tables.SldPaymentsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfApitokensXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContributorsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPaymentmethodsXdsd;
+import com.selfxdsd.storage.generated.jooq.tables.SlfPaymentsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPayoutmethodsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPlatforminvoicesXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd;
@@ -34,17 +34,12 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfXdsd extends SchemaImpl {
 
-    private static final long serialVersionUID = 1707754788;
+    private static final long serialVersionUID = -858571150;
 
     /**
      * The reference instance of <code>self_xdsd</code>
      */
     public static final SelfXdsd SELF_XDSD = new SelfXdsd();
-
-    /**
-     * The table <code>self_xdsd.sld_payments_xdsd</code>.
-     */
-    public final SldPaymentsXdsd SLD_PAYMENTS_XDSD = SldPaymentsXdsd.SLD_PAYMENTS_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_apitokens_xdsd</code>.
@@ -75,6 +70,11 @@ public class SelfXdsd extends SchemaImpl {
      * The table <code>self_xdsd.slf_paymentmethods_xdsd</code>.
      */
     public final SlfPaymentmethodsXdsd SLF_PAYMENTMETHODS_XDSD = SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD;
+
+    /**
+     * The table <code>self_xdsd.slf_payments_xdsd</code>.
+     */
+    public final SlfPaymentsXdsd SLF_PAYMENTS_XDSD = SlfPaymentsXdsd.SLF_PAYMENTS_XDSD;
 
     /**
      * The table <code>self_xdsd.slf_payoutmethods_xdsd</code>.
@@ -132,13 +132,13 @@ public class SelfXdsd extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            SldPaymentsXdsd.SLD_PAYMENTS_XDSD,
             SlfApitokensXdsd.SLF_APITOKENS_XDSD,
             SlfContractsXdsd.SLF_CONTRACTS_XDSD,
             SlfContributorsXdsd.SLF_CONTRIBUTORS_XDSD,
             SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD,
             SlfInvoicesXdsd.SLF_INVOICES_XDSD,
             SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD,
+            SlfPaymentsXdsd.SLF_PAYMENTS_XDSD,
             SlfPayoutmethodsXdsd.SLF_PAYOUTMETHODS_XDSD,
             SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD,
             SlfPmsXdsd.SLF_PMS_XDSD,

@@ -153,7 +153,7 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
 -- -----------------------------------------------------
 -- Table `self_xdsd`.`slf_payments_xdsd`
 -- -----------------------------------------------------
-CREATE TABLE `self_xdsd`.`sld_payments_xdsd` (
+CREATE TABLE `self_xdsd`.`slf_payments_xdsd` (
   `invoiceId` INT NOT NULL,
   `transactionId` VARCHAR(256) NOT NULL,
   `payment_timestamp` DATETIME NOT NULL,
