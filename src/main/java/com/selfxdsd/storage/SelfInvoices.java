@@ -45,6 +45,9 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @since 0.0.4
  * @todo #264:60min Once we have the Payments table modify method
  *  registerAsPaid(...) to create and return the successful Payment.
+ * @todo #264:60min Remove the DB columns Invoice.transactionId and timestamp.
+ *  They should be read from the successful Payment, if it exists. When reading
+ *  an Invoice, we should LEFT JOIN with Payments on the id and status SUCCESS.
  */
 public final class SelfInvoices implements Invoices {
 
