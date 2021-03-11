@@ -43,8 +43,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #264:60min Once we have the Payments table modify method
- *  registerAsPaid(...) to create and return the successful Payment.
  * @todo #264:60min Remove the DB columns Invoice.transactionId and timestamp.
  *  They should be read from the successful Payment, if it exists. When reading
  *  an Invoice, we should LEFT JOIN with Payments on the id and status SUCCESS.
@@ -152,6 +150,19 @@ public final class SelfInvoices implements Invoices {
         return new ContractInvoices(id, ofContract, this.storage);
     }
 
+    /**
+     * {@inheritDoc}
+     * <br>
+     *
+     * Insert the successful Payment and update the Invoice billing data.
+     * If it's a <b>real payment</b> insert the PlatformInvoice as well.
+     *
+     * @param invoice Paid invoice.
+     * @param contributorVat Vat which Self takes from the Contributor.
+     * @param eurToRon Euro to RON (Romanian Leu) conversion rate.
+     *  For example, if the value is 487, it means 1 EUR = 4,87 RON.
+     * @return Successful Payment.
+     */
     @Override
     public Payment registerAsPaid(
         final Invoice invoice,
@@ -164,44 +175,68 @@ public final class SelfInvoices implements Invoices {
             );
         }
         final Payment success = invoice.latest();
-        final int[] updated = new int[1];
         if(success.transactionId().startsWith("fake_payment_")) {
-            updated[0] = this.database.jooq().update(SLF_INVOICES_XDSD).set(
-                SLF_INVOICES_XDSD.TRANSACTIONID,
-                success.transactionId()
-            ).set(
-                SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
-                success.paymentTime()
-            ).set(
-                SLF_INVOICES_XDSD.BILLEDBY,
-                invoice.billedBy()
-            ).set(
-                SLF_INVOICES_XDSD.BILLEDTO,
-                invoice.billedTo()
-            ).set(
-                SLF_INVOICES_XDSD.BILLEDBYCOUNTRY,
-                invoice.billedByCountry()
-            ).set(
-                SLF_INVOICES_XDSD.BILLEDTOCOUNTRY,
-                invoice.billedToCountry()
-            ).set(
-                SLF_INVOICES_XDSD.EURTORON,
-                invoice.eurToRon().toBigIntegerExact()
-            ).where(
-                SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
-            ).execute();
+            final DSLContext jooq = this.database.jooq();
+            jooq.transaction(
+                configuration -> {
+                    jooq.insertInto(
+                        SLF_PAYMENTS_XDSD,
+                        SLF_PAYMENTS_XDSD.INVOICEID,
+                        SLF_PAYMENTS_XDSD.TRANSACTIONID,
+                        SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP,
+                        SLF_PAYMENTS_XDSD.VALUE,
+                        SLF_PAYMENTS_XDSD.STATUS,
+                        SLF_PAYMENTS_XDSD.FAILREASON
+                    ).values(
+                        invoice.invoiceId(),
+                        success.transactionId(),
+                        success.paymentTime(),
+                        success.value().toBigIntegerExact(),
+                        success.status(),
+                        success.failReason()
+                    ).execute();
+                    jooq.update(SLF_INVOICES_XDSD).set(
+                        SLF_INVOICES_XDSD.BILLEDBY,
+                        invoice.billedBy()
+                    ).set(
+                        SLF_INVOICES_XDSD.BILLEDTO,
+                        invoice.billedTo()
+                    ).set(
+                        SLF_INVOICES_XDSD.BILLEDBYCOUNTRY,
+                        invoice.billedByCountry()
+                    ).set(
+                        SLF_INVOICES_XDSD.BILLEDTOCOUNTRY,
+                        invoice.billedToCountry()
+                    ).set(
+                        SLF_INVOICES_XDSD.EURTORON,
+                        invoice.eurToRon().toBigIntegerExact()
+                    ).where(
+                        SLF_INVOICES_XDSD.INVOICEID.eq(invoice.invoiceId())
+                    ).execute();
+                }
+            );
         } else {
             final DSLContext jooq = this.database.jooq();
             jooq.transaction(
                 configuration -> {
                     final String contributorBilling = invoice.billedBy();
-                    updated[0] = jooq.update(SLF_INVOICES_XDSD).set(
-                        SLF_INVOICES_XDSD.TRANSACTIONID,
-                        success.transactionId()
-                    ).set(
-                        SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
-                        success.paymentTime()
-                    ).set(
+                    jooq.insertInto(
+                        SLF_PAYMENTS_XDSD,
+                        SLF_PAYMENTS_XDSD.INVOICEID,
+                        SLF_PAYMENTS_XDSD.TRANSACTIONID,
+                        SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP,
+                        SLF_PAYMENTS_XDSD.VALUE,
+                        SLF_PAYMENTS_XDSD.STATUS,
+                        SLF_PAYMENTS_XDSD.FAILREASON
+                    ).values(
+                        invoice.invoiceId(),
+                        success.transactionId(),
+                        success.paymentTime(),
+                        success.value().toBigIntegerExact(),
+                        success.status(),
+                        success.failReason()
+                    ).execute();
+                    jooq.update(SLF_INVOICES_XDSD).set(
                         SLF_INVOICES_XDSD.BILLEDBY,
                         contributorBilling
                     ).set(
@@ -229,7 +264,7 @@ public final class SelfInvoices implements Invoices {
                         SLF_PLATFORMINVOICES_XDSD.PAYMENT_TIMESTAMP,
                         SLF_PLATFORMINVOICES_XDSD.INVOICEID,
                         SLF_PLATFORMINVOICES_XDSD.EURTORON
-                        ).values(
+                    ).values(
                         LocalDateTime.now(),
                         contributorBilling,
                         invoice.commission().toBigIntegerExact(),
@@ -242,7 +277,7 @@ public final class SelfInvoices implements Invoices {
                 }
             );
         }
-        return null;
+        return success;
     }
 
     @Override
