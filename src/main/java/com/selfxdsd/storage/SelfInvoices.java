@@ -26,6 +26,7 @@ import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.contracts.invoices.ContractInvoices;
 import com.selfxdsd.core.contracts.invoices.StoredInvoice;
+import com.selfxdsd.core.contracts.invoices.StoredPayment;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -34,6 +35,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.selfxdsd.storage.generated.jooq.Tables.*;
@@ -43,9 +45,6 @@ import static com.selfxdsd.storage.generated.jooq.Tables.*;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #264:60min Remove the DB columns Invoice.transactionId and timestamp.
- *  They should be read from the successful Payment, if it exists. When reading
- *  an Invoice, we should LEFT JOIN with Payments on the id and status SUCCESS.
  */
 public final class SelfInvoices implements Invoices {
 
@@ -77,7 +76,10 @@ public final class SelfInvoices implements Invoices {
         final Result<Record> result = this.database.jooq()
             .select()
             .from(SLF_INVOICES_XDSD)
+            .leftJoin(SLF_PAYMENTS_XDSD)
+            .on(SLF_INVOICES_XDSD.INVOICEID.eq(SLF_PAYMENTS_XDSD.INVOICEID))
             .where(SLF_INVOICES_XDSD.INVOICEID.eq(id))
+            .orderBy(SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP.desc())
             .fetch();
         if(!result.isEmpty()) {
             return this.buildInvoice(result.get(0));
@@ -140,13 +142,18 @@ public final class SelfInvoices implements Invoices {
         final Supplier<Stream<Invoice>> ofContract = () -> this.database.jooq()
             .select()
             .from(SLF_INVOICES_XDSD)
+            .leftJoin(SLF_PAYMENTS_XDSD)
+            .on(SLF_INVOICES_XDSD.INVOICEID.eq(SLF_PAYMENTS_XDSD.INVOICEID))
             .where(SLF_INVOICES_XDSD.REPO_FULLNAME.eq(id.getRepoFullName())
                 .and(SLF_INVOICES_XDSD.USERNAME.eq(id.getContributorUsername()))
                 .and(SLF_INVOICES_XDSD.PROVIDER.eq(id.getProvider()))
                 .and(SLF_INVOICES_XDSD.ROLE.eq(id.getRole()))
             )
+            .orderBy(SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP.desc())
             .stream()
-            .map(record -> buildInvoice(record, contract));
+            .map(record -> buildInvoice(record, contract))
+            .collect(Collectors.toSet())
+            .stream();
         return new ContractInvoices(id, ofContract, this.storage);
     }
 
@@ -313,11 +320,27 @@ public final class SelfInvoices implements Invoices {
      * @return Invoice.
      */
     private Invoice buildInvoice(final Record record, final Contract contract) {
+        final Payment latest;
+        if(record.getValue(SLF_PAYMENTS_XDSD.STATUS) != null) {
+            latest = new StoredPayment(
+                null,
+                record.getValue(SLF_PAYMENTS_XDSD.TRANSACTIONID),
+                record.getValue(SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP),
+                BigDecimal.valueOf(
+                    record.getValue(SLF_PAYMENTS_XDSD.VALUE).longValue()
+                ),
+                record.getValue(SLF_PAYMENTS_XDSD.STATUS),
+                record.getValue(SLF_PAYMENTS_XDSD.FAILREASON),
+                this.storage
+            );
+        } else {
+            latest = null;
+        }
         return new StoredInvoice(
             record.getValue(SLF_INVOICES_XDSD.INVOICEID),
             contract,
             record.getValue(SLF_INVOICES_XDSD.CREATEDAT),
-            null,
+            latest,
             record.getValue(SLF_INVOICES_XDSD.BILLEDBY),
             record.getValue(SLF_INVOICES_XDSD.BILLEDTO),
             record.getValue(SLF_INVOICES_XDSD.BILLEDBYCOUNTRY),

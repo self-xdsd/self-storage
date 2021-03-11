@@ -199,29 +199,37 @@ VALUES
 ('vlad/test', '1000', 'github', 'DEV', 60, 1);
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt)
 VALUES
-(1, 'amihaiemil/docker-java-api', 'john', 'github', 'DEV', NOW() , null, null);
+(1, 'amihaiemil/docker-java-api', 'john', 'github', 'DEV', NOW());
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt)
 VALUES
-(2, 'amihaiemil/docker-java-api', 'maria', 'github', 'REV', NOW() , null, null);
+(2, 'amihaiemil/docker-java-api', 'maria', 'github', 'REV', NOW());
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt)
 VALUES
-(3, 'vlad/test', 'maria', 'github', 'PO', NOW() , null, null);
+(3, 'vlad/test', 'maria', 'github', 'PO', NOW());
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt)
 VALUES
-(4, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , '2021-01-09', 'transactionIdHere');
+(4, 'vlad/test', 'alexandra', 'github', 'DEV', NOW());
 
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
-(invoiceId, repo_fullname, username, provider, role, createdAt, payment_timestamp, transactionId)
+(invoiceId, repo_fullname, username, provider, role, createdAt)
 VALUES
-(5, 'vlad/test', 'alexandra', 'github', 'DEV', NOW() , null, null);
+(5, 'vlad/test', 'alexandra', 'github', 'DEV', NOW());
+
+INSERT INTO `self_xdsd`.`slf_payments_xdsd`
+(`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
+VALUES(1, 'transaction123', '2021-03-01', 1000, 'FAILED', 'Failed Payment 1');
+
+INSERT INTO `self_xdsd`.`slf_payments_xdsd`
+(`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
+VALUES(1, 'transaction456', '2021-03-02', 1000, 'FAILED', 'Failed Payment 2');
 
 INSERT INTO `self_xdsd`.`slf_payments_xdsd`
 (`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)

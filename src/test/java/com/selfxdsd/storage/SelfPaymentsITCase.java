@@ -48,7 +48,7 @@ public final class SelfPaymentsITCase {
     @Test
     public void registersNewPayment() {
         final Storage storage = new SelfJooq(new H2Database());
-        final Invoice invoice = storage.invoices().getById(1);
+        final Invoice invoice = storage.invoices().getById(5);
         MatcherAssert.assertThat(
             invoice,
             Matchers.notNullValue()
