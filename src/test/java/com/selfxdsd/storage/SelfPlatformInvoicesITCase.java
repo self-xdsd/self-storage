@@ -192,12 +192,8 @@ public final class SelfPlatformInvoicesITCase {
         final Invoice corresponding = found.invoice();
 
         MatcherAssert.assertThat(
-            found.transactionId(),
-            Matchers.equalTo(corresponding.transactionId())
-        );
-        MatcherAssert.assertThat(
-            found.paymentTime(),
-            Matchers.equalTo(corresponding.paymentTime())
+            found.invoice().invoiceId(),
+            Matchers.equalTo(corresponding.invoiceId())
         );
         MatcherAssert.assertThat(
             found.commission(),

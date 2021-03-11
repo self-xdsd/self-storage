@@ -123,7 +123,6 @@ public final class SelfInvoices implements Invoices {
             null,
             null,
             null,
-            null,
             BigDecimal.valueOf(0),
             this.storage
         );
@@ -164,14 +163,15 @@ public final class SelfInvoices implements Invoices {
                 "Invoice #" + invoice.invoiceId() + " is not paid!"
             );
         }
+        final Payment success = invoice.latest();
         final int[] updated = new int[1];
-        if(invoice.transactionId().startsWith("fake_payment_")) {
+        if(success.transactionId().startsWith("fake_payment_")) {
             updated[0] = this.database.jooq().update(SLF_INVOICES_XDSD).set(
                 SLF_INVOICES_XDSD.TRANSACTIONID,
-                invoice.transactionId()
+                success.transactionId()
             ).set(
                 SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
-                invoice.paymentTime()
+                success.paymentTime()
             ).set(
                 SLF_INVOICES_XDSD.BILLEDBY,
                 invoice.billedBy()
@@ -197,10 +197,10 @@ public final class SelfInvoices implements Invoices {
                     final String contributorBilling = invoice.billedBy();
                     updated[0] = jooq.update(SLF_INVOICES_XDSD).set(
                         SLF_INVOICES_XDSD.TRANSACTIONID,
-                        invoice.transactionId()
+                        success.transactionId()
                     ).set(
                         SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP,
-                        invoice.paymentTime()
+                        success.paymentTime()
                     ).set(
                         SLF_INVOICES_XDSD.BILLEDBY,
                         contributorBilling
@@ -234,8 +234,8 @@ public final class SelfInvoices implements Invoices {
                         contributorBilling,
                         invoice.commission().toBigIntegerExact(),
                         contributorVat.toBigIntegerExact(),
-                        invoice.transactionId(),
-                        invoice.paymentTime(),
+                        success.transactionId(),
+                        success.paymentTime(),
                         invoice.invoiceId(),
                         eurToRon.toBigIntegerExact()
                     ).execute();
@@ -282,8 +282,7 @@ public final class SelfInvoices implements Invoices {
             record.getValue(SLF_INVOICES_XDSD.INVOICEID),
             contract,
             record.getValue(SLF_INVOICES_XDSD.CREATEDAT),
-            record.getValue(SLF_INVOICES_XDSD.PAYMENT_TIMESTAMP),
-            record.getValue(SLF_INVOICES_XDSD.TRANSACTIONID),
+            null,
             record.getValue(SLF_INVOICES_XDSD.BILLEDBY),
             record.getValue(SLF_INVOICES_XDSD.BILLEDTO),
             record.getValue(SLF_INVOICES_XDSD.BILLEDBYCOUNTRY),
