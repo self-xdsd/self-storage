@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicesXdsd extends TableImpl<SlfInvoicesXdsdRecord> {
 
-    private static final long serialVersionUID = -1662186094;
+    private static final long serialVersionUID = 1109559127;
 
     /**
      * The reference instance of <code>self_xdsd.slf_invoices_xdsd</code>
@@ -77,19 +77,9 @@ public class SlfInvoicesXdsd extends TableImpl<SlfInvoicesXdsdRecord> {
     public final TableField<SlfInvoicesXdsdRecord, String> ROLE = createField(DSL.name("role"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
-     * The column <code>self_xdsd.slf_invoices_xdsd.payment_timestamp</code>.
-     */
-    public final TableField<SlfInvoicesXdsdRecord, LocalDateTime> PAYMENT_TIMESTAMP = createField(DSL.name("payment_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
-
-    /**
      * The column <code>self_xdsd.slf_invoices_xdsd.createdAt</code>.
      */
     public final TableField<SlfInvoicesXdsdRecord, LocalDateTime> CREATEDAT = createField(DSL.name("createdAt"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_invoices_xdsd.transactionId</code>.
-     */
-    public final TableField<SlfInvoicesXdsdRecord, String> TRANSACTIONID = createField(DSL.name("transactionId"), org.jooq.impl.SQLDataType.VARCHAR(256), this, "");
 
     /**
      * The column <code>self_xdsd.slf_invoices_xdsd.billedBy</code>.
@@ -210,11 +200,11 @@ public class SlfInvoicesXdsd extends TableImpl<SlfInvoicesXdsdRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, String, String, String, String, LocalDateTime, LocalDateTime, String, String, String, String, String, BigInteger> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row11<Integer, String, String, String, String, LocalDateTime, String, String, String, String, BigInteger> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }
