@@ -225,6 +225,14 @@ VALUES
 
 INSERT INTO `self_xdsd`.`slf_payments_xdsd`
 (`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
+VALUES(1, 'transaction123', '2021-03-01', 1000, 'FAILED', 'Failed Payment 1');
+
+INSERT INTO `self_xdsd`.`slf_payments_xdsd`
+(`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
+VALUES(1, 'transaction456', '2021-03-02', 1000, 'FAILED', 'Failed Payment 2');
+
+INSERT INTO `self_xdsd`.`slf_payments_xdsd`
+(`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
 VALUES(2, 'transaction123', '2021-03-01', 1000, 'FAILED', 'Failed Payment 1');
 
 INSERT INTO `self_xdsd`.`slf_payments_xdsd`

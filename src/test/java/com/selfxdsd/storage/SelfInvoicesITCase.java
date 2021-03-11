@@ -44,7 +44,8 @@ import java.time.LocalDateTime;
 public final class SelfInvoicesITCase {
 
     /**
-     * SelfInvoices can return an Invoice by its id.
+     * SelfInvoices can return an Invoice by its id. The Invoice should
+     * also have its latest Payment.
      */
     @Test
     public void returnsFoundInvoice() {
@@ -78,6 +79,62 @@ public final class SelfInvoicesITCase {
         MatcherAssert.assertThat(
             found.eurToRon(),
             Matchers.greaterThanOrEqualTo(BigDecimal.valueOf(450))
+        );
+        MatcherAssert.assertThat(
+            found.isPaid(),
+            Matchers.is(Boolean.FALSE)
+        );
+        final Payment latest = found.latest();
+        MatcherAssert.assertThat(
+            latest.status(),
+            Matchers.equalTo("FAILED")
+        );
+        MatcherAssert.assertThat(
+            latest.failReason(),
+            Matchers.equalTo("Failed Payment 2")
+        );
+    }
+
+    /**
+     * SelfInvoices can return an Invoice by its id. The Invoice has
+     * no payments.
+     */
+    @Test
+    public void returnsFoundInvoiceNoPayments() {
+        final Invoices invoices = new SelfJooq(
+            new H2Database()
+        ).invoices();
+        final Invoice found = invoices.getById(4);
+        MatcherAssert.assertThat(
+            found.invoiceId(),
+            Matchers.equalTo(4)
+        );
+        MatcherAssert.assertThat(
+            found.createdAt(),
+            Matchers.lessThanOrEqualTo(LocalDateTime.now())
+        );
+        MatcherAssert.assertThat(
+            found.contract().contractId(),
+            Matchers.equalTo(
+                new Contract.Id(
+                    "vlad/test",
+                    "alexandra",
+                    "github",
+                    "DEV"
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            found.isPaid(),
+            Matchers.is(Boolean.FALSE)
+        );
+        MatcherAssert.assertThat(
+            found.latest(),
+            Matchers.nullValue()
+        );
+        MatcherAssert.assertThat(
+            found.payments(),
+            Matchers.emptyIterable()
         );
     }
 
@@ -194,9 +251,15 @@ public final class SelfInvoicesITCase {
             "github",
             "DEV"
         );
-        final Iterable<Invoice> ofContract = () -> invoices.ofContract(id)
-            .iterator();
-        MatcherAssert.assertThat(ofContract, Matchers.iterableWithSize(1));
+        final Invoices ofJohn = invoices.ofContract(id);
+        MatcherAssert.assertThat(
+            ofJohn,
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            ofJohn.iterator().next().latest().failReason(),
+            Matchers.equalTo("Failed Payment 2")
+        );
     }
 
     /**
