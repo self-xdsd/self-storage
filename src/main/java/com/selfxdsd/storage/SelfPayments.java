@@ -98,7 +98,7 @@ public final class SelfPayments implements Payments {
             );
         } else {
             return new StoredPayment(
-                invoice,
+                invoice.invoiceId(),
                 transactionId,
                 timestamp,
                 value,
@@ -120,7 +120,7 @@ public final class SelfPayments implements Payments {
                 .stream()
                 .map(
                     rec -> new StoredPayment(
-                        invoice,
+                        invoice.invoiceId(),
                         rec.getValue(SLF_PAYMENTS_XDSD.TRANSACTIONID),
                         rec.getValue(SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP),
                         BigDecimal.valueOf(
