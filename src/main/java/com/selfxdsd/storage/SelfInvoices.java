@@ -323,7 +323,7 @@ public final class SelfInvoices implements Invoices {
         final Payment latest;
         if(record.getValue(SLF_PAYMENTS_XDSD.STATUS) != null) {
             latest = new StoredPayment(
-                null,
+                record.getValue(SLF_INVOICES_XDSD.INVOICEID),
                 record.getValue(SLF_PAYMENTS_XDSD.TRANSACTIONID),
                 record.getValue(SLF_PAYMENTS_XDSD.PAYMENT_TIMESTAMP),
                 BigDecimal.valueOf(
