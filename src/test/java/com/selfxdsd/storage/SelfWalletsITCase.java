@@ -24,8 +24,7 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
-import com.selfxdsd.core.projects.FakeWallet;
-import com.selfxdsd.core.projects.StripeWallet;
+import com.selfxdsd.core.projects.RegisterUnsuccessfulPayments;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -65,7 +64,7 @@ public final class SelfWalletsITCase {
         );
         MatcherAssert.assertThat(
             registered,
-            Matchers.instanceOf(FakeWallet.class)
+            Matchers.instanceOf(RegisterUnsuccessfulPayments.class)
         );
         MatcherAssert.assertThat(
             registered.project(),
@@ -113,7 +112,7 @@ public final class SelfWalletsITCase {
         );
         MatcherAssert.assertThat(
             registered,
-            Matchers.instanceOf(StripeWallet.class)
+            Matchers.instanceOf(RegisterUnsuccessfulPayments.class)
         );
         MatcherAssert.assertThat(
             registered.project(),
