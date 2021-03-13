@@ -23,9 +23,10 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
+import com.selfxdsd.api.storage.Storage;
+import com.selfxdsd.core.contracts.invoices.StoredPayment;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -300,11 +301,20 @@ public final class SelfInvoicesITCase {
      * and also insert a PlatformInvoice.
      */
     @Test
-    @Ignore
     public void registerAsPaidWorksForRealWallet() {
-        final Invoices invoices = new SelfJooq(new H2Database()).invoices();
+        final Storage storage = new SelfJooq(new H2Database());
+        final Invoices invoices = storage.invoices();
         final Invoice unpaid = invoices.getById(5);
         final LocalDateTime paymentTime = LocalDateTime.now();
+        final Payment payment = new StoredPayment(
+            unpaid.invoiceId(),
+            "transaction123",
+            paymentTime,
+            unpaid.totalAmount(),
+            Payment.Status.SUCCESSFUL,
+            "",
+            storage
+        );
         final Invoice paid = new Invoice() {
             @Override
             public int invoiceId() {
@@ -333,42 +343,7 @@ public final class SelfInvoicesITCase {
 
             @Override
             public Payment latest() {
-                return new Payment() {
-                    @Override
-                    public Invoice invoice() {
-                        return unpaid;
-                    }
-
-                    @Override
-                    public PlatformInvoice platformInvoice() {
-                        throw new UnsupportedOperationException("Not needed.");
-                    }
-
-                    @Override
-                    public String transactionId() {
-                        return "transaction12345";
-                    }
-
-                    @Override
-                    public LocalDateTime paymentTime() {
-                        return paymentTime;
-                    }
-
-                    @Override
-                    public BigDecimal value() {
-                        return unpaid.totalAmount();
-                    }
-
-                    @Override
-                    public String status() {
-                        return Status.SUCCESSFUL;
-                    }
-
-                    @Override
-                    public String failReason() {
-                        return "";
-                    }
-                };
+                return payment;
             }
 
             @Override
@@ -442,7 +417,7 @@ public final class SelfInvoicesITCase {
                 BigDecimal.valueOf(15),
                 BigDecimal.valueOf(487)
             ),
-            Matchers.nullValue()
+            Matchers.equalTo(payment)
         );
 
         final Invoice paidSelected = invoices.getById(5);
@@ -465,6 +440,14 @@ public final class SelfInvoicesITCase {
         MatcherAssert.assertThat(
             paidSelected.eurToRon(),
             Matchers.greaterThanOrEqualTo(BigDecimal.valueOf(450))
+        );
+        MatcherAssert.assertThat(
+            paidSelected.isPaid(),
+            Matchers.is(Boolean.TRUE)
+        );
+        MatcherAssert.assertThat(
+            paidSelected.latest(),
+            Matchers.equalTo(payment)
         );
         final PlatformInvoice platformInvoice = paidSelected.platformInvoice();
         MatcherAssert.assertThat(
