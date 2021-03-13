@@ -24,9 +24,7 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
 import com.selfxdsd.api.storage.Storage;
-import com.selfxdsd.core.projects.FakeWallet;
-import com.selfxdsd.core.projects.ProjectWallets;
-import com.selfxdsd.core.projects.StripeWallet;
+import com.selfxdsd.core.projects.*;
 import com.stripe.model.SetupIntent;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -129,7 +127,11 @@ public final class SelfWallets implements Wallets {
                 + " are supported at the moment."
             );
         }
-        return registered;
+        return new RegisterUnsuccessfulPayments(
+            new PreCheckPayments(
+                registered
+            )
+        );
     }
 
     @Override
@@ -393,6 +395,10 @@ public final class SelfWallets implements Wallets {
                 "Only FAKE and STRIPE wallets are supported so far."
             );
         }
-        return wallet;
+        return new RegisterUnsuccessfulPayments(
+            new PreCheckPayments(
+                wallet
+            )
+        );
     }
 }
