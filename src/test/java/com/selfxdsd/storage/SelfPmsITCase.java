@@ -54,7 +54,7 @@ public final class SelfPmsITCase {
             Matchers.equalTo(Provider.Names.GITHUB)
         );
         MatcherAssert.assertThat(
-            found.percentage(),
+            found.projectPercentage(),
             Matchers.equalTo(6.5)
         );
     }
@@ -91,7 +91,7 @@ public final class SelfPmsITCase {
             Matchers.equalTo(Provider.Names.GITHUB)
         );
         MatcherAssert.assertThat(
-            found.percentage(),
+            found.projectPercentage(),
             Matchers.equalTo(6.5)
         );
     }
@@ -124,7 +124,7 @@ public final class SelfPmsITCase {
 
         MatcherAssert.assertThat(manager, Matchers.notNullValue());
         MatcherAssert.assertThat(
-            manager.percentage(),
+            manager.projectPercentage(),
             Matchers.equalTo(6.5)
         );
     }
@@ -159,7 +159,8 @@ public final class SelfPmsITCase {
                 "zoeself",
                 Provider.Names.GITLAB,
                 "123gitlab",
-                8
+                8,
+                5
             );
         MatcherAssert.assertThat(registered.id(),
             Matchers.greaterThan(0));
@@ -167,8 +168,11 @@ public final class SelfPmsITCase {
             Matchers.equalTo("123"));
         MatcherAssert.assertThat(registered.provider().name(),
             Matchers.equalTo(Provider.Names.GITLAB));
-        MatcherAssert.assertThat(registered.percentage(),
+        MatcherAssert.assertThat(registered.projectPercentage(),
             Matchers.equalTo(8.0));
+        MatcherAssert.assertThat(registered.contributorPercentage(),
+            Matchers.equalTo(5.0));
+
     }
 
     /**

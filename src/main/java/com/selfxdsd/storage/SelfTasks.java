@@ -115,6 +115,7 @@ public final class SelfTasks implements Tasks {
         } else {
             final boolean isPullRequest = issue.isPullRequest();
             final int estimation = issue.estimation().minutes();
+            final String role = issue.role();
             this.database.jooq().insertInto(
                 SLF_TASKS_XDSD,
                 SLF_TASKS_XDSD.REPO_FULLNAME,
@@ -128,13 +129,13 @@ public final class SelfTasks implements Tasks {
                 issue.issueId(),
                 issue.provider(),
                 isPullRequest,
-                issue.role(),
+                role,
                 estimation
             ).execute();
             return new StoredTask(
                 project,
                 issue.issueId(),
-                issue.role(),
+                role,
                 estimation,
                 isPullRequest,
                 this.storage
@@ -428,6 +429,8 @@ public final class SelfTasks implements Tasks {
      * Build a Task from a JOOQ Record.
      * @param rec Record representing the Task's data.
      * @return Task.
+     * @todo #280:15min Read the contributorCommission from the PM table when
+     *  the column will be available.
      */
     private Task taskFromRecord(final Record rec) {
         final Project project = new StoredProject(
@@ -447,6 +450,7 @@ public final class SelfTasks implements Tasks {
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
                 rec.getValue(SLF_PMS_XDSD.COMMISSION).doubleValue(),
+                0.0,
                 this.storage
             ),
             this.storage

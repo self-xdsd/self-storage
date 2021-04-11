@@ -324,7 +324,8 @@ public final class SelfInvoicesITCase {
             @Override
             public InvoicedTask register(
                 final Task task,
-                final BigDecimal commission
+                final BigDecimal projectCommission,
+                final BigDecimal contributorCommission
             ) {
                 throw new IllegalStateException(
                     "Can't register a new Task on paid Invoice!"
@@ -382,8 +383,13 @@ public final class SelfInvoicesITCase {
             }
 
             @Override
-            public BigDecimal commission() {
-                return unpaid.commission();
+            public BigDecimal projectCommission() {
+                return unpaid.projectCommission();
+            }
+
+            @Override
+            public BigDecimal contributorCommission() {
+                return unpaid.contributorCommission();
             }
 
             @Override
@@ -452,7 +458,11 @@ public final class SelfInvoicesITCase {
         final PlatformInvoice platformInvoice = paidSelected.platformInvoice();
         MatcherAssert.assertThat(
             platformInvoice.commission(),
-            Matchers.equalTo(paidSelected.commission())
+            Matchers.equalTo(
+                paidSelected.projectCommission().add(
+                    paidSelected.contributorCommission()
+                )
+            )
         );
         MatcherAssert.assertThat(
             platformInvoice.vat(),

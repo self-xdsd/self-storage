@@ -274,7 +274,9 @@ public final class SelfInvoices implements Invoices {
                     ).values(
                         LocalDateTime.now(),
                         contributorBilling,
-                        invoice.commission().toBigIntegerExact(),
+                        invoice.projectCommission()
+                            .add(invoice.contributorCommission())
+                            .toBigIntegerExact(),
                         contributorVat.toBigIntegerExact(),
                         success.transactionId(),
                         success.paymentTime(),

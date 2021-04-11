@@ -45,6 +45,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd.SL
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
+ * @todo #280:60min Implement the DB Column contributorsCommission and rename
+ *  the existing commission to projectCommission in the InvoicedTasks table.
  */
 public final class SelfInvoicedTasks implements InvoicedTasks {
 
@@ -71,7 +73,13 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
         this.database = database;
     }
 
-
+    /**
+     * InvoicedTasks of an Invoice.
+     * @param invoice Invoice.
+     * @return InvoicedTasks of the specified Invoice.
+     * @todo #280:60min Initialize the Stream from a List, to avoid querying
+     *  the DB at every Stream.get().
+     */
     @Override
     public InvoicedTasks ofInvoice(final Invoice invoice) {
         return new InvoiceTasks(
@@ -99,7 +107,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
     public InvoicedTask register(
         final Invoice invoice,
         final Task finished,
-        final BigDecimal commission
+        final BigDecimal projectCommission,
+        final BigDecimal contributorCommission
     ) {
         final Project project = finished.project();
         final DSLContext jooq = this.database.jooq();
@@ -143,7 +152,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                     finished.deadline(),
                     LocalDateTime.now(),
                     finished.estimation(),
-                    commission.toBigIntegerExact(),
+                    projectCommission.toBigIntegerExact(),
                     finished.isPullRequest()
                 ).returningResult(
                     SLF_INVOICEDTASKS_XDSD.ID,
@@ -157,7 +166,8 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             BigDecimal.valueOf(
                 inserted[0].getValue(SLF_INVOICEDTASKS_XDSD.VALUE).longValue()
             ),
-            commission,
+            projectCommission,
+            contributorCommission,
             finished,
             this.storage
         );
@@ -190,6 +200,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             BigDecimal.valueOf(
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).longValue()
             ),
+            null,
             new StoredTask(
                 invoice.contract(),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ISSUEID),
