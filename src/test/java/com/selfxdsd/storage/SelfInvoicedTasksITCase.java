@@ -116,7 +116,8 @@ public final class SelfInvoicedTasksITCase {
         final InvoicedTask invoiced = tasks.register(
             toInvoice.contract().invoices().active(),
             toInvoice,
-            BigDecimal.valueOf(100)
+            BigDecimal.valueOf(100),
+            null
         );
 
         MatcherAssert.assertThat(invoiced.task(), Matchers.is(toInvoice));
@@ -137,7 +138,7 @@ public final class SelfInvoicedTasksITCase {
             Matchers.equalTo(BigDecimal.valueOf(15000))
         );
         MatcherAssert.assertThat(
-            invoiced.commission(),
+            invoiced.projectCommission(),
             Matchers.equalTo(BigDecimal.valueOf(100))
         );
         MatcherAssert.assertThat(

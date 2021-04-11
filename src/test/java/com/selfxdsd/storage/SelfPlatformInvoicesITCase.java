@@ -197,7 +197,10 @@ public final class SelfPlatformInvoicesITCase {
         );
         MatcherAssert.assertThat(
             found.commission(),
-            Matchers.equalTo(corresponding.commission())
+            Matchers.equalTo(
+                corresponding.projectCommission()
+                    .add(corresponding.contributorCommission())
+            )
         );
     }
 
