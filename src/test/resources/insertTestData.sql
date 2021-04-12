@@ -34,16 +34,16 @@ VALUES ('apiToken001', '2022-01-01', 'Vlad Token 1', 'vlad', 'github');
 -- INSERT PROJECT MANAGERS
 
 INSERT INTO self_xdsd.slf_pms_xdsd
-(userid, username, provider, access_token, commission)
-VALUES ('33162107', 'zoeself', 'github', 'pm1ghtoken123', 6.5);
+(userid, username, provider, access_token, commission, contributorCommission)
+VALUES ('33162107', 'zoeself', 'github', 'pm1ghtoken123', 6.5, 5.0);
 
 INSERT INTO self_xdsd.slf_pms_xdsd
-(userid, username, provider, access_token, commission)
-VALUES ('33162108', 'otherpm', 'github', 'pm1ghtoken124', 6.5);
+(userid, username, provider, access_token, commission, contributorCommission)
+VALUES ('33162108', 'otherpm', 'github', 'pm1ghtoken124', 6.5, 5.0);
 
 INSERT INTO self_xdsd.slf_pms_xdsd
-(userid, username, provider, access_token, commission)
-VALUES ('33162999', 'thirdpm', 'github', 'pm1ghtoken125', 8.0);
+(userid, username, provider, access_token, commission, contributorCommission)
+VALUES ('33162999', 'thirdpm', 'github', 'pm1ghtoken125', 8.0, 5.0);
 
 
 -- INSERT PROJECTS
