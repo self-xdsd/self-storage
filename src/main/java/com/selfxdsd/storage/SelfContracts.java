@@ -357,8 +357,6 @@ public final class SelfContracts implements Contracts {
      * Builds a Contract from a {@link Record}.
      * @param rec Record.
      * @return Contract.
-     * @todo #280:15min Don't forget to read the contributorCommission from
-     *  the PMs table when it will be available.
      */
     private Contract buildContract(final Record rec){
         final Project project = new StoredProject(
@@ -378,7 +376,7 @@ public final class SelfContracts implements Contracts {
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
                 rec.getValue(SLF_PMS_XDSD.COMMISSION).doubleValue(),
-                0.0,
+                rec.getValue(SLF_PMS_XDSD.CONTRIBUTORCOMMISSION).doubleValue(),
                 this.storage
             ),
             this.storage

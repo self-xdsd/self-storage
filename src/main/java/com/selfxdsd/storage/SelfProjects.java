@@ -277,8 +277,6 @@ public final class SelfProjects extends BasePaged implements Projects {
      * @param rec Record representing the Project's data.
      * @param isFromPagedTable Marks that record is from projects paged table.
      * @return Project.
-     * @todo #280:15min The contributorCommission should be read from the
-     *  PMs table when the column will be available.
      */
     private Project projectFromRecord(final Record rec,
                                       final boolean isFromPagedTable){
@@ -311,7 +309,7 @@ public final class SelfProjects extends BasePaged implements Projects {
                 rec.get(SLF_PMS_XDSD.PROVIDER),
                 rec.get(SLF_PMS_XDSD.ACCESS_TOKEN),
                 rec.get(SLF_PMS_XDSD.COMMISSION).doubleValue(),
-                0.0,
+                rec.get(SLF_PMS_XDSD.CONTRIBUTORCOMMISSION).doubleValue(),
                 this.storage
             ),
             this.storage

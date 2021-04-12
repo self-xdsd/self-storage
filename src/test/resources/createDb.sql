@@ -40,6 +40,7 @@ CREATE TABLE self_xdsd.slf_pms_xdsd (
   provider VARCHAR(50) NOT NULL,
   access_token VARCHAR(256) NOT NULL,
   commission DECIMAL(5,2) NOT NULL,
+  contributorCommission DECIMAL(5,2) NOT NULL,
   PRIMARY KEY (id)
 );
 

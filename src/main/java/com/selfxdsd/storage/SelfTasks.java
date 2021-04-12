@@ -429,8 +429,6 @@ public final class SelfTasks implements Tasks {
      * Build a Task from a JOOQ Record.
      * @param rec Record representing the Task's data.
      * @return Task.
-     * @todo #280:15min Read the contributorCommission from the PM table when
-     *  the column will be available.
      */
     private Task taskFromRecord(final Record rec) {
         final Project project = new StoredProject(
@@ -450,7 +448,7 @@ public final class SelfTasks implements Tasks {
                 rec.getValue(SLF_PMS_XDSD.PROVIDER),
                 rec.getValue(SLF_PMS_XDSD.ACCESS_TOKEN),
                 rec.getValue(SLF_PMS_XDSD.COMMISSION).doubleValue(),
-                0.0,
+                rec.getValue(SLF_PMS_XDSD.CONTRIBUTORCOMMISSION).doubleValue(),
                 this.storage
             ),
             this.storage

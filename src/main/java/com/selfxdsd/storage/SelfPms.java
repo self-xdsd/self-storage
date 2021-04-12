@@ -39,8 +39,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfPmsXdsd.SLF_PMS_XDSD
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #280:60min Implement the DB Column contributorsCommission and rename
- *  the existing commission to projectCommission in the ProjectManagers table.
  */
 public final class SelfPms implements ProjectManagers {
     /**
@@ -128,10 +126,14 @@ public final class SelfPms implements ProjectManagers {
                 SLF_PMS_XDSD.USERNAME,
                 SLF_PMS_XDSD.PROVIDER,
                 SLF_PMS_XDSD.ACCESS_TOKEN,
-                SLF_PMS_XDSD.COMMISSION.cast(Double.class).as("commission")
+                SLF_PMS_XDSD.COMMISSION.cast(Double.class).as("commission"),
+                SLF_PMS_XDSD.COMMISSION.cast(Double.class)
+                    .as("contributorCommission")
             )
-            .values(userId, username, provider, accessToken, projectCommission)
-            .returning(SLF_PMS_XDSD.ID)
+            .values(
+                userId, username, provider, accessToken,
+                projectCommission, contributorCommission
+            ).returning(SLF_PMS_XDSD.ID)
             .fetchOne()
             .getValue(SLF_PMS_XDSD.ID);
         if(pmId > 0){
@@ -181,7 +183,7 @@ public final class SelfPms implements ProjectManagers {
             record.getValue(SLF_PMS_XDSD.PROVIDER),
             record.get(SLF_PMS_XDSD.ACCESS_TOKEN),
             record.getValue(SLF_PMS_XDSD.COMMISSION).doubleValue(),
-            0.0,
+            record.getValue(SLF_PMS_XDSD.CONTRIBUTORCOMMISSION).doubleValue(),
             this.storage
         );
     }
