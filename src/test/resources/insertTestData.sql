@@ -247,6 +247,7 @@ INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
  role,
  value,
  commission,
+ contributorCommission,
  issueId,
  assigned,
  deadline,
@@ -261,6 +262,7 @@ VALUES
     'DEV',
     15000,
     50,
+    30,
     '200',
     '2020-06-01',
     '2020-06-11',
@@ -276,6 +278,7 @@ INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
  role,
  value,
  commission,
+ contributorCommission,
  issueId,
  assigned,
  deadline,
@@ -290,6 +293,7 @@ VALUES
     'REV',
     8000,
     50,
+    30,
     '201',
     '2020-06-01',
     '2020-06-11',
@@ -299,14 +303,14 @@ VALUES
 );
 
 INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
-(invoiceId, repo_fullname, username, provider, role, value, commission, issueId, assigned, deadline, invoiced, estimation_minutes, isPullRequest)
+(invoiceId, repo_fullname, username, provider, role, value, commission, contributorCommission, issueId, assigned, deadline, invoiced, estimation_minutes, isPullRequest)
 VALUES
-(3, 'vlad/test', 'maria', 'github', 'PO', 10000, 50, '100', '2020-06-01', '2020-06-11', NOW(), 60, 0);
+(3, 'vlad/test', 'maria', 'github', 'PO', 10000, 50, 30, '100', '2020-06-01', '2020-06-11', NOW(), 60, 0);
 
 INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
-(invoiceId, repo_fullname, username, provider, role, value, commission, issueId, assigned, deadline, invoiced, estimation_minutes, isPullRequest)
+(invoiceId, repo_fullname, username, provider, role, value, commission, contributorCommission, issueId, assigned, deadline, invoiced, estimation_minutes, isPullRequest)
 VALUES
-(4, 'vlad/test', 'alexandra', 'github', 'DEV', 10000, 100, '899', '2020-06-01', '2020-06-11', NOW(), 60, 0);
+(4, 'vlad/test', 'alexandra', 'github', 'DEV', 10000, 100, 30, '899', '2020-06-01', '2020-06-11', NOW(), 60, 0);
 
 
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
@@ -376,8 +380,8 @@ VALUES ('maria', 'github', 'stripe', 'acct_001');
 
 INSERT INTO `self_xdsd`.`slf_platforminvoices_xdsd`
 (`id`, `createdAt`, `billedTo`, `commission`, `vat`, `transactionId`, `payment_timestamp`, `eurToRon`)
-VALUES (1, '2021-01-09', 'mihai', 100, 19, 'transaction123', '2021-01-09', 487);
+VALUES (1, '2021-01-09', 'mihai', 130, 19, 'transaction123', '2021-01-09', 487);
 
 INSERT INTO `self_xdsd`.`slf_platforminvoices_xdsd`
 (`id`, `createdAt`, `billedTo`, `commission`, `vat`, `transactionId`, `payment_timestamp`, `invoiceId`, `eurToRon`)
-VALUES (2, '2021-01-09', 'vlad', 100, 19, 'transactionIdHere', '2021-01-09', 4, 487);
+VALUES (2, '2021-01-09', 'vlad', 130, 19, 'transactionIdHere', '2021-01-09', 4, 487);

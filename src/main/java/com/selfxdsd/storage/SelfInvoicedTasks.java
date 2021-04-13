@@ -45,8 +45,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd.SL
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.4
- * @todo #280:60min Implement the DB Column contributorsCommission and rename
- *  the existing commission to projectCommission in the InvoicedTasks table.
  */
 public final class SelfInvoicedTasks implements InvoicedTasks {
 
@@ -139,6 +137,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                     SLF_INVOICEDTASKS_XDSD.INVOICED,
                     SLF_INVOICEDTASKS_XDSD.ESTIMATION_MINUTES,
                     SLF_INVOICEDTASKS_XDSD.COMMISSION,
+                    SLF_INVOICEDTASKS_XDSD.CONTRIBUTORCOMMISSION,
                     SLF_INVOICEDTASKS_XDSD.ISPULLREQUEST
                 ).values(
                     invoice.invoiceId(),
@@ -153,6 +152,7 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
                     LocalDateTime.now(),
                     finished.estimation(),
                     projectCommission.toBigIntegerExact(),
+                    contributorCommission.toBigIntegerExact(),
                     finished.isPullRequest()
                 ).returningResult(
                     SLF_INVOICEDTASKS_XDSD.ID,
@@ -200,7 +200,10 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
             BigDecimal.valueOf(
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.COMMISSION).longValue()
             ),
-            null,
+            BigDecimal.valueOf(
+                rec.getValue(SLF_INVOICEDTASKS_XDSD.CONTRIBUTORCOMMISSION)
+                    .longValue()
+            ),
             new StoredTask(
                 invoice.contract(),
                 rec.getValue(SLF_INVOICEDTASKS_XDSD.ISSUEID),

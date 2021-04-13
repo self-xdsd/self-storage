@@ -63,7 +63,7 @@ public final class SelfPlatformInvoicesITCase {
         );
         MatcherAssert.assertThat(
             found.commission(),
-            Matchers.equalTo(BigDecimal.valueOf(100))
+            Matchers.equalTo(BigDecimal.valueOf(130))
         );
         MatcherAssert.assertThat(
             found.vat(),
@@ -132,7 +132,7 @@ public final class SelfPlatformInvoicesITCase {
         );
         MatcherAssert.assertThat(
             found.commission(),
-            Matchers.equalTo(BigDecimal.valueOf(100))
+            Matchers.equalTo(BigDecimal.valueOf(130))
         );
         MatcherAssert.assertThat(
             found.vat(),

@@ -117,7 +117,7 @@ public final class SelfInvoicedTasksITCase {
             toInvoice.contract().invoices().active(),
             toInvoice,
             BigDecimal.valueOf(100),
-            null
+            BigDecimal.valueOf(30)
         );
 
         MatcherAssert.assertThat(invoiced.task(), Matchers.is(toInvoice));
@@ -140,6 +140,10 @@ public final class SelfInvoicedTasksITCase {
         MatcherAssert.assertThat(
             invoiced.projectCommission(),
             Matchers.equalTo(BigDecimal.valueOf(100))
+        );
+        MatcherAssert.assertThat(
+            invoiced.contributorCommission(),
+            Matchers.equalTo(BigDecimal.valueOf(30))
         );
         MatcherAssert.assertThat(
             invoiced.totalAmount(),

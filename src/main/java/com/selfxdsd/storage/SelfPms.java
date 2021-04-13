@@ -127,7 +127,7 @@ public final class SelfPms implements ProjectManagers {
                 SLF_PMS_XDSD.PROVIDER,
                 SLF_PMS_XDSD.ACCESS_TOKEN,
                 SLF_PMS_XDSD.COMMISSION.cast(Double.class).as("commission"),
-                SLF_PMS_XDSD.COMMISSION.cast(Double.class)
+                SLF_PMS_XDSD.CONTRIBUTORCOMMISSION.cast(Double.class)
                     .as("contributorCommission")
             )
             .values(
