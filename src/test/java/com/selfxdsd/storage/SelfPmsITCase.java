@@ -57,6 +57,10 @@ public final class SelfPmsITCase {
             found.projectPercentage(),
             Matchers.equalTo(6.5)
         );
+        MatcherAssert.assertThat(
+            found.contributorPercentage(),
+            Matchers.equalTo(5.0)
+        );
     }
 
     /**
@@ -94,6 +98,10 @@ public final class SelfPmsITCase {
             found.projectPercentage(),
             Matchers.equalTo(6.5)
         );
+        MatcherAssert.assertThat(
+            found.contributorPercentage(),
+            Matchers.equalTo(5.0)
+        );
     }
 
     /**
@@ -126,6 +134,10 @@ public final class SelfPmsITCase {
         MatcherAssert.assertThat(
             manager.projectPercentage(),
             Matchers.equalTo(6.5)
+        );
+        MatcherAssert.assertThat(
+            manager.contributorPercentage(),
+            Matchers.equalTo(5.0)
         );
     }
 
