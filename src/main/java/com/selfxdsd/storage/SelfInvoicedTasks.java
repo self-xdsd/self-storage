@@ -75,28 +75,24 @@ public final class SelfInvoicedTasks implements InvoicedTasks {
      * InvoicedTasks of an Invoice.
      * @param invoice Invoice.
      * @return InvoicedTasks of the specified Invoice.
-     * @todo #280:60min Initialize the Stream from a List, to avoid querying
-     *  the DB at every Stream.get().
      */
     @Override
     public InvoicedTasks ofInvoice(final Invoice invoice) {
+        final Result<Record> results = database.jooq()
+            .select()
+            .from(SLF_INVOICEDTASKS_XDSD)
+            .where(
+                SLF_INVOICEDTASKS_XDSD.INVOICEID.eq(
+                    invoice.invoiceId()
+                )
+            ).fetch();
+        final List<InvoicedTask> tasks = new ArrayList<>();
+        for (final Record rec : results) {
+            tasks.add(invoicedTaskFromRecord(rec, invoice));
+        }
         return new InvoiceTasks(
             invoice,
-            () -> {
-                final Result<Record> results = database.jooq()
-                    .select()
-                    .from(SLF_INVOICEDTASKS_XDSD)
-                    .where(
-                        SLF_INVOICEDTASKS_XDSD.INVOICEID.eq(
-                            invoice.invoiceId()
-                        )
-                    ).fetch();
-                final List<InvoicedTask> tasks = new ArrayList<>();
-                for (final Record rec : results) {
-                    tasks.add(invoicedTaskFromRecord(rec, invoice));
-                }
-                return tasks.stream();
-            },
+            () -> tasks.stream(),
             this.storage
         );
     }
