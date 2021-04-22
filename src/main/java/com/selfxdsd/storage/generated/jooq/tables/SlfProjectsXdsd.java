@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
 
-    private static final long serialVersionUID = -102054943;
+    private static final long serialVersionUID = -33039901;
 
     /**
      * The reference instance of <code>self_xdsd.slf_projects_xdsd</code>
@@ -54,6 +54,11 @@ public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
     public final TableField<SlfProjectsXdsdRecord, String> REPO_FULLNAME = createField(DSL.name("repo_fullname"), org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_projects_xdsd.webhook_token</code>.
+     */
+    public final TableField<SlfProjectsXdsdRecord, String> WEBHOOK_TOKEN = createField(DSL.name("webhook_token"), org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false), this, "");
+
+    /**
      * The column <code>self_xdsd.slf_projects_xdsd.provider</code>.
      */
     public final TableField<SlfProjectsXdsdRecord, String> PROVIDER = createField(DSL.name("provider"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
@@ -67,11 +72,6 @@ public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
      * The column <code>self_xdsd.slf_projects_xdsd.pmid</code>.
      */
     public final TableField<SlfProjectsXdsdRecord, Integer> PMID = createField(DSL.name("pmid"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_projects_xdsd.webhook_token</code>.
-     */
-    public final TableField<SlfProjectsXdsdRecord, String> WEBHOOK_TOKEN = createField(DSL.name("webhook_token"), org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_projects_xdsd</code> table reference
@@ -113,7 +113,7 @@ public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_PROJECTS_XDSD_OWNER_IDX, Indexes.SLF_PROJECTS_XDSD_PM_IDX, Indexes.SLF_PROJECTS_XDSD_PROJECT_IDX);
+        return Arrays.<Index>asList(Indexes.SLF_PROJECTS_XDSD_OWNER, Indexes.SLF_PROJECTS_XDSD_PM);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class SlfProjectsXdsd extends TableImpl<SlfProjectsXdsdRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, Integer, String> fieldsRow() {
+    public Row5<String, String, String, String, Integer> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
 
-    private static final long serialVersionUID = -59527163;
+    private static final long serialVersionUID = 1535622155;
 
     /**
      * The reference instance of <code>self_xdsd.slf_users_xdsd</code>
@@ -52,6 +52,11 @@ public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
     public final TableField<SlfUsersXdsdRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_users_xdsd.role</code>.
+     */
+    public final TableField<SlfUsersXdsdRecord, String> ROLE = createField(DSL.name("role"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
      * The column <code>self_xdsd.slf_users_xdsd.provider</code>.
      */
     public final TableField<SlfUsersXdsdRecord, String> PROVIDER = createField(DSL.name("provider"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
@@ -60,11 +65,6 @@ public class SlfUsersXdsd extends TableImpl<SlfUsersXdsdRecord> {
      * The column <code>self_xdsd.slf_users_xdsd.email</code>.
      */
     public final TableField<SlfUsersXdsdRecord, String> EMAIL = createField(DSL.name("email"), org.jooq.impl.SQLDataType.VARCHAR(150), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_users_xdsd.role</code>.
-     */
-    public final TableField<SlfUsersXdsdRecord, String> ROLE = createField(DSL.name("role"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_users_xdsd</code> table reference

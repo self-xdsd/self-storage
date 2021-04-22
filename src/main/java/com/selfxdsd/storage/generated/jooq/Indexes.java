@@ -4,6 +4,7 @@
 package com.selfxdsd.storage.generated.jooq;
 
 
+import com.selfxdsd.storage.generated.jooq.tables.SlfApitokensXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
@@ -28,47 +29,37 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index SLF_CONTRACTS_XDSD_ASSIGNEEIDX = Indexes0.SLF_CONTRACTS_XDSD_ASSIGNEEIDX;
-    public static final Index SLF_CONTRACTS_XDSD_CONTRIBUTOR_IDS = Indexes0.SLF_CONTRACTS_XDSD_CONTRIBUTOR_IDS;
-    public static final Index SLF_CONTRACTS_XDSD_PROJECT_IDX = Indexes0.SLF_CONTRACTS_XDSD_PROJECT_IDX;
-    public static final Index SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK_IDX = Indexes0.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK_IDX;
-    public static final Index SLF_INVOICES_XDSD_FKCONTRACT_IDX = Indexes0.SLF_INVOICES_XDSD_FKCONTRACT_IDX;
-    public static final Index SLF_INVOICES_XDSD_INVOICECONTRACTFK_IDX = Indexes0.SLF_INVOICES_XDSD_INVOICECONTRACTFK_IDX;
-    public static final Index SLF_PAYMENTMETHODS_XDSD_WALLETFK_IDX = Indexes0.SLF_PAYMENTMETHODS_XDSD_WALLETFK_IDX;
-    public static final Index SLF_PLATFORMINVOICES_XDSD_INVOICEFK_IDX = Indexes0.SLF_PLATFORMINVOICES_XDSD_INVOICEFK_IDX;
-    public static final Index SLF_PROJECTS_XDSD_OWNER_IDX = Indexes0.SLF_PROJECTS_XDSD_OWNER_IDX;
-    public static final Index SLF_PROJECTS_XDSD_PM_IDX = Indexes0.SLF_PROJECTS_XDSD_PM_IDX;
-    public static final Index SLF_PROJECTS_XDSD_PROJECT_IDX = Indexes0.SLF_PROJECTS_XDSD_PROJECT_IDX;
-    public static final Index SLF_RESIGNATIONS_XDSD_CONTRIBUTOR_IDX = Indexes0.SLF_RESIGNATIONS_XDSD_CONTRIBUTOR_IDX;
-    public static final Index SLF_RESIGNATIONS_XDSD_TASK_IDX = Indexes0.SLF_RESIGNATIONS_XDSD_TASK_IDX;
-    public static final Index SLF_TASKS_XDSD_ASSIGNED_CONTRACT_IDX = Indexes0.SLF_TASKS_XDSD_ASSIGNED_CONTRACT_IDX;
-    public static final Index SLF_TASKS_XDSD_ASSIGNEE_IDX = Indexes0.SLF_TASKS_XDSD_ASSIGNEE_IDX;
-    public static final Index SLF_TASKS_XDSD_CONTRACT_IDX = Indexes0.SLF_TASKS_XDSD_CONTRACT_IDX;
-    public static final Index SLF_TASKS_XDSD_PARENT_PROJECT_IDX = Indexes0.SLF_TASKS_XDSD_PARENT_PROJECT_IDX;
-    public static final Index SLF_TASKS_XDSD_PROJECT_IDX = Indexes0.SLF_TASKS_XDSD_PROJECT_IDX;
+    public static final Index SLF_APITOKENS_XDSD_OWNERUSER = Indexes0.SLF_APITOKENS_XDSD_OWNERUSER;
+    public static final Index SLF_CONTRACTS_XDSD_CONTRIBUTOR = Indexes0.SLF_CONTRACTS_XDSD_CONTRIBUTOR;
+    public static final Index SLF_CONTRACTS_XDSD_PROJECT = Indexes0.SLF_CONTRACTS_XDSD_PROJECT;
+    public static final Index SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK = Indexes0.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK;
+    public static final Index SLF_INVOICES_XDSD_FKCONTRACT = Indexes0.SLF_INVOICES_XDSD_FKCONTRACT;
+    public static final Index SLF_PAYMENTMETHODS_XDSD_WALLETFK = Indexes0.SLF_PAYMENTMETHODS_XDSD_WALLETFK;
+    public static final Index SLF_PLATFORMINVOICES_XDSD_INVOICEFK = Indexes0.SLF_PLATFORMINVOICES_XDSD_INVOICEFK;
+    public static final Index SLF_PROJECTS_XDSD_OWNER = Indexes0.SLF_PROJECTS_XDSD_OWNER;
+    public static final Index SLF_PROJECTS_XDSD_PM = Indexes0.SLF_PROJECTS_XDSD_PM;
+    public static final Index SLF_RESIGNATIONS_XDSD_RESIGNEE = Indexes0.SLF_RESIGNATIONS_XDSD_RESIGNEE;
+    public static final Index SLF_RESIGNATIONS_XDSD_TASK = Indexes0.SLF_RESIGNATIONS_XDSD_TASK;
+    public static final Index SLF_TASKS_XDSD_ASSIGNEE = Indexes0.SLF_TASKS_XDSD_ASSIGNEE;
+    public static final Index SLF_TASKS_XDSD_PARENT_PROJECT = Indexes0.SLF_TASKS_XDSD_PARENT_PROJECT;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index SLF_CONTRACTS_XDSD_ASSIGNEEIDX = Internal.createIndex("assigneeidx", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.REPO_FULLNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER, SlfContractsXdsd.SLF_CONTRACTS_XDSD.ROLE, SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME }, false);
-        public static Index SLF_CONTRACTS_XDSD_CONTRIBUTOR_IDS = Internal.createIndex("contributor_ids", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER }, false);
-        public static Index SLF_CONTRACTS_XDSD_PROJECT_IDX = Internal.createIndex("project_idx", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.REPO_FULLNAME }, false);
-        public static Index SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK_IDX = Internal.createIndex("invoiceContractFk_idx", SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD, new OrderField[] { SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.USERNAME, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.PROVIDER, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.ROLE, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.INVOICEID }, false);
-        public static Index SLF_INVOICES_XDSD_FKCONTRACT_IDX = Internal.createIndex("fkContract_idx", SlfInvoicesXdsd.SLF_INVOICES_XDSD, new OrderField[] { SlfInvoicesXdsd.SLF_INVOICES_XDSD.REPO_FULLNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.USERNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.PROVIDER, SlfInvoicesXdsd.SLF_INVOICES_XDSD.ROLE }, false);
-        public static Index SLF_INVOICES_XDSD_INVOICECONTRACTFK_IDX = Internal.createIndex("invoiceContractFk_idx", SlfInvoicesXdsd.SLF_INVOICES_XDSD, new OrderField[] { SlfInvoicesXdsd.SLF_INVOICES_XDSD.REPO_FULLNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.USERNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.PROVIDER, SlfInvoicesXdsd.SLF_INVOICES_XDSD.ROLE }, false);
-        public static Index SLF_PAYMENTMETHODS_XDSD_WALLETFK_IDX = Internal.createIndex("walletFK_idx", SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD, new OrderField[] { SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME, SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.PROVIDER, SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.TYPE }, false);
-        public static Index SLF_PLATFORMINVOICES_XDSD_INVOICEFK_IDX = Internal.createIndex("invoiceFk_idx", SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD, new OrderField[] { SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD.INVOICEID }, false);
-        public static Index SLF_PROJECTS_XDSD_OWNER_IDX = Internal.createIndex("owner_idx", SlfProjectsXdsd.SLF_PROJECTS_XDSD, new OrderField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.USERNAME, SlfProjectsXdsd.SLF_PROJECTS_XDSD.PROVIDER }, false);
-        public static Index SLF_PROJECTS_XDSD_PM_IDX = Internal.createIndex("pm_idx", SlfProjectsXdsd.SLF_PROJECTS_XDSD, new OrderField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.PMID }, false);
-        public static Index SLF_PROJECTS_XDSD_PROJECT_IDX = Internal.createIndex("project_idx", SlfProjectsXdsd.SLF_PROJECTS_XDSD, new OrderField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.PROVIDER, SlfProjectsXdsd.SLF_PROJECTS_XDSD.REPO_FULLNAME }, false);
-        public static Index SLF_RESIGNATIONS_XDSD_CONTRIBUTOR_IDX = Internal.createIndex("contributor_idx", SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, new OrderField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.USERNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER }, false);
-        public static Index SLF_RESIGNATIONS_XDSD_TASK_IDX = Internal.createIndex("task_idx", SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, new OrderField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.REPO_FULLNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.ISSUEID, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.ISPULLREQUEST }, false);
-        public static Index SLF_TASKS_XDSD_ASSIGNED_CONTRACT_IDX = Internal.createIndex("assigned_contract_idx", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.USERNAME, SlfTasksXdsd.SLF_TASKS_XDSD.ROLE, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, false);
-        public static Index SLF_TASKS_XDSD_ASSIGNEE_IDX = Internal.createIndex("assignee_idx", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER, SlfTasksXdsd.SLF_TASKS_XDSD.ROLE, SlfTasksXdsd.SLF_TASKS_XDSD.USERNAME }, false);
-        public static Index SLF_TASKS_XDSD_CONTRACT_IDX = Internal.createIndex("contract_idx", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.USERNAME, SlfTasksXdsd.SLF_TASKS_XDSD.ROLE, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, false);
-        public static Index SLF_TASKS_XDSD_PARENT_PROJECT_IDX = Internal.createIndex("parent_project_idx", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, false);
-        public static Index SLF_TASKS_XDSD_PROJECT_IDX = Internal.createIndex("project_idx", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, false);
+        public static Index SLF_APITOKENS_XDSD_OWNERUSER = Internal.createIndex("ownerUser", SlfApitokensXdsd.SLF_APITOKENS_XDSD, new OrderField[] { SlfApitokensXdsd.SLF_APITOKENS_XDSD.USERNAME, SlfApitokensXdsd.SLF_APITOKENS_XDSD.PROVIDER }, false);
+        public static Index SLF_CONTRACTS_XDSD_CONTRIBUTOR = Internal.createIndex("contributor", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER }, false);
+        public static Index SLF_CONTRACTS_XDSD_PROJECT = Internal.createIndex("project", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.REPO_FULLNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER }, false);
+        public static Index SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK = Internal.createIndex("invoiceContractFk", SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD, new OrderField[] { SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.USERNAME, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.PROVIDER, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.ROLE, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.INVOICEID }, false);
+        public static Index SLF_INVOICES_XDSD_FKCONTRACT = Internal.createIndex("fkContract", SlfInvoicesXdsd.SLF_INVOICES_XDSD, new OrderField[] { SlfInvoicesXdsd.SLF_INVOICES_XDSD.REPO_FULLNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.USERNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.PROVIDER, SlfInvoicesXdsd.SLF_INVOICES_XDSD.ROLE }, false);
+        public static Index SLF_PAYMENTMETHODS_XDSD_WALLETFK = Internal.createIndex("walletFK", SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD, new OrderField[] { SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.REPO_FULLNAME, SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.PROVIDER, SlfPaymentmethodsXdsd.SLF_PAYMENTMETHODS_XDSD.TYPE }, false);
+        public static Index SLF_PLATFORMINVOICES_XDSD_INVOICEFK = Internal.createIndex("invoiceFk", SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD, new OrderField[] { SlfPlatforminvoicesXdsd.SLF_PLATFORMINVOICES_XDSD.INVOICEID }, false);
+        public static Index SLF_PROJECTS_XDSD_OWNER = Internal.createIndex("owner", SlfProjectsXdsd.SLF_PROJECTS_XDSD, new OrderField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.USERNAME, SlfProjectsXdsd.SLF_PROJECTS_XDSD.PROVIDER }, false);
+        public static Index SLF_PROJECTS_XDSD_PM = Internal.createIndex("pm", SlfProjectsXdsd.SLF_PROJECTS_XDSD, new OrderField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.PMID }, false);
+        public static Index SLF_RESIGNATIONS_XDSD_RESIGNEE = Internal.createIndex("resignee", SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, new OrderField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.USERNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER }, false);
+        public static Index SLF_RESIGNATIONS_XDSD_TASK = Internal.createIndex("task", SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, new OrderField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.REPO_FULLNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.ISSUEID, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.ISPULLREQUEST }, false);
+        public static Index SLF_TASKS_XDSD_ASSIGNEE = Internal.createIndex("assignee", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.USERNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER, SlfTasksXdsd.SLF_TASKS_XDSD.ROLE }, false);
+        public static Index SLF_TASKS_XDSD_PARENT_PROJECT = Internal.createIndex("parent_project", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, false);
     }
 }

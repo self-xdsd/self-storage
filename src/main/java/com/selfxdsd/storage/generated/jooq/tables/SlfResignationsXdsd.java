@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
 
-    private static final long serialVersionUID = 1764603726;
+    private static final long serialVersionUID = 146876495;
 
     /**
      * The reference instance of <code>self_xdsd.slf_resignations_xdsd</code>
@@ -70,6 +70,11 @@ public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
     public final TableField<SlfResignationsXdsdRecord, String> ISSUEID = createField(DSL.name("issueId"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_resignations_xdsd.isPullRequest</code>.
+     */
+    public final TableField<SlfResignationsXdsdRecord, Boolean> ISPULLREQUEST = createField(DSL.name("isPullRequest"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
      * The column <code>self_xdsd.slf_resignations_xdsd.timestamp</code>.
      */
     public final TableField<SlfResignationsXdsdRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
@@ -78,11 +83,6 @@ public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
      * The column <code>self_xdsd.slf_resignations_xdsd.reason</code>.
      */
     public final TableField<SlfResignationsXdsdRecord, String> REASON = createField(DSL.name("reason"), org.jooq.impl.SQLDataType.VARCHAR(45).nullable(false), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_resignations_xdsd.isPullRequest</code>.
-     */
-    public final TableField<SlfResignationsXdsdRecord, Boolean> ISPULLREQUEST = createField(DSL.name("isPullRequest"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_resignations_xdsd</code> table reference
@@ -124,7 +124,7 @@ public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_RESIGNATIONS_XDSD_CONTRIBUTOR_IDX, Indexes.SLF_RESIGNATIONS_XDSD_TASK_IDX);
+        return Arrays.<Index>asList(Indexes.SLF_RESIGNATIONS_XDSD_RESIGNEE, Indexes.SLF_RESIGNATIONS_XDSD_TASK);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class SlfResignationsXdsd extends TableImpl<SlfResignationsXdsdRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<String, String, String, String, LocalDateTime, String, Boolean> fieldsRow() {
+    public Row7<String, String, String, String, Boolean, LocalDateTime, String> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = -985626797;
+    private static final long serialVersionUID = -1894317345;
 
     /**
      * Setter for <code>self_xdsd.slf_users_xdsd.username</code>.
@@ -36,44 +36,44 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
     }
 
     /**
-     * Setter for <code>self_xdsd.slf_users_xdsd.provider</code>.
-     */
-    public void setProvider(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>self_xdsd.slf_users_xdsd.provider</code>.
-     */
-    public String getProvider() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>self_xdsd.slf_users_xdsd.email</code>.
-     */
-    public void setEmail(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>self_xdsd.slf_users_xdsd.email</code>.
-     */
-    public String getEmail() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>self_xdsd.slf_users_xdsd.role</code>.
      */
     public void setRole(String value) {
-        set(3, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>self_xdsd.slf_users_xdsd.role</code>.
      */
     public String getRole() {
+        return (String) get(1);
+    }
+
+    /**
+     * Setter for <code>self_xdsd.slf_users_xdsd.provider</code>.
+     */
+    public void setProvider(String value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>self_xdsd.slf_users_xdsd.provider</code>.
+     */
+    public String getProvider() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>self_xdsd.slf_users_xdsd.email</code>.
+     */
+    public void setEmail(String value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>self_xdsd.slf_users_xdsd.email</code>.
+     */
+    public String getEmail() {
         return (String) get(3);
     }
 
@@ -107,17 +107,17 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public Field<String> field2() {
-        return SlfUsersXdsd.SLF_USERS_XDSD.PROVIDER;
+        return SlfUsersXdsd.SLF_USERS_XDSD.ROLE;
     }
 
     @Override
     public Field<String> field3() {
-        return SlfUsersXdsd.SLF_USERS_XDSD.EMAIL;
+        return SlfUsersXdsd.SLF_USERS_XDSD.PROVIDER;
     }
 
     @Override
     public Field<String> field4() {
-        return SlfUsersXdsd.SLF_USERS_XDSD.ROLE;
+        return SlfUsersXdsd.SLF_USERS_XDSD.EMAIL;
     }
 
     @Override
@@ -127,17 +127,17 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public String component2() {
-        return getProvider();
+        return getRole();
     }
 
     @Override
     public String component3() {
-        return getEmail();
+        return getProvider();
     }
 
     @Override
     public String component4() {
-        return getRole();
+        return getEmail();
     }
 
     @Override
@@ -147,17 +147,17 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public String value2() {
-        return getProvider();
+        return getRole();
     }
 
     @Override
     public String value3() {
-        return getEmail();
+        return getProvider();
     }
 
     @Override
     public String value4() {
-        return getRole();
+        return getEmail();
     }
 
     @Override
@@ -168,19 +168,19 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
 
     @Override
     public SlfUsersXdsdRecord value2(String value) {
-        setProvider(value);
+        setRole(value);
         return this;
     }
 
     @Override
     public SlfUsersXdsdRecord value3(String value) {
-        setEmail(value);
+        setProvider(value);
         return this;
     }
 
     @Override
     public SlfUsersXdsdRecord value4(String value) {
-        setRole(value);
+        setEmail(value);
         return this;
     }
 
@@ -207,12 +207,12 @@ public class SlfUsersXdsdRecord extends UpdatableRecordImpl<SlfUsersXdsdRecord> 
     /**
      * Create a detached, initialised SlfUsersXdsdRecord
      */
-    public SlfUsersXdsdRecord(String username, String provider, String email, String role) {
+    public SlfUsersXdsdRecord(String username, String role, String provider, String email) {
         super(SlfUsersXdsd.SLF_USERS_XDSD);
 
         set(0, username);
-        set(1, provider);
-        set(2, email);
-        set(3, role);
+        set(1, role);
+        set(2, provider);
+        set(3, email);
     }
 }

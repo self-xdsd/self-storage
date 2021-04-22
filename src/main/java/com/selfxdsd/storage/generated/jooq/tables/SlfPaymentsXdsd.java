@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPaymentsXdsd extends TableImpl<SlfPaymentsXdsdRecord> {
 
-    private static final long serialVersionUID = -1428365103;
+    private static final long serialVersionUID = 882636243;
 
     /**
      * The reference instance of <code>self_xdsd.slf_payments_xdsd</code>
@@ -76,7 +76,7 @@ public class SlfPaymentsXdsd extends TableImpl<SlfPaymentsXdsdRecord> {
     /**
      * The column <code>self_xdsd.slf_payments_xdsd.failReason</code>.
      */
-    public final TableField<SlfPaymentsXdsdRecord, String> FAILREASON = createField(DSL.name("failReason"), org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false), this, "");
+    public final TableField<SlfPaymentsXdsdRecord, String> FAILREASON = createField(DSL.name("failReason"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_payments_xdsd</code> table reference

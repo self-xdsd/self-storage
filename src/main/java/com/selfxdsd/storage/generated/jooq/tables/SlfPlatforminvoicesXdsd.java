@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPlatforminvoicesXdsd extends TableImpl<SlfPlatforminvoicesXdsdRecord> {
 
-    private static final long serialVersionUID = 2006640172;
+    private static final long serialVersionUID = -1907070898;
 
     /**
      * The reference instance of <code>self_xdsd.slf_platforminvoices_xdsd</code>
@@ -136,7 +136,7 @@ public class SlfPlatforminvoicesXdsd extends TableImpl<SlfPlatforminvoicesXdsdRe
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_PLATFORMINVOICES_XDSD_INVOICEFK_IDX);
+        return Arrays.<Index>asList(Indexes.SLF_PLATFORMINVOICES_XDSD_INVOICEFK);
     }
 
     @Override
