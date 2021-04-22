@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPmsXdsdRecord extends UpdatableRecordImpl<SlfPmsXdsdRecord> implements Record7<Integer, String, String, String, String, BigDecimal, BigDecimal> {
 
-    private static final long serialVersionUID = -1836899351;
+    private static final long serialVersionUID = -891117351;
 
     /**
      * Setter for <code>self_xdsd.slf_pms_xdsd.id</code>.
@@ -38,58 +38,58 @@ public class SlfPmsXdsdRecord extends UpdatableRecordImpl<SlfPmsXdsdRecord> impl
     }
 
     /**
-     * Setter for <code>self_xdsd.slf_pms_xdsd.provider</code>.
+     * Setter for <code>self_xdsd.slf_pms_xdsd.userid</code>.
      */
-    public void setProvider(String value) {
+    public void setUserid(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>self_xdsd.slf_pms_xdsd.provider</code>.
+     * Getter for <code>self_xdsd.slf_pms_xdsd.userid</code>.
      */
-    public String getProvider() {
+    public String getUserid() {
         return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>self_xdsd.slf_pms_xdsd.access_token</code>.
-     */
-    public void setAccessToken(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>self_xdsd.slf_pms_xdsd.access_token</code>.
-     */
-    public String getAccessToken() {
-        return (String) get(2);
     }
 
     /**
      * Setter for <code>self_xdsd.slf_pms_xdsd.username</code>.
      */
     public void setUsername(String value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>self_xdsd.slf_pms_xdsd.username</code>.
      */
     public String getUsername() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>self_xdsd.slf_pms_xdsd.provider</code>.
+     */
+    public void setProvider(String value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>self_xdsd.slf_pms_xdsd.provider</code>.
+     */
+    public String getProvider() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>self_xdsd.slf_pms_xdsd.userId</code>.
+     * Setter for <code>self_xdsd.slf_pms_xdsd.access_token</code>.
      */
-    public void setUserid(String value) {
+    public void setAccessToken(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>self_xdsd.slf_pms_xdsd.userId</code>.
+     * Getter for <code>self_xdsd.slf_pms_xdsd.access_token</code>.
      */
-    public String getUserid() {
+    public String getAccessToken() {
         return (String) get(4);
     }
 
@@ -151,22 +151,22 @@ public class SlfPmsXdsdRecord extends UpdatableRecordImpl<SlfPmsXdsdRecord> impl
 
     @Override
     public Field<String> field2() {
-        return SlfPmsXdsd.SLF_PMS_XDSD.PROVIDER;
+        return SlfPmsXdsd.SLF_PMS_XDSD.USERID;
     }
 
     @Override
     public Field<String> field3() {
-        return SlfPmsXdsd.SLF_PMS_XDSD.ACCESS_TOKEN;
-    }
-
-    @Override
-    public Field<String> field4() {
         return SlfPmsXdsd.SLF_PMS_XDSD.USERNAME;
     }
 
     @Override
+    public Field<String> field4() {
+        return SlfPmsXdsd.SLF_PMS_XDSD.PROVIDER;
+    }
+
+    @Override
     public Field<String> field5() {
-        return SlfPmsXdsd.SLF_PMS_XDSD.USERID;
+        return SlfPmsXdsd.SLF_PMS_XDSD.ACCESS_TOKEN;
     }
 
     @Override
@@ -186,22 +186,22 @@ public class SlfPmsXdsdRecord extends UpdatableRecordImpl<SlfPmsXdsdRecord> impl
 
     @Override
     public String component2() {
-        return getProvider();
+        return getUserid();
     }
 
     @Override
     public String component3() {
-        return getAccessToken();
-    }
-
-    @Override
-    public String component4() {
         return getUsername();
     }
 
     @Override
+    public String component4() {
+        return getProvider();
+    }
+
+    @Override
     public String component5() {
-        return getUserid();
+        return getAccessToken();
     }
 
     @Override
@@ -221,22 +221,22 @@ public class SlfPmsXdsdRecord extends UpdatableRecordImpl<SlfPmsXdsdRecord> impl
 
     @Override
     public String value2() {
-        return getProvider();
+        return getUserid();
     }
 
     @Override
     public String value3() {
-        return getAccessToken();
-    }
-
-    @Override
-    public String value4() {
         return getUsername();
     }
 
     @Override
+    public String value4() {
+        return getProvider();
+    }
+
+    @Override
     public String value5() {
-        return getUserid();
+        return getAccessToken();
     }
 
     @Override
@@ -257,25 +257,25 @@ public class SlfPmsXdsdRecord extends UpdatableRecordImpl<SlfPmsXdsdRecord> impl
 
     @Override
     public SlfPmsXdsdRecord value2(String value) {
-        setProvider(value);
+        setUserid(value);
         return this;
     }
 
     @Override
     public SlfPmsXdsdRecord value3(String value) {
-        setAccessToken(value);
-        return this;
-    }
-
-    @Override
-    public SlfPmsXdsdRecord value4(String value) {
         setUsername(value);
         return this;
     }
 
     @Override
+    public SlfPmsXdsdRecord value4(String value) {
+        setProvider(value);
+        return this;
+    }
+
+    @Override
     public SlfPmsXdsdRecord value5(String value) {
-        setUserid(value);
+        setAccessToken(value);
         return this;
     }
 
@@ -317,14 +317,14 @@ public class SlfPmsXdsdRecord extends UpdatableRecordImpl<SlfPmsXdsdRecord> impl
     /**
      * Create a detached, initialised SlfPmsXdsdRecord
      */
-    public SlfPmsXdsdRecord(Integer id, String provider, String accessToken, String username, String userid, BigDecimal commission, BigDecimal contributorcommission) {
+    public SlfPmsXdsdRecord(Integer id, String userid, String username, String provider, String accessToken, BigDecimal commission, BigDecimal contributorcommission) {
         super(SlfPmsXdsd.SLF_PMS_XDSD);
 
         set(0, id);
-        set(1, provider);
-        set(2, accessToken);
-        set(3, username);
-        set(4, userid);
+        set(1, userid);
+        set(2, username);
+        set(3, provider);
+        set(4, accessToken);
         set(5, commission);
         set(6, contributorcommission);
     }

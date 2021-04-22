@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> {
 
-    private static final long serialVersionUID = 658182073;
+    private static final long serialVersionUID = -301751147;
 
     /**
      * The reference instance of <code>self_xdsd.slf_invoicedtasks_xdsd</code>
@@ -55,11 +55,6 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.id</code>.
      */
     public final TableField<SlfInvoicedtasksXdsdRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.invoiceId</code>.
-     */
-    public final TableField<SlfInvoicedtasksXdsdRecord, Integer> INVOICEID = createField(DSL.name("invoiceId"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.repo_fullname</code>.
@@ -87,6 +82,16 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.commission</code>.
+     */
+    public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> COMMISSION = createField(DSL.name("commission"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.contributorCommission</code>.
+     */
+    public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> CONTRIBUTORCOMMISSION = createField(DSL.name("contributorCommission"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
+
+    /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.issueId</code>.
      */
     public final TableField<SlfInvoicedtasksXdsdRecord, String> ISSUEID = createField(DSL.name("issueId"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
@@ -107,24 +112,19 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     public final TableField<SlfInvoicedtasksXdsdRecord, LocalDateTime> INVOICED = createField(DSL.name("invoiced"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.invoiceId</code>.
+     */
+    public final TableField<SlfInvoicedtasksXdsdRecord, Integer> INVOICEID = createField(DSL.name("invoiceId"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.estimation_minutes</code>.
      */
     public final TableField<SlfInvoicedtasksXdsdRecord, Integer> ESTIMATION_MINUTES = createField(DSL.name("estimation_minutes"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.commission</code>.
-     */
-    public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> COMMISSION = createField(DSL.name("commission"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
-
-    /**
      * The column <code>self_xdsd.slf_invoicedtasks_xdsd.isPullRequest</code>.
      */
     public final TableField<SlfInvoicedtasksXdsdRecord, Boolean> ISPULLREQUEST = createField(DSL.name("isPullRequest"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_invoicedtasks_xdsd.contributorCommission</code>.
-     */
-    public final TableField<SlfInvoicedtasksXdsdRecord, BigInteger> CONTRIBUTORCOMMISSION = createField(DSL.name("contributorCommission"), org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(20).nullable(false), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_invoicedtasks_xdsd</code> table reference
@@ -166,7 +166,7 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK_IDX);
+        return Arrays.<Index>asList(Indexes.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK);
     }
 
     @Override
@@ -215,7 +215,7 @@ public class SlfInvoicedtasksXdsd extends TableImpl<SlfInvoicedtasksXdsdRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Integer, Integer, String, String, String, String, BigInteger, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer, BigInteger, Boolean, BigInteger> fieldsRow() {
+    public Row15<Integer, String, String, String, String, BigInteger, BigInteger, BigInteger, String, LocalDateTime, LocalDateTime, LocalDateTime, Integer, Integer, Boolean> fieldsRow() {
         return (Row15) super.fieldsRow();
     }
 }

@@ -4,6 +4,7 @@
 package com.selfxdsd.storage.generated.jooq.tables;
 
 
+import com.selfxdsd.storage.generated.jooq.Indexes;
 import com.selfxdsd.storage.generated.jooq.Keys;
 import com.selfxdsd.storage.generated.jooq.SelfXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.records.SlfApitokensXdsdRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -32,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfApitokensXdsd extends TableImpl<SlfApitokensXdsdRecord> {
 
-    private static final long serialVersionUID = 1294169281;
+    private static final long serialVersionUID = 1205064272;
 
     /**
      * The reference instance of <code>self_xdsd.slf_apitokens_xdsd</code>
@@ -108,6 +110,11 @@ public class SlfApitokensXdsd extends TableImpl<SlfApitokensXdsdRecord> {
     @Override
     public Schema getSchema() {
         return SelfXdsd.SELF_XDSD;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.SLF_APITOKENS_XDSD_OWNERUSER);
     }
 
     @Override

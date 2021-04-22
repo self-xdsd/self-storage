@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
-    private static final long serialVersionUID = -122399106;
+    private static final long serialVersionUID = -645327908;
 
     /**
      * The reference instance of <code>self_xdsd.slf_tasks_xdsd</code>
@@ -65,6 +65,11 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
     public final TableField<SlfTasksXdsdRecord, String> PROVIDER = createField(DSL.name("provider"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_tasks_xdsd.isPullRequest</code>.
+     */
+    public final TableField<SlfTasksXdsdRecord, Boolean> ISPULLREQUEST = createField(DSL.name("isPullRequest"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
      * The column <code>self_xdsd.slf_tasks_xdsd.role</code>.
      */
     public final TableField<SlfTasksXdsdRecord, String> ROLE = createField(DSL.name("role"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
@@ -88,11 +93,6 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
      * The column <code>self_xdsd.slf_tasks_xdsd.estimation_minutes</code>.
      */
     public final TableField<SlfTasksXdsdRecord, Integer> ESTIMATION_MINUTES = createField(DSL.name("estimation_minutes"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_tasks_xdsd.isPullRequest</code>.
-     */
-    public final TableField<SlfTasksXdsdRecord, Boolean> ISPULLREQUEST = createField(DSL.name("isPullRequest"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>self_xdsd.slf_tasks_xdsd</code> table reference
@@ -134,7 +134,7 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_TASKS_XDSD_ASSIGNED_CONTRACT_IDX, Indexes.SLF_TASKS_XDSD_ASSIGNEE_IDX, Indexes.SLF_TASKS_XDSD_CONTRACT_IDX, Indexes.SLF_TASKS_XDSD_PARENT_PROJECT_IDX, Indexes.SLF_TASKS_XDSD_PROJECT_IDX);
+        return Arrays.<Index>asList(Indexes.SLF_TASKS_XDSD_ASSIGNEE, Indexes.SLF_TASKS_XDSD_PARENT_PROJECT);
     }
 
     @Override
@@ -149,7 +149,11 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
     @Override
     public List<ForeignKey<SlfTasksXdsdRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SlfTasksXdsdRecord, ?>>asList(Keys.PARENT_PROJECT);
+        return Arrays.<ForeignKey<SlfTasksXdsdRecord, ?>>asList(Keys.ASSIGNEE, Keys.PARENT_PROJECT);
+    }
+
+    public SlfContractsXdsd slfContractsXdsd() {
+        return new SlfContractsXdsd(this, Keys.ASSIGNEE);
     }
 
     public SlfProjectsXdsd slfProjectsXdsd() {
@@ -187,7 +191,7 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<String, String, String, String, String, LocalDateTime, LocalDateTime, Integer, Boolean> fieldsRow() {
+    public Row9<String, String, String, Boolean, String, String, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
         return (Row9) super.fieldsRow();
     }
 }

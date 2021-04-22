@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPaymentmethodsXdsd extends TableImpl<SlfPaymentmethodsXdsdRecord> {
 
-    private static final long serialVersionUID = -773709893;
+    private static final long serialVersionUID = 1585532633;
 
     /**
      * The reference instance of <code>self_xdsd.slf_paymentmethods_xdsd</code>
@@ -119,7 +119,7 @@ public class SlfPaymentmethodsXdsd extends TableImpl<SlfPaymentmethodsXdsdRecord
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_PAYMENTMETHODS_XDSD_WALLETFK_IDX);
+        return Arrays.<Index>asList(Indexes.SLF_PAYMENTMETHODS_XDSD_WALLETFK);
     }
 
     @Override

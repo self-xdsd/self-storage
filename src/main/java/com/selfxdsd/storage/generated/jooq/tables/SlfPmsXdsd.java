@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
 
-    private static final long serialVersionUID = -565650247;
+    private static final long serialVersionUID = 1301157753;
 
     /**
      * The reference instance of <code>self_xdsd.slf_pms_xdsd</code>
@@ -54,6 +54,16 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
     public final TableField<SlfPmsXdsdRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
+     * The column <code>self_xdsd.slf_pms_xdsd.userid</code>.
+     */
+    public final TableField<SlfPmsXdsdRecord, String> USERID = createField(DSL.name("userid"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>self_xdsd.slf_pms_xdsd.username</code>.
+     */
+    public final TableField<SlfPmsXdsdRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
      * The column <code>self_xdsd.slf_pms_xdsd.provider</code>.
      */
     public final TableField<SlfPmsXdsdRecord, String> PROVIDER = createField(DSL.name("provider"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
@@ -62,16 +72,6 @@ public class SlfPmsXdsd extends TableImpl<SlfPmsXdsdRecord> {
      * The column <code>self_xdsd.slf_pms_xdsd.access_token</code>.
      */
     public final TableField<SlfPmsXdsdRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_pms_xdsd.username</code>.
-     */
-    public final TableField<SlfPmsXdsdRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>self_xdsd.slf_pms_xdsd.userId</code>.
-     */
-    public final TableField<SlfPmsXdsdRecord, String> USERID = createField(DSL.name("userId"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>self_xdsd.slf_pms_xdsd.commission</code>.

@@ -94,6 +94,7 @@ public class Keys {
     public static final ForeignKey<SlfProjectsXdsdRecord, SlfUsersXdsdRecord> OWNER = ForeignKeys0.OWNER;
     public static final ForeignKey<SlfProjectsXdsdRecord, SlfPmsXdsdRecord> PM = ForeignKeys0.PM;
     public static final ForeignKey<SlfResignationsXdsdRecord, SlfContributorsXdsdRecord> RESIGNEE = ForeignKeys0.RESIGNEE;
+    public static final ForeignKey<SlfTasksXdsdRecord, SlfContractsXdsdRecord> ASSIGNEE = ForeignKeys0.ASSIGNEE;
     public static final ForeignKey<SlfTasksXdsdRecord, SlfProjectsXdsdRecord> PARENT_PROJECT = ForeignKeys0.PARENT_PROJECT;
     public static final ForeignKey<SlfWalletsXdsdRecord, SlfProjectsXdsdRecord> OWNERPROJECT = ForeignKeys0.OWNERPROJECT;
 
@@ -139,6 +140,7 @@ public class Keys {
         public static final ForeignKey<SlfProjectsXdsdRecord, SlfUsersXdsdRecord> OWNER = Internal.createForeignKey(Keys.KEY_SLF_USERS_XDSD_PRIMARY, SlfProjectsXdsd.SLF_PROJECTS_XDSD, "owner", new TableField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.USERNAME, SlfProjectsXdsd.SLF_PROJECTS_XDSD.PROVIDER }, true);
         public static final ForeignKey<SlfProjectsXdsdRecord, SlfPmsXdsdRecord> PM = Internal.createForeignKey(Keys.KEY_SLF_PMS_XDSD_PRIMARY, SlfProjectsXdsd.SLF_PROJECTS_XDSD, "pm", new TableField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.PMID }, true);
         public static final ForeignKey<SlfResignationsXdsdRecord, SlfContributorsXdsdRecord> RESIGNEE = Internal.createForeignKey(Keys.KEY_SLF_CONTRIBUTORS_XDSD_PRIMARY, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, "resignee", new TableField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.USERNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER }, true);
+        public static final ForeignKey<SlfTasksXdsdRecord, SlfContractsXdsdRecord> ASSIGNEE = Internal.createForeignKey(Keys.KEY_SLF_CONTRACTS_XDSD_PRIMARY, SlfTasksXdsd.SLF_TASKS_XDSD, "assignee", new TableField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.USERNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER, SlfTasksXdsd.SLF_TASKS_XDSD.ROLE }, true);
         public static final ForeignKey<SlfTasksXdsdRecord, SlfProjectsXdsdRecord> PARENT_PROJECT = Internal.createForeignKey(Keys.KEY_SLF_PROJECTS_XDSD_PRIMARY, SlfTasksXdsd.SLF_TASKS_XDSD, "parent_project", new TableField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, true);
         public static final ForeignKey<SlfWalletsXdsdRecord, SlfProjectsXdsdRecord> OWNERPROJECT = Internal.createForeignKey(Keys.KEY_SLF_PROJECTS_XDSD_PRIMARY, SlfWalletsXdsd.SLF_WALLETS_XDSD, "ownerProject", new TableField[] { SlfWalletsXdsd.SLF_WALLETS_XDSD.REPO_FULLNAME, SlfWalletsXdsd.SLF_WALLETS_XDSD.PROVIDER }, true);
     }
