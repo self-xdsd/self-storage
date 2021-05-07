@@ -41,19 +41,6 @@ public final class SelfJooq implements Storage {
     private Database database;
 
     /**
-     * Constructor. Working with MySql by default.
-     */
-    public SelfJooq() {
-        this(
-            new MySql(
-                "DB URL",
-                "user",
-                "pwd"
-            )
-        );
-    }
-
-    /**
      * Ctor.
      * @param database Database.
      */
