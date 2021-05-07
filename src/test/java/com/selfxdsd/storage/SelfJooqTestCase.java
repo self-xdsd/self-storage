@@ -270,4 +270,19 @@ public final class SelfJooqTestCase {
             )
         );
     }
+
+    /**
+     * SelfJooq can return the JsonStorage.
+     */
+    @Test
+    public void returnsJsonStorage() {
+        final Storage storage = new SelfJooq(Mockito.mock(Database.class));
+        MatcherAssert.assertThat(
+            storage.jsonStorage(),
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(SelfJsonStorage.class)
+            )
+        );
+    }
 }

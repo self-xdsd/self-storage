@@ -265,3 +265,13 @@ CREATE TABLE `self_xdsd`.`slf_apitokens_xdsd` (
     FOREIGN KEY (`username` , `provider`)
     REFERENCES `self_xdsd`.`slf_users_xdsd` (`username` , `provider`)
     ON DELETE CASCADE);
+
+-- -----------------------------------------------------
+-- Table `self_xdsd`.`slf_jsonstorage_xdsd`
+-- -----------------------------------------------------
+
+CREATE TABLE `self_xdsd`.`slf_jsonstorage_xdsd` (
+  `url` VARCHAR(512) NOT NULL,
+  `etag` VARCHAR(2048) NOT NULL,
+  `jsonBody` LONGTEXT NOT NULL,
+  PRIMARY KEY (`url`));
