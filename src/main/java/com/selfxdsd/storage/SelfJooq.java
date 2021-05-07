@@ -23,6 +23,7 @@
 package com.selfxdsd.storage;
 
 import com.selfxdsd.api.*;
+import com.selfxdsd.api.storage.JsonStorage;
 import com.selfxdsd.api.storage.Storage;
 
 /**
@@ -133,6 +134,11 @@ public final class SelfJooq implements Storage {
     @Override
     public Payments payments() {
         return new SelfPayments(this, this.database);
+    }
+
+    @Override
+    public JsonStorage jsonStorage() {
+        return new SelfJsonStorage(this, this.database);
     }
 
     @Override
