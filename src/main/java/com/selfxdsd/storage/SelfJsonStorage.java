@@ -24,8 +24,11 @@ package com.selfxdsd.storage;
 
 import com.selfxdsd.api.storage.JsonStorage;
 import com.selfxdsd.api.storage.Storage;
+import org.jooq.Record;
+import org.jooq.Result;
 
 import java.net.URI;
+import static com.selfxdsd.storage.generated.jooq.Tables.SLF_JSONSTORAGE_XDSD;
 
 /**
  * Storage for JsonResources in Self XDSD (we store JSONs received from
@@ -61,16 +64,53 @@ public final class SelfJsonStorage implements JsonStorage {
 
     @Override
     public String getEtag(final URI uri) {
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_JSONSTORAGE_XDSD)
+            .where(SLF_JSONSTORAGE_XDSD.URL.eq(uri.toString()))
+            .fetch();
+        if(result.size() > 0) {
+            return result.get(0).get(SLF_JSONSTORAGE_XDSD.ETAG);
+        }
         return null;
     }
 
     @Override
     public String getResourceBody(final URI uri) {
+        final Result<Record> result = this.database.jooq()
+            .select()
+            .from(SLF_JSONSTORAGE_XDSD)
+            .where(SLF_JSONSTORAGE_XDSD.URL.eq(uri.toString()))
+            .fetch();
+        if(result.size() > 0) {
+            return result.get(0).get(SLF_JSONSTORAGE_XDSD.JSONBODY);
+        }
         return null;
     }
 
     @Override
     public void store(final URI uri, final String etag, final String resource) {
-
+        if(uri.toString().length() < 1024
+            && !etag.isBlank() && !resource.isBlank()) {
+            if(this.getEtag(uri) == null) {
+                this.database.jooq().insertInto(
+                    SLF_JSONSTORAGE_XDSD,
+                    SLF_JSONSTORAGE_XDSD.URL,
+                    SLF_JSONSTORAGE_XDSD.ETAG,
+                    SLF_JSONSTORAGE_XDSD.JSONBODY
+                ).values(
+                    uri.toString(),
+                    etag,
+                    resource
+                ).execute();
+            } else {
+                this.database.jooq()
+                    .update(SLF_JSONSTORAGE_XDSD)
+                    .set(SLF_JSONSTORAGE_XDSD.ETAG, etag)
+                    .set(SLF_JSONSTORAGE_XDSD.JSONBODY, resource)
+                    .where(SLF_JSONSTORAGE_XDSD.URL.eq(uri.toString()))
+                    .execute();
+            }
+        }
     }
 }

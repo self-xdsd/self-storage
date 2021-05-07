@@ -385,3 +385,6 @@ VALUES (1, '2021-01-09', 'mihai', 130, 19, 'transaction123', '2021-01-09', 487);
 INSERT INTO `self_xdsd`.`slf_platforminvoices_xdsd`
 (`id`, `createdAt`, `billedTo`, `commission`, `vat`, `transactionId`, `payment_timestamp`, `invoiceId`, `eurToRon`)
 VALUES (2, '2021-01-09', 'vlad', 130, 19, 'transactionIdHere', '2021-01-09', 4, 487);
+
+INSERT INTO `self_xdsd`.`slf_jsonstorage_xdsd` (`url`, `etag`, `jsonBody`)
+VALUES ('https://github.com/self-xdsd/self-storage/issues/123', 'etag123321', '{"issueId":"123"}');
