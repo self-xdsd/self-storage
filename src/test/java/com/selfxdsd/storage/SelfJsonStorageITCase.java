@@ -22,6 +22,7 @@
  */
 package com.selfxdsd.storage;
 
+import com.selfxdsd.api.Resource;
 import com.selfxdsd.api.storage.JsonStorage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,65 +41,39 @@ import java.util.UUID;
 public final class SelfJsonStorageITCase {
 
     /**
-     * Returns found Etag based on URL.
+     * Returns found Resource based on URL.
      */
     @Test
-    public void returnsFoundETag() {
+    public void returnsFoundResource() {
         final JsonStorage jsonStorage = new SelfJooq(new H2Database())
             .jsonStorage();
+        final Resource found = jsonStorage.getResource(
+            URI.create(
+                "https://github.com/self-xdsd/self-storage/issues/123"
+            )
+        );
         MatcherAssert.assertThat(
-            jsonStorage.getEtag(
-                URI.create(
-                    "https://github.com/self-xdsd/self-storage/issues/123"
-                )
-            ),
+            found, Matchers.notNullValue()
+        );
+        MatcherAssert.assertThat(
+            found.etag(),
             Matchers.equalTo("etag123321")
         );
-    }
-
-    /**
-     * Returns null etag if no record is found for the given URL.
-     */
-    @Test
-    public void returnsNullMissingEtag() {
-        final JsonStorage jsonStorage = new SelfJooq(new H2Database())
-            .jsonStorage();
         MatcherAssert.assertThat(
-            jsonStorage.getEtag(
-                URI.create(
-                    "https://github.com/self-xdsd/self-storage/issues/999"
-                )
-            ),
-            Matchers.nullValue()
-        );
-    }
-
-    /**
-     * Returns found body based on URL.
-     */
-    @Test
-    public void returnsFoundBody() {
-        final JsonStorage jsonStorage = new SelfJooq(new H2Database())
-            .jsonStorage();
-        MatcherAssert.assertThat(
-            jsonStorage.getResourceBody(
-                URI.create(
-                    "https://github.com/self-xdsd/self-storage/issues/123"
-                )
-            ),
+            found.body(),
             Matchers.equalTo("{\"issueId\":\"123\"}")
         );
     }
 
     /**
-     * Returns null body if no record is found for the given URL.
+     * Returns null resource if no record is found for the given URL.
      */
     @Test
-    public void returnsNullMissingBody() {
+    public void returnsNullMissingResource() {
         final JsonStorage jsonStorage = new SelfJooq(new H2Database())
             .jsonStorage();
         MatcherAssert.assertThat(
-            jsonStorage.getResourceBody(
+            jsonStorage.getResource(
                 URI.create(
                     "https://github.com/self-xdsd/self-storage/issues/999"
                 )
@@ -108,7 +83,7 @@ public final class SelfJsonStorageITCase {
     }
 
     /**
-     * Method store doesn't insert/update anything if the etag and body are
+     * Method store doesn't insert anything if the etag and body are
      * blank.
      */
     @Test
@@ -116,7 +91,28 @@ public final class SelfJsonStorageITCase {
         final Database mockDb = Mockito.mock(Database.class);
         final JsonStorage jsonStorage = new SelfJooq(mockDb)
             .jsonStorage();
-        jsonStorage.store(URI.create("https://github.com"), "", "");
+        final Resource res = Mockito.mock(Resource.class);
+        Mockito.when(res.body()).thenReturn("");
+        Mockito.when(res.etag()).thenReturn("");
+        jsonStorage.storeResource(URI.create("https://github.com"), res);
+        Mockito.verify(
+            mockDb, Mockito.times(0)
+        ).jooq();
+    }
+
+    /**
+     * Method update doesn't do anything if the etag and body are
+     * blank.
+     */
+    @Test
+    public void updateIgnoresBlankEtagAndBody() {
+        final Database mockDb = Mockito.mock(Database.class);
+        final JsonStorage jsonStorage = new SelfJooq(mockDb)
+            .jsonStorage();
+        final Resource res = Mockito.mock(Resource.class);
+        Mockito.when(res.body()).thenReturn("");
+        Mockito.when(res.etag()).thenReturn("");
+        jsonStorage.updateResource(URI.create("https://github.com"), res);
         Mockito.verify(
             mockDb, Mockito.times(0)
         ).jooq();
@@ -134,12 +130,15 @@ public final class SelfJsonStorageITCase {
             "httos://github.com/self-xdsd/self-storage/issues/" + issueId
         );
 
-        jsonStorage.store(
-            uri, "etag456654", "{\"issueId\":\"" + issueId + "\"}"
-        );
+        final Resource resource = Mockito.mock(Resource.class);
+        Mockito.when(resource.etag()).thenReturn("etag456654");
+        Mockito.when(resource.body())
+            .thenReturn("{\"issueId\":\"" + issueId + "\"}");
+
+        jsonStorage.storeResource(uri, resource);
 
         MatcherAssert.assertThat(
-            jsonStorage.getEtag(uri),
+            jsonStorage.getResource(uri).etag(),
             Matchers.equalTo("etag456654")
         );
     }
@@ -156,31 +155,32 @@ public final class SelfJsonStorageITCase {
             "httos://github.com/self-xdsd/self-storage/issues/" + issueId
         );
 
-        jsonStorage.store(
-            uri, "etag456654", "{\"body\":\"some body\"}"
-        );
+        final Resource resource = Mockito.mock(Resource.class);
+        Mockito.when(resource.etag()).thenReturn("etag456654");
+        Mockito.when(resource.body())
+            .thenReturn("{\"issueId\":\"" + issueId + "\"}");
+
+        jsonStorage.storeResource(uri, resource);
 
         MatcherAssert.assertThat(
-            jsonStorage.getEtag(uri),
+            jsonStorage.getResource(uri).etag(),
             Matchers.equalTo("etag456654")
         );
 
-        MatcherAssert.assertThat(
-            jsonStorage.getResourceBody(uri),
-            Matchers.equalTo("{\"body\":\"some body\"}")
-        );
+        final Resource updated = Mockito.mock(Resource.class);
+        Mockito.when(updated.etag()).thenReturn("etag789987");
+        Mockito.when(updated.body())
+            .thenReturn("{\"body\":\"another body\"}");
 
-        jsonStorage.store(
-            uri, "etag789987", "{\"body\":\"another body\"}"
-        );
+        jsonStorage.updateResource(uri, updated);
 
         MatcherAssert.assertThat(
-            jsonStorage.getEtag(uri),
+            jsonStorage.getResource(uri).etag(),
             Matchers.equalTo("etag789987")
         );
 
         MatcherAssert.assertThat(
-            jsonStorage.getResourceBody(uri),
+            jsonStorage.getResource(uri).body(),
             Matchers.equalTo("{\"body\":\"another body\"}")
         );
     }
