@@ -1,6 +1,6 @@
 ## Self's Storage Implementation
 
-[![Build Status](https://travis-ci.org/self-xdsd/self-storage.svg?branch=master)](https://travis-ci.org/self-xdsd/self-storage)
+[![Build Status](https://travis-ci.com/self-xdsd/self-storage.svg?branch=master)](https://travis-ci.com/self-xdsd/self-storage)
 [![Coverage Status](https://coveralls.io/repos/github/self-xdsd/self-storage/badge.svg?branch=master)](https://coveralls.io/github/self-xdsd/self-storage?branch=master)
 
 [![Managed By Self XDSD](https://amihaiemil.com/images/mbself.svg)](#)
