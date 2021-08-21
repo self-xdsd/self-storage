@@ -96,10 +96,6 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   deadline DATETIME NULL DEFAULT NULL,
   estimation_minutes INT NOT NULL,
   PRIMARY KEY (issueId, provider, repo_fullname, isPullRequest),
-  CONSTRAINT assignee
-    FOREIGN KEY (username, provider, role)
-    REFERENCES self_xdsd.slf_contracts_xdsd (username, provider, role)
-    ON UPDATE CASCADE,
   CONSTRAINT parent_project
     FOREIGN KEY (repo_fullname, provider)
     REFERENCES self_xdsd.slf_projects_xdsd (repo_fullname, provider)
