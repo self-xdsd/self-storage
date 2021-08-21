@@ -4,7 +4,6 @@
 package com.selfxdsd.storage.generated.jooq;
 
 
-import com.selfxdsd.storage.generated.jooq.tables.SlfApitokensXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfContractsXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicedtasksXdsd;
 import com.selfxdsd.storage.generated.jooq.tables.SlfInvoicesXdsd;
@@ -29,8 +28,7 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index SLF_APITOKENS_XDSD_OWNERUSER = Indexes0.SLF_APITOKENS_XDSD_OWNERUSER;
-    public static final Index SLF_CONTRACTS_XDSD_CONTRIBUTOR = Indexes0.SLF_CONTRACTS_XDSD_CONTRIBUTOR;
+    public static final Index SLF_CONTRACTS_XDSD_ASSIGNEE = Indexes0.SLF_CONTRACTS_XDSD_ASSIGNEE;
     public static final Index SLF_CONTRACTS_XDSD_PROJECT = Indexes0.SLF_CONTRACTS_XDSD_PROJECT;
     public static final Index SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK = Indexes0.SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK;
     public static final Index SLF_INVOICES_XDSD_FKCONTRACT = Indexes0.SLF_INVOICES_XDSD_FKCONTRACT;
@@ -40,7 +38,6 @@ public class Indexes {
     public static final Index SLF_PROJECTS_XDSD_PM = Indexes0.SLF_PROJECTS_XDSD_PM;
     public static final Index SLF_RESIGNATIONS_XDSD_RESIGNEE = Indexes0.SLF_RESIGNATIONS_XDSD_RESIGNEE;
     public static final Index SLF_RESIGNATIONS_XDSD_TASK = Indexes0.SLF_RESIGNATIONS_XDSD_TASK;
-    public static final Index SLF_TASKS_XDSD_ASSIGNEE = Indexes0.SLF_TASKS_XDSD_ASSIGNEE;
     public static final Index SLF_TASKS_XDSD_PARENT_PROJECT = Indexes0.SLF_TASKS_XDSD_PARENT_PROJECT;
 
     // -------------------------------------------------------------------------
@@ -48,8 +45,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index SLF_APITOKENS_XDSD_OWNERUSER = Internal.createIndex("ownerUser", SlfApitokensXdsd.SLF_APITOKENS_XDSD, new OrderField[] { SlfApitokensXdsd.SLF_APITOKENS_XDSD.USERNAME, SlfApitokensXdsd.SLF_APITOKENS_XDSD.PROVIDER }, false);
-        public static Index SLF_CONTRACTS_XDSD_CONTRIBUTOR = Internal.createIndex("contributor", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER }, false);
+        public static Index SLF_CONTRACTS_XDSD_ASSIGNEE = Internal.createIndex("assignee", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.USERNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER, SlfContractsXdsd.SLF_CONTRACTS_XDSD.ROLE }, false);
         public static Index SLF_CONTRACTS_XDSD_PROJECT = Internal.createIndex("project", SlfContractsXdsd.SLF_CONTRACTS_XDSD, new OrderField[] { SlfContractsXdsd.SLF_CONTRACTS_XDSD.REPO_FULLNAME, SlfContractsXdsd.SLF_CONTRACTS_XDSD.PROVIDER }, false);
         public static Index SLF_INVOICEDTASKS_XDSD_INVOICECONTRACTFK = Internal.createIndex("invoiceContractFk", SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD, new OrderField[] { SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.REPO_FULLNAME, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.USERNAME, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.PROVIDER, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.ROLE, SlfInvoicedtasksXdsd.SLF_INVOICEDTASKS_XDSD.INVOICEID }, false);
         public static Index SLF_INVOICES_XDSD_FKCONTRACT = Internal.createIndex("fkContract", SlfInvoicesXdsd.SLF_INVOICES_XDSD, new OrderField[] { SlfInvoicesXdsd.SLF_INVOICES_XDSD.REPO_FULLNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.USERNAME, SlfInvoicesXdsd.SLF_INVOICES_XDSD.PROVIDER, SlfInvoicesXdsd.SLF_INVOICES_XDSD.ROLE }, false);
@@ -59,7 +55,6 @@ public class Indexes {
         public static Index SLF_PROJECTS_XDSD_PM = Internal.createIndex("pm", SlfProjectsXdsd.SLF_PROJECTS_XDSD, new OrderField[] { SlfProjectsXdsd.SLF_PROJECTS_XDSD.PMID }, false);
         public static Index SLF_RESIGNATIONS_XDSD_RESIGNEE = Internal.createIndex("resignee", SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, new OrderField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.USERNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER }, false);
         public static Index SLF_RESIGNATIONS_XDSD_TASK = Internal.createIndex("task", SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD, new OrderField[] { SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.REPO_FULLNAME, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.PROVIDER, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.ISSUEID, SlfResignationsXdsd.SLF_RESIGNATIONS_XDSD.ISPULLREQUEST }, false);
-        public static Index SLF_TASKS_XDSD_ASSIGNEE = Internal.createIndex("assignee", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.USERNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER, SlfTasksXdsd.SLF_TASKS_XDSD.ROLE }, false);
         public static Index SLF_TASKS_XDSD_PARENT_PROJECT = Internal.createIndex("parent_project", SlfTasksXdsd.SLF_TASKS_XDSD, new OrderField[] { SlfTasksXdsd.SLF_TASKS_XDSD.REPO_FULLNAME, SlfTasksXdsd.SLF_TASKS_XDSD.PROVIDER }, false);
     }
 }

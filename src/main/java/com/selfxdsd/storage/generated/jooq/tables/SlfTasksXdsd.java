@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
-    private static final long serialVersionUID = -645327908;
+    private static final long serialVersionUID = -1227649131;
 
     /**
      * The reference instance of <code>self_xdsd.slf_tasks_xdsd</code>
@@ -134,7 +134,7 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SLF_TASKS_XDSD_ASSIGNEE, Indexes.SLF_TASKS_XDSD_PARENT_PROJECT);
+        return Arrays.<Index>asList(Indexes.SLF_TASKS_XDSD_PARENT_PROJECT);
     }
 
     @Override
@@ -149,11 +149,7 @@ public class SlfTasksXdsd extends TableImpl<SlfTasksXdsdRecord> {
 
     @Override
     public List<ForeignKey<SlfTasksXdsdRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SlfTasksXdsdRecord, ?>>asList(Keys.ASSIGNEE, Keys.PARENT_PROJECT);
-    }
-
-    public SlfContractsXdsd slfContractsXdsd() {
-        return new SlfContractsXdsd(this, Keys.ASSIGNEE);
+        return Arrays.<ForeignKey<SlfTasksXdsdRecord, ?>>asList(Keys.PARENT_PROJECT);
     }
 
     public SlfProjectsXdsd slfProjectsXdsd() {
