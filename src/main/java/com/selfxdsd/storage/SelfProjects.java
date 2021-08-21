@@ -45,6 +45,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #301:60min Implement methods rename(...) and getByWebHookToken(...) and
+ *  write integration tests for them.
  */
 public final class SelfProjects extends BasePaged implements Projects {
 
@@ -231,6 +233,11 @@ public final class SelfProjects extends BasePaged implements Projects {
     }
 
     @Override
+    public Project getByWebHookToken(final String webHookToken) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
     public Projects page(final Page page) {
         return new SelfProjects(
             this.storage,
@@ -247,6 +254,11 @@ public final class SelfProjects extends BasePaged implements Projects {
                     SLF_PROJECTS_XDSD.PROVIDER.eq(project.provider())
                 )
             ).execute();
+    }
+
+    @Override
+    public Project rename(final Project project, final String newName) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
