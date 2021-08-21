@@ -79,6 +79,7 @@ CREATE TABLE self_xdsd.slf_contracts_xdsd (
   CONSTRAINT project
     FOREIGN KEY (repo_fullname, provider)
     REFERENCES self_xdsd.slf_projects_xdsd (repo_fullname, provider)
+    ON UPDATE CASCADE
 );
 
 -- -----------------------------------------------------
@@ -96,12 +97,14 @@ CREATE TABLE self_xdsd.slf_tasks_xdsd (
   estimation_minutes INT NOT NULL,
   PRIMARY KEY (issueId, provider, repo_fullname, isPullRequest),
   CONSTRAINT assignee
-    FOREIGN KEY (repo_fullname, username, provider, role)
-    REFERENCES self_xdsd.slf_contracts_xdsd (repo_fullname, username, provider, role),
+    FOREIGN KEY (username, provider, role)
+    REFERENCES self_xdsd.slf_contracts_xdsd (username, provider, role)
+    ON UPDATE CASCADE,
   CONSTRAINT parent_project
     FOREIGN KEY (repo_fullname, provider)
     REFERENCES self_xdsd.slf_projects_xdsd (repo_fullname, provider)
     ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- -----------------------------------------------------
@@ -123,6 +126,7 @@ CREATE TABLE `self_xdsd`.`slf_invoices_xdsd` (
   CONSTRAINT `fkContract`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role`)
     REFERENCES `self_xdsd`.`slf_contracts_xdsd` (`repo_fullname` , `username` , `provider` , `role`)
+    ON UPDATE CASCADE
     ON DELETE CASCADE);
 
 -- -----------------------------------------------------
@@ -148,6 +152,7 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
   CONSTRAINT `invoiceContractFk`
     FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
     REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
+    ON UPDATE CASCADE
     ON DELETE CASCADE);
 
 -- -----------------------------------------------------
@@ -181,6 +186,7 @@ CREATE TABLE `self_xdsd`.`slf_resignations_xdsd` (
   CONSTRAINT `task`
     FOREIGN KEY (`repo_fullname` , `provider` , `issueId`, `isPullRequest`)
     REFERENCES `self_xdsd`.`slf_tasks_xdsd` (`repo_fullname` , `provider` , `issueId`, `isPullRequest`)
+    ON UPDATE CASCADE
     ON DELETE CASCADE,
   CONSTRAINT `resignee`
     FOREIGN KEY (`username` , `provider`)
@@ -200,6 +206,7 @@ CREATE TABLE `self_xdsd`.`slf_wallets_xdsd` (
   CONSTRAINT `ownerProject`
     FOREIGN KEY (`repo_fullname` , `provider`)
     REFERENCES `self_xdsd`.`slf_projects_xdsd` (`repo_fullname` , `provider`)
+    ON UPDATE CASCADE
     ON DELETE CASCADE);
 
 -- -----------------------------------------------------
@@ -229,6 +236,7 @@ CREATE TABLE `self_xdsd`.`slf_paymentmethods_xdsd` (
   CONSTRAINT `walletFK`
     FOREIGN KEY (`repo_fullname` , `provider` , `type`)
     REFERENCES `self_xdsd`.`slf_wallets_xdsd` (`repo_fullname` , `provider` , `type`)
+    ON UPDATE CASCADE
     ON DELETE CASCADE);
 
 -- -----------------------------------------------------
