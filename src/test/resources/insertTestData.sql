@@ -72,6 +72,10 @@ INSERT INTO self_xdsd.slf_projects_xdsd
 (repo_fullname, provider, username, pmid, webhook_token)
 VALUES ('maria/to_remove', 'github', 'maria', 3, 'whtoken12888');
 
+INSERT INTO self_xdsd.slf_projects_xdsd
+(repo_fullname, provider, username, pmid, webhook_token)
+VALUES ('amihaiemil/to_rename', 'github', 'amihaiemil', 1, 'whtoken1345345345');
+
 -- INSERT CONTRIBUTORS
 
 INSERT INTO self_xdsd.slf_contributors_xdsd (username, provider) VALUES ('john', 'github');
@@ -126,6 +130,10 @@ VALUES ('vlad/test', 'alexandra', 'github', 'DEV', 8000);
 INSERT INTO self_xdsd.slf_contracts_xdsd -- this Contract is for testing SelfContracts.remove(...). Don't use it in other tests.
 (repo_fullname, username, provider, role, hourly_rate, markedForRemoval)
 VALUES ('vlad/test', 'maria', 'github', 'PO', 10000, '2020-10-10');
+
+INSERT INTO self_xdsd.slf_contracts_xdsd
+(repo_fullname, username, provider, role, hourly_rate)
+VALUES ('amihaiemil/to_rename', 'john', 'github', 'DEV', 8000);
 
 -- INSERT TASKS
 INSERT INTO self_xdsd.slf_tasks_xdsd
@@ -198,6 +206,16 @@ INSERT INTO self_xdsd.slf_tasks_xdsd
 VALUES
 ('vlad/test', '1000', 'github', 'DEV', 60, 1);
 
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, estimation_minutes, isPullRequest)
+VALUES
+('amihaiemil/to_rename', '1000', 'github', 'DEV', 60, 0);
+
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, estimation_minutes, isPullRequest)
+VALUES
+('amihaiemil/to_rename', '1001', 'github', 'DEV', 60, 0);
+
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (invoiceId, repo_fullname, username, provider, role, createdAt)
 VALUES
@@ -222,6 +240,11 @@ INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (invoiceId, repo_fullname, username, provider, role, createdAt)
 VALUES
 (5, 'vlad/test', 'alexandra', 'github', 'DEV', NOW());
+
+INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
+(invoiceId, repo_fullname, username, provider, role, createdAt)
+VALUES
+(6, 'amihaiemil/to_rename', 'john', 'github', 'DEV', NOW());
 
 INSERT INTO `self_xdsd`.`slf_payments_xdsd`
 (`invoiceId`, `transactionId`, `payment_timestamp`, `value`, `status`, `failReason`)
@@ -312,6 +335,20 @@ INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
 VALUES
 (4, 'vlad/test', 'alexandra', 'github', 'DEV', 10000, 100, 30, '899', '2020-06-01', '2020-06-11', NOW(), 60, 0);
 
+INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
+(invoiceId, repo_fullname, username, provider, role, value, commission, contributorCommission, issueId, assigned, deadline, invoiced, estimation_minutes, isPullRequest)
+VALUES
+(6, 'amihaiemil/to_rename', 'john', 'github', 'DEV', 10000, 100, 30, '800', '2020-06-01', '2020-06-11', NOW(), 60, 0);
+
+INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
+(invoiceId, repo_fullname, username, provider, role, value, commission, contributorCommission, issueId, assigned, deadline, invoiced, estimation_minutes, isPullRequest)
+VALUES
+(6, 'amihaiemil/to_rename', 'john', 'github', 'DEV', 10000, 100, 30, '801', '2020-06-01', '2020-06-11', NOW(), 60, 0);
+
+INSERT INTO `self_xdsd`.`slf_invoicedtasks_xdsd`
+(invoiceId, repo_fullname, username, provider, role, value, commission, contributorCommission, issueId, assigned, deadline, invoiced, estimation_minutes, isPullRequest)
+VALUES
+(6, 'amihaiemil/to_rename', 'john', 'github', 'DEV', 10000, 100, 30, '802', '2020-06-01', '2020-06-11', NOW(), 60, 0);
 
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
@@ -343,6 +380,16 @@ INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 VALUES
 ('maria/to_remove', 'github', 'STRIPE', 10000, 1, 'stripewallet-5555555');
 
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+('amihaiemil/to_rename', 'github', 'FAKE', 10000000, 0, 'fakew-435345345');
+
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+('amihaiemil/to_rename', 'github', 'STRIPE', 10000, 1, 'stripewallet-87787878');
+
 INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
 VALUES ('johndoe/stripe_repo', 'github', 'STRIPE', 'stripe_pm_to_delete', 0);
 
@@ -364,6 +411,9 @@ VALUES ('maria/to_remove', 'github', 'STRIPE', 'stripe_mary_card_1', 0);
 INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
 VALUES ('maria/to_remove', 'github', 'STRIPE', 'stripe_mary_card_2', 1);
 
+INSERT INTO `self_xdsd`.`slf_paymentmethods_xdsd` (`repo_fullname`,`provider`,`type`,`identifier`,`active`)
+VALUES ('amihaiemil/to_rename', 'github', 'STRIPE', 'stripe_mihairn_card_1', 1);
+
 INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
 (`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`, `isPullRequest`)
 VALUES
@@ -373,6 +423,11 @@ INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
 (`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`, `isPullRequest`)
 VALUES
 ('vlad/test', 'john', 'github', '999', '2020-09-01', 'ASKED', 0);
+
+INSERT INTO `self_xdsd`.`slf_resignations_xdsd`
+(`repo_fullname`, `username`, `provider`, `issueId`, `timestamp`,`reason`, `isPullRequest`)
+VALUES
+('amihaiemil/to_rename', 'john', 'github', '1001', '2020-09-01', 'ASKED', 0);
 
 INSERT INTO `self_xdsd`.`slf_payoutmethods_xdsd`
 (`username`, `provider`, `type`, `identifier`)

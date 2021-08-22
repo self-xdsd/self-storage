@@ -384,7 +384,7 @@ public final class SelfProjectsITCase {
 
         final Projects ofAmihaiemil = all
             .ownedBy(mockUser("amihaiemil", "github"));
-        MatcherAssert.assertThat(ofAmihaiemil, Matchers.iterableWithSize(2));
+        MatcherAssert.assertThat(ofAmihaiemil, Matchers.iterableWithSize(3));
         MatcherAssert.assertThat(ofAmihaiemil
             .page(new Paged.Page(1, 1)),
             Matchers.iterableWithSize(1));
@@ -424,7 +424,7 @@ public final class SelfProjectsITCase {
         MatcherAssert.assertThat(all
                 .page(new Paged.Page(2, 3))
                 .assignedTo(1),
-            Matchers.iterableWithSize(1));
+            Matchers.iterableWithSize(2));
     }
 
     /**
@@ -435,13 +435,13 @@ public final class SelfProjectsITCase {
         final Projects all = new SelfJooq(new H2Database()).projects();
         final Projects ofZoeself = all.assignedTo(1);
         MatcherAssert.assertThat(ofZoeself,
-            Matchers.iterableWithSize(4));
+            Matchers.iterableWithSize(5));
         MatcherAssert.assertThat(ofZoeself
                 .page(new Paged.Page(1, 3)),
             Matchers.iterableWithSize(3));
         MatcherAssert.assertThat(ofZoeself
                 .page(new Paged.Page(2, 3)),
-            Matchers.iterableWithSize(1));
+            Matchers.iterableWithSize(2));
 
         final Projects ofZoeselfSubpage = all
             .page(new Paged.Page(1, 2))
