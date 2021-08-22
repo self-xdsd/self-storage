@@ -45,8 +45,8 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #301:60min Implement methods rename(...) and getByWebHookToken(...) and
- *  write integration tests for them.
+ * @todo #303:60min Implement method rename(...) and write integration tests
+ *  for it.
  */
 public final class SelfProjects extends BasePaged implements Projects {
 
@@ -234,7 +234,22 @@ public final class SelfProjects extends BasePaged implements Projects {
 
     @Override
     public Project getByWebHookToken(final String webHookToken) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return this.database.jooq()
+            .select()
+            .from(SLF_PROJECTS_XDSD)
+            .join(SLF_USERS_XDSD)
+            .on(
+                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
+                )
+            )
+            .join(SLF_PMS_XDSD)
+            .on(SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID))
+            .where(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN.eq(webHookToken))
+            .stream()
+            .map(rec -> projectFromRecord(rec, false))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
