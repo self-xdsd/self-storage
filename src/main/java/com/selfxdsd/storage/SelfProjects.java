@@ -45,8 +45,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #303:60min Implement method rename(...) and write integration tests
- *  for it.
  */
 public final class SelfProjects extends BasePaged implements Projects {
 
@@ -273,7 +271,30 @@ public final class SelfProjects extends BasePaged implements Projects {
 
     @Override
     public Project rename(final Project project, final String newName) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        final String repoFullName = project.repoFullName();
+        final String provider = project.provider();
+        final String newFullName = repoFullName.split("/")[0]
+            + "/" + newName;
+        final int updated = this.database.jooq().update(SLF_PROJECTS_XDSD)
+            .set(SLF_PROJECTS_XDSD.REPO_FULLNAME, newFullName)
+            .where(
+                SLF_PROJECTS_XDSD.REPO_FULLNAME.eq(repoFullName).and(
+                    SLF_PROJECTS_XDSD.PROVIDER.eq(provider)
+                )
+            ).execute();
+        final Project renamed;
+        if(updated == 1) {
+            renamed = new StoredProject(
+                project.owner(),
+                newFullName,
+                project.webHookToken(),
+                project.projectManager(),
+                this.storage
+            );
+        } else {
+            renamed = null;
+        }
+        return renamed;
     }
 
     @Override

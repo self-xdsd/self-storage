@@ -521,6 +521,90 @@ public final class SelfProjectsITCase {
         all.remove(toRemove);
     }
 
+    /**
+     * SelfProjects.rename(...) returns the renamed Project.
+     */
+    @Test
+    public void canRenameProject() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects all = storage.projects();
+        final Project toRename = all.getProjectById(
+            "amihaiemil/to_rename",
+            "github"
+        );
+        MatcherAssert.assertThat(
+            toRename.repoFullName(),
+            Matchers.equalTo("amihaiemil/to_rename")
+        );
+        MatcherAssert.assertThat(
+            toRename.contracts(),
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            toRename.tasks(),
+            Matchers.iterableWithSize(2)
+        );
+        MatcherAssert.assertThat(
+            toRename.wallets(),
+            Matchers.iterableWithSize(2)
+        );
+
+        final Project renamed = all.rename(toRename, "newName");
+
+        MatcherAssert.assertThat(
+            renamed.repoFullName(),
+            Matchers.equalTo("amihaiemil/newName")
+        );
+        MatcherAssert.assertThat(
+            renamed.contracts(),
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            renamed.tasks(),
+            Matchers.iterableWithSize(2)
+        );
+        MatcherAssert.assertThat(
+            renamed.wallets(),
+            Matchers.iterableWithSize(2)
+        );
+
+        final Project renamedSelected = all.getProjectById(
+            "amihaiemil/newName",
+            "github"
+        );
+
+        MatcherAssert.assertThat(
+            renamedSelected.repoFullName(),
+            Matchers.equalTo("amihaiemil/newName")
+        );
+        MatcherAssert.assertThat(
+            renamedSelected.contracts(),
+            Matchers.iterableWithSize(1)
+        );
+        MatcherAssert.assertThat(
+            renamedSelected.tasks(),
+            Matchers.iterableWithSize(2)
+        );
+        MatcherAssert.assertThat(
+            renamedSelected.wallets(),
+            Matchers.iterableWithSize(2)
+        );
+    }
+
+    /**
+     * SelfProjects.rename(...) returns null if the Project does not exist.
+     */
+    @Test
+    public void renameReturnsNullOnMissingProject() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Projects all = storage.projects();
+        final Project missing = Mockito.mock(Project.class);
+        Mockito.when(missing.repoFullName())
+            .thenReturn("mihai/missing-repo-rename");
+        Mockito.when(missing.provider()).thenReturn("github");
+        final Project renamed = all.rename(missing, "newName");
+        MatcherAssert.assertThat(renamed, Matchers.nullValue());
+    }
 
     /**
      * Mock a User for test.
