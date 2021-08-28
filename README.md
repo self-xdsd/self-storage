@@ -7,7 +7,7 @@
 [![DevOps By Rultor.com](http://www.rultor.com/b/self-xdsd/self-storage)](http://www.rultor.com/p/self-xdsd/self-storage)
 [![We recommend IntelliJ IDEA](http://amihaiemil.github.io/images/intellij-idea-recommend.svg)](https://www.jetbrains.com/idea/)
 
-Self's Storage module, version `0.0.72`.
+Self's Storage module, version `0.0.73`.
 
 ## Contributing 
 
