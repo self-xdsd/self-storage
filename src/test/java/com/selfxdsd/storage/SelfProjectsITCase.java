@@ -85,41 +85,6 @@ public final class SelfProjectsITCase {
     }
 
     /**
-     * Returns a project by its WebHook Token.
-     */
-    @Test
-    public void getsProjectByWebHookToken() {
-        final Projects projects = new SelfJooq(new H2Database()).projects();
-        final Project found = projects.getByWebHookToken("whtoken123");
-        MatcherAssert.assertThat(
-            found.repoFullName(),
-            Matchers.equalTo("amihaiemil/docker-java-api")
-        );
-        MatcherAssert.assertThat(
-            found.owner().username(),
-            Matchers.equalTo("amihaiemil")
-        );
-        MatcherAssert.assertThat(
-            found.projectManager().id(),
-            Matchers.equalTo(1)
-        );
-        MatcherAssert.assertThat(
-            found.projectManager().provider().name(),
-            Matchers.equalTo(Provider.Names.GITHUB)
-        );
-    }
-
-    /**
-     * Returns null the project is not found by webhook token.
-     */
-    @Test
-    public void returnsNullIfProjectNotFountByWebHookToken() {
-        final Projects projects = new SelfJooq(new H2Database()).projects();
-        final Project found = projects.getByWebHookToken("missing-token-123");
-        MatcherAssert.assertThat(found, Matchers.nullValue());
-    }
-
-    /**
      * SelfProjects can return the Projects owned by a certain User.
      */
     @Test

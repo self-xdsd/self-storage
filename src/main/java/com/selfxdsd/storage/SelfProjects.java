@@ -231,26 +231,6 @@ public final class SelfProjects extends BasePaged implements Projects {
     }
 
     @Override
-    public Project getByWebHookToken(final String webHookToken) {
-        return this.database.jooq()
-            .select()
-            .from(SLF_PROJECTS_XDSD)
-            .join(SLF_USERS_XDSD)
-            .on(
-                SLF_PROJECTS_XDSD.USERNAME.eq(SLF_USERS_XDSD.USERNAME).and(
-                    SLF_PROJECTS_XDSD.PROVIDER.eq(SLF_USERS_XDSD.PROVIDER)
-                )
-            )
-            .join(SLF_PMS_XDSD)
-            .on(SLF_PROJECTS_XDSD.PMID.eq(SLF_PMS_XDSD.ID))
-            .where(SLF_PROJECTS_XDSD.WEBHOOK_TOKEN.eq(webHookToken))
-            .stream()
-            .map(rec -> projectFromRecord(rec, false))
-            .findFirst()
-            .orElse(null);
-    }
-
-    @Override
     public Projects page(final Page page) {
         return new SelfProjects(
             this.storage,
