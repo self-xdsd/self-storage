@@ -98,8 +98,25 @@ public final class MySql implements Database {
     public DSLContext jooq() {
         if(this.connection == null) {
             throw new IllegalStateException("You need to connect first!");
+        } else {
+            try {
+                final boolean valid = this.connection.isValid(2);
+                if(!valid) {
+                    this.connection.close();
+                    this.connection = DriverManager.getConnection(
+                        this.dbUrl,
+                        this.username,
+                        this.password
+                    );
+                }
+            } catch (final SQLException exception) {
+                throw new IllegalStateException(
+                    "SQLException when verifying the Connection: ",
+                    exception
+                );
+            }
         }
-        return DSL.using(connection, SQLDialect.MYSQL);
+        return DSL.using(this.connection, SQLDialect.MYSQL);
     }
 
     @Override
