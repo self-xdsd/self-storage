@@ -53,6 +53,7 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #312:60min Implement and test method updateEstimation(...).
  */
 public final class SelfTasks implements Tasks {
 
@@ -229,6 +230,11 @@ public final class SelfTasks implements Tasks {
                 this.storage
             );
         }
+        return null;
+    }
+
+    @Override
+    public Task updateEstimation(final Task task, final int estimation) {
         return null;
     }
 
