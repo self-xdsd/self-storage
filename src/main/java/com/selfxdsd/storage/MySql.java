@@ -56,7 +56,7 @@ public final class MySql implements Database {
     /**
      * JDBC Connection.
      */
-    private final Connection connection;
+    private Connection connection;
 
     /**
      * Constructor to obtain an unconnected instance.
@@ -69,41 +69,20 @@ public final class MySql implements Database {
         final String username,
         final String password
     ) {
-        this(dbUrl, username, password, null);
-    }
-
-    /**
-     * Constructor to obtain a connected instance.
-     * @param connection JDBC Connection.
-     * @param dbUrl DB Url.
-     * @param username DB User.
-     * @param password DB Password.
-     */
-    private MySql(
-        final String dbUrl,
-        final String username,
-        final String password,
-        final Connection connection
-    ) {
         this.dbUrl = dbUrl;
         this.username = username;
         this.password = password;
-        this.connection = connection;
+        this.connection = null;
     }
 
     @Override
     public MySql connect() {
         if(this.connection == null) {
             try {
-                return new MySql(
+                this.connection = DriverManager.getConnection(
                     this.dbUrl,
                     this.username,
-                    this.password,
-                    DriverManager.getConnection(
-                        this.dbUrl,
-                        this.username,
-                        this.password
-                    )
+                    this.password
                 );
             } catch (final SQLException exception) {
                 throw new IllegalStateException(
@@ -119,8 +98,25 @@ public final class MySql implements Database {
     public DSLContext jooq() {
         if(this.connection == null) {
             throw new IllegalStateException("You need to connect first!");
+        } else {
+            try {
+                final boolean valid = this.connection.isValid(2);
+                if(!valid) {
+                    this.connection.close();
+                    this.connection = DriverManager.getConnection(
+                        this.dbUrl,
+                        this.username,
+                        this.password
+                    );
+                }
+            } catch (final SQLException exception) {
+                throw new IllegalStateException(
+                    "SQLException when verifying the Connection: ",
+                    exception
+                );
+            }
         }
-        return DSL.using(connection, SQLDialect.MYSQL);
+        return DSL.using(this.connection, SQLDialect.MYSQL);
     }
 
     @Override
