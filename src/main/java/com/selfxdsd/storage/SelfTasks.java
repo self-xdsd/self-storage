@@ -53,7 +53,6 @@ import static com.selfxdsd.storage.generated.jooq.tables.SlfUsersXdsd.SLF_USERS_
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #312:60min Implement and test method updateEstimation(...).
  */
 public final class SelfTasks implements Tasks {
 
@@ -235,6 +234,35 @@ public final class SelfTasks implements Tasks {
 
     @Override
     public Task updateEstimation(final Task task, final int estimation) {
+        if(estimation <= 0) {
+            throw new IllegalArgumentException("Estimation is not positive!");
+        }
+        final Project proj = task.project();
+        final String issueId = task.issueId();
+        final int updated = this.database.jooq().update(SLF_TASKS_XDSD)
+            .set(SLF_TASKS_XDSD.ESTIMATION_MINUTES, estimation)
+            .where(
+                SLF_TASKS_XDSD.ISSUEID.eq(issueId).and(
+                    SLF_TASKS_XDSD.REPO_FULLNAME.eq(proj.repoFullName()).and(
+                        SLF_TASKS_XDSD.PROVIDER.eq(proj.provider()).and(
+                            SLF_TASKS_XDSD.ISPULLREQUEST.eq(
+                                task.isPullRequest()
+                            )
+                        )
+                    )
+                )
+            ).execute();
+        if(updated == 1) {
+            return new StoredTask(
+                task.contract(),
+                issueId,
+                this.storage,
+                task.assignmentDate(),
+                task.deadline(),
+                estimation,
+                task.isPullRequest()
+            );
+        }
         return null;
     }
 

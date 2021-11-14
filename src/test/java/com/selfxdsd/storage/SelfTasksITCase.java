@@ -27,6 +27,7 @@ import com.selfxdsd.api.storage.Storage;
 import com.selfxdsd.core.tasks.StoredTask;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -603,5 +604,84 @@ public final class SelfTasksITCase {
             ).isPullRequest(),
             Matchers.is(Boolean.TRUE)
         );
+    }
+
+    /**
+     * SelfTasks.updateEstimation(...) will update the given Task's estimation.
+     */
+    @Test
+    public void updatesTaskEstimation() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Tasks tasks = storage.tasks();
+        final Task task = tasks.getById(
+            "123", "vlad/test", "github", Boolean.FALSE
+        );
+        MatcherAssert.assertThat(
+            task.estimation(),
+            Matchers.equalTo(60)
+        );
+        final Task updated = tasks.updateEstimation(task, 95);
+        MatcherAssert.assertThat(
+            updated,
+            Matchers.allOf(
+                Matchers.notNullValue(),
+                Matchers.instanceOf(StoredTask.class)
+            )
+        );
+        MatcherAssert.assertThat(
+            updated.estimation(),
+            Matchers.equalTo(95)
+        );
+        final Task updatedSelect = tasks.getById(
+            "123", "vlad/test", "github", Boolean.FALSE
+        );
+        MatcherAssert.assertThat(
+            updatedSelect.estimation(),
+            Matchers.equalTo(95)
+        );
+    }
+
+    /**
+     * SelfTasks.updateEstimation(...) will complain if the given estimation
+     * is negative.
+     */
+    @Test
+    public void updateTaskComplainsOnNegativeEstimation() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Tasks tasks = storage.tasks();
+        final Task task = tasks.getById(
+            "123", "vlad/test", "github", Boolean.FALSE
+        );
+        try {
+            tasks.updateEstimation(task, -10);
+            Assert.fail("IllegalArgumentException was expected.");
+        } catch (final IllegalArgumentException ex) {
+            MatcherAssert.assertThat(
+                ex.getMessage(),
+                Matchers.equalTo("Estimation is not positive!")
+            );
+        }
+    }
+
+    /**
+     * SelfTasks.updateEstimation(...) will complain if the given estimation
+     * is zero.
+     */
+    @Test
+    public void updateTaskComplainsOnZeroEstimation() {
+        final Storage storage = new SelfJooq(new H2Database());
+        final Tasks tasks = storage.tasks();
+        final Task task = tasks.getById(
+            "123", "vlad/test", "github", Boolean.FALSE
+        );
+        try {
+            tasks.updateEstimation(task, 0);
+            Assert.fail("IllegalArgumentException was expected.");
+        } catch (final IllegalArgumentException ex) {
+            MatcherAssert.assertThat(
+                ex.getMessage(),
+                Matchers.equalTo("Estimation is not positive!")
+            );
+        }
     }
 }
