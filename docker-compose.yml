@@ -1,0 +1,25 @@
+# Docker compose for development
+# It will start a MySQL container and bootstrap the DB.
+#
+# Pay attention: You also need to INSERT a Project Manager for test purposes.
+#                Contact a team member to get a GitHub/GitLab access token for test.
+#
+# Start:         > docker-compose -f docker-compose.yml up --build
+# Stop:          > docker-compose -f docker-compose.yml down --remove-orphans
+version: '3'
+services:
+  mysql_db:
+    platform: linux/x86_64 # workaround for Apple M1, comment out on Windows.
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./src/test/resources/createDb.sql:/docker-entrypoint-initdb.d/init-database.sql # Create DB Script.
+      - mysql-db-data:/var/lib/mysql # persist the data (between containers) in a Volume.
+
+volumes:
+  mysql-db-data:
+    driver: local
