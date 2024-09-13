@@ -1,9 +1,8 @@
 ## Self's Storage Implementation
 
-[![Build Status](https://travis-ci.com/self-xdsd/self-storage.svg?branch=master)](https://travis-ci.com/self-xdsd/self-storage)
 [![Coverage Status](https://coveralls.io/repos/github/self-xdsd/self-storage/badge.svg?branch=master)](https://coveralls.io/github/self-xdsd/self-storage?branch=master)
 
-[![Managed By Self XDSD](https://amihaiemil.com/images/mbself.svg)](#)
+[![Managed By Self XDSD](https://docs.self-xdsd.com/img/mbself.svg)](#)
 [![DevOps By Rultor.com](http://www.rultor.com/b/self-xdsd/self-storage)](http://www.rultor.com/p/self-xdsd/self-storage)
 [![We recommend IntelliJ IDEA](http://amihaiemil.github.io/images/intellij-idea-recommend.svg)](https://www.jetbrains.com/idea/)
 
