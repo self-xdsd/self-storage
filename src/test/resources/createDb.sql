@@ -146,8 +146,8 @@ CREATE TABLE `self_xdsd`.`slf_invoicedtasks_xdsd` (
   `isPullRequest` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `invoiceContractFk`
-    FOREIGN KEY (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
-    REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`repo_fullname` , `username` , `provider` , `role` , `invoiceId`)
+    FOREIGN KEY (`invoiceId`, `repo_fullname` , `username` , `provider` , `role`)
+    REFERENCES `self_xdsd`.`slf_invoices_xdsd` (`invoiceId` , `repo_fullname` , `username` , `provider` , `role`)
     ON UPDATE CASCADE
     ON DELETE CASCADE);
 

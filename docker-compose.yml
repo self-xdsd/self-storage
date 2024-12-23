@@ -10,7 +10,7 @@ version: '3'
 services:
   mysql_db:
     platform: linux/x86_64 # workaround for Apple M1, comment out on Windows.
-    image: mysql:latest
+    image: mysql:8.0-debian
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
