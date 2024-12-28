@@ -18,6 +18,7 @@ services:
       - '3306:3306'
     volumes:
       - ./src/test/resources/createDb.sql:/docker-entrypoint-initdb.d/init-database.sql # Create DB Script.
+      - ./src/test/resources/insertTestDataLocalDev.sql:/docker-entrypoint-initdb.d/insert-test-data.sql # Insert data for local dev.
       - mysql-db-data:/var/lib/mysql # persist the data (between containers) in a Volume.
 
 volumes:
