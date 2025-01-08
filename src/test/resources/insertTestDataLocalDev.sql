@@ -5,6 +5,10 @@ INSERT INTO `self_xdsd`.`slf_users_xdsd`
 (`username`, `provider`, `role`, `email`)
 VALUES ('amihaiemil', 'github', 'user', 'amihaiemil@gmail.com');
 
+INSERT INTO `self_xdsd`.`slf_users_xdsd`
+(`username`, `provider`, `role`, `email`)
+VALUES ('Maiorusergiu', 'github', 'user', 'Maiorusergiu@test.com');
+
 -- INSERT PROJECT MANAGERS
 
 INSERT INTO `self_xdsd`.`slf_pms_xdsd`
@@ -25,6 +29,14 @@ INSERT INTO `self_xdsd`.`slf_projects_xdsd`
 (`repo_fullname`, `provider`, `username`, `pmid`, `webhook_token`)
 VALUES ('amihaiemil/to_rename', 'github', 'amihaiemil', 1, 'whtoken1345345345');
 
+INSERT INTO `self_xdsd`.`slf_projects_xdsd`
+(`repo_fullname`, `provider`, `username`, `pmid`, `webhook_token`)
+VALUES ('Maiorusergiu/repoTest1', 'github', 'Maiorusergiu', 1, 'whtoken1345115345');
+
+INSERT INTO `self_xdsd`.`slf_projects_xdsd`
+(`repo_fullname`, `provider`, `username`, `pmid`, `webhook_token`)
+VALUES ('Maiorusergiu/repoTest2', 'github', 'Maiorusergiu', 1, 'whtok3n1345345346');
+
 -- INSERT CONTRIBUTORS
 
 INSERT INTO `self_xdsd`.`slf_contributors_xdsd` (`username`, `provider`) VALUES ('john', 'github');
@@ -33,6 +45,8 @@ INSERT INTO `self_xdsd`.`slf_contributors_xdsd` (`username`, `provider`) VALUES 
 INSERT INTO `self_xdsd`.`slf_contributors_xdsd` (`username`, `provider`) VALUES ('dmarkov', 'github');
 INSERT INTO `self_xdsd`.`slf_contributors_xdsd` (`username`, `provider`) VALUES ('bob', 'github');
 INSERT INTO `self_xdsd`.`slf_contributors_xdsd` (`username`, `provider`) VALUES ('john', 'gitlab');
+INSERT INTO `self_xdsd`.`slf_contributors_xdsd` (`username`, `provider`) VALUES ('amihaiemil', 'github');
+INSERT INTO `self_xdsd`.`slf_contributors_xdsd` (`username`, `provider`) VALUES ('Maiorusergiu', 'github');
 
 -- INSERT CONTRACTS
 
@@ -56,6 +70,24 @@ INSERT INTO `self_xdsd`.`slf_contracts_xdsd`
 (`repo_fullname`, `username`, `provider`, `role`, `hourly_rate`)
 VALUES ('amihaiemil/to_rename', 'john', 'github', 'DEV', 8000);
 
+INSERT INTO `self_xdsd`.`slf_contracts_xdsd`
+(`repo_fullname`, `username`, `provider`, `role`, `hourly_rate`)
+VALUES ('Maiorusergiu/repoTest1', 'amihaiemil', 'github', 'DEV', 8000);
+
+INSERT INTO `self_xdsd`.`slf_contracts_xdsd`
+(`repo_fullname`, `username`, `provider`, `role`, `hourly_rate`)
+VALUES ('Maiorusergiu/repoTest1', 'Maiorusergiu', 'github', 'PO', 8000);
+
+INSERT INTO `self_xdsd`.`slf_contracts_xdsd`
+(`repo_fullname`, `username`, `provider`, `role`, `hourly_rate`)
+VALUES ('Maiorusergiu/repoTest2', 'amihaiemil', 'github', 'REV', 9000);
+
+INSERT INTO `self_xdsd`.`slf_contracts_xdsd`
+(`repo_fullname`, `username`, `provider`, `role`, `hourly_rate`)
+VALUES ('Maiorusergiu/repoTest2', 'Maiorusergiu', 'github', 'DEV', 10000);
+
+-- INSERT INVOICES
+
 INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (`invoiceId`, `repo_fullname`, `username`, `provider`, `role`, `createdAt`)
 VALUES
@@ -70,6 +102,13 @@ INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
 (`invoiceId`, `repo_fullname`, `username`, `provider`, `role`, `createdAt`)
 VALUES
     (6, 'amihaiemil/to_rename', 'john', 'github', 'DEV', NOW());
+
+INSERT INTO `self_xdsd`.`slf_invoices_xdsd`
+(`invoiceId`, `repo_fullname`, `username`, `provider`, `role`, `createdAt`)
+VALUES
+    (7, 'Maiorusergiu/repoTest1', 'amihaiemil', 'github', 'DEV', NOW());
+
+-- INSERT WALLETS
 
 INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
@@ -90,6 +129,35 @@ INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
 (`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
 VALUES
     ('amihaiemil/to_rename', 'github', 'STRIPE', 10000, 1, 'stripewallet-87787878');
+
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+    ('Maiorusergiu/repoTest1', 'github', 'FAKE', 10000000, 1, 'fakew-435345345');
+
+INSERT INTO `self_xdsd`.`slf_wallets_xdsd`
+(`repo_fullname`, `provider`, `type`, `cash`, `active`, `identifier`)
+VALUES
+    ('Maiorusergiu/repoTest2', 'github', 'STRIPE', 10000, 1, 'stripewallet-87787878');
+
+-- INSERT TASKS
+
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes, isPullRequest)
+VALUES
+    ('Maiorusergiu/repoTest1', '123', 'github', 'DEV', 'amihaiemil', '2020-06-14', '2020-06-24', 60, 0);
+
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes, isPullRequest)
+VALUES
+    ('Maiorusergiu/repoTest1', '124', 'github', 'DEV', 'amihaiemil', '2020-06-14', '2020-06-24', 60, 0);
+
+INSERT INTO self_xdsd.slf_tasks_xdsd
+(repo_fullname, issueId, provider, role, username, assigned, deadline, estimation_minutes, isPullRequest)
+VALUES
+    ('Maiorusergiu/repoTest1', '125', 'github', 'DEV', 'amihaiemil', '2020-06-14', '2020-06-24', 60, 0);
+
+-- INSERT PLATFORM INVOICES
 
 INSERT INTO `self_xdsd`.`slf_platforminvoices_xdsd`
 (`id`, `createdAt`, `billedTo`, `commission`, `vat`, `transactionId`, `payment_timestamp`, `eurToRon`)
